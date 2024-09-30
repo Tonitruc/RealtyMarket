@@ -19,6 +19,15 @@
     <Color x:Key="Gray600">#404040</Color>
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
+
+    <Color x:Key="DarkViolet">#6f06bf</Color>
+    <Color x:Key="MediumViolet">#902ade</Color>
+    <Color x:Key="LightViolet">#e7e4f9</Color>
+    <SolidColorBrush x:Key="DarkVioletBtush" Color="{StaticResource DarkViolet}"></SolidColorBrush>
+    <SolidColorBrush x:Key="MediumVioletBtush" Color="{StaticResource MediumViolet}"></SolidColorBrush>
+    <SolidColorBrush x:Key="LightVioletBtush" Color="{StaticResource LightViolet}"></SolidColorBrush>
+    <!-- 7a0099 -->
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>

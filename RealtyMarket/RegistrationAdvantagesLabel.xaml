@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:RealtyMarket" 
+             x:Class="RealtyMarket.RegistrationAdvantagesLabel">
+
+    <Grid Background="#e7e4f9"
+              Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label x:Name="TitleLabel"
+               FontSize="16"
+               Grid.Row="0"
+               Grid.ColumnSpan="2"
+               HorizontalOptions="Center"
+               FontAttributes="Italic"
+               Margin="5"/>
+        <CollectionView x:Name="RegistrationAdvantagesCollectionView" 
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        HorizontalOptions="FillAndExpand"
+                        ItemsSource="{Binding ItemsSource }">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal" 
+                                 Spacing="5"
+                                 Margin="5,5,0,0">
+                        <Label Text="✔" 
+                               TextColor="DarkViolet" 
+                               FontAttributes="Bold"/>
+                        <Label LineBreakMode="WordWrap" 
+                               Text="{Binding Text}" 
+                               VerticalOptions="Center" 
+                               FontSize="{Binding FontSize}"
+                               HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Image x:Name="AdvantagesView"
+               Source="registration_pluses.jpg"
+               Grid.Row="1"
+               Grid.Column="1"
+               HeightRequest="150"
+               HorizontalOptions="End"
+               Margin="5, 0, 10, 5"/>
+    </Grid>
+</ContentView>
