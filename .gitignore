@@ -2,4 +2,5 @@
 *.user
 /RealtyMarket/bin
 /RealtyMarket/obj
+/RealtyMarket/RealtyMarket - Backup.csproj
 *.sln
