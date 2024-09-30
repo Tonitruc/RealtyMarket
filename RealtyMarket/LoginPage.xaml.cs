@@ -1,10 +1,3 @@
-using Microsoft.Maui.Controls;
-using Syncfusion.Maui.DataForm;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Syncfusion.Maui.Buttons;
-
 namespace RealtyMarket;
 
 public partial class LoginPage : ContentPage
@@ -14,6 +7,11 @@ public partial class LoginPage : ContentPage
     public LoginPage()
     {
         InitializeComponent();
+    }
+
+    public async void EnterAsGuest(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("//CatalogPage");
     }
 
 /*    private void OnSizeChanged(object sender, EventArgs e)

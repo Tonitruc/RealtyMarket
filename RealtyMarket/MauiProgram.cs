@@ -15,6 +15,8 @@ namespace RealtyMarket
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("NexaDemo-Bold.ttf", "NexaDemoBold");
+                    fonts.AddFont("Pavelt.ttf", "Pavelt");
                 });
 
 #if DEBUG
