@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:RealtyMarket" 
+             x:Class="RealtyMarket.CustomEntry">
+
+    <Grid x:Name="ParentGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="EntryName"
+               TranslationY="0"
+               FontSize="16"
+               TextColor="Black"
+               Margin="0,8,0,0"/>
+
+        <local:BorderlessEntry x:Name="EntryLine"
+                               Focused="OnEntryFocused"
+                               Unfocused="OnEntryUnfocused"
+                               TextChanged="OnEntryTextChanged"
+                               VerticalOptions="Center"
+                               IsPassword="False"/>
+
+        <BoxView x:Name="Underline"
+                 HeightRequest="2" 
+                 Color="Gray" 
+                 Grid.ColumnSpan="2"
+                 Margin="0,30,0,0"/>
+
+        <ImageButton x:Name="PasswordHideButton"
+                     Source="hide_password.png"
+                     Grid.Column="1"
+                     HeightRequest="30" 
+                     IsVisible="False"
+                     Clicked="OnTogglePasswordVisibilityTapped"/>
+
+        <Label x:Name="IsEmptyErrorMessage"
+               Text="Нельзя ввести пустое поле"
+               TextColor="Red"
+               FontSize="12"
+               IsVisible="False" 
+               Margin="0,5,0,0" 
+               Grid.Row="1"
+               Grid.Column="0"/>
+    </Grid>
+
+</ContentView>

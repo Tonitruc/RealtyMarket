@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:RealtyMarket"
              x:Class="RealtyMarket.MainPage"
              Title="MainPage">
     <VerticalStackLayout>
@@ -8,5 +9,14 @@
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
+
+        <local:CustomEntry Title="Логин"
+                           IsEmptyValidator="True">
+        </local:CustomEntry>
+
+        <local:CustomEntry Title="Пароль"
+                           IsEmptyValidator="True"
+                           IsPassword="True">
+        </local:CustomEntry>
     </VerticalStackLayout>
 </ContentPage>
