@@ -5,10 +5,18 @@
              xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
              xmlns:busy="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
-             xmlns:local="clr-namespace:RealtyMarket" 
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:local="clr-namespace:RealtyMarket"
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             x:DataType="viewmodels:LoginRegisterViewModel"
              x:Class="RealtyMarket.LoginPage"
+             SizeChanged="OnSizeChanged"
              Title="LoginPage">
 
+    <ContentPage.BindingContext>
+        <viewmodels:LoginRegisterViewModel />
+    </ContentPage.BindingContext>
+    
     <Grid Padding="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -20,24 +28,19 @@
                 <tabView:SfTabItem Header="Вход">
                     <Grid>
                         <ScrollView>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
+                            <Grid  RowDefinitions="Auto,*">
+                                <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
+                                                               Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
 
-                            <local:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
-                                                               Title="Войди чтобы:"></local:RegistrationAdvantagesLabel>
+                                <StackLayout Grid.Row="1">
+                                    <StackLayout Padding="20, 10, 20, 0">
+                                        <control:CustomEntry Title="Логин"
+                                                             Text="{Binding User.Email, Mode=TwoWay}"/>
 
-                            <StackLayout Grid.Row="1">
-                                <StackLayout Padding="20, 10, 20, 0">
-                                        <local:CustomEntry Title="Логин"
-                                                           IsEmptyValidator="True"></local:CustomEntry>
-
-                                        <local:CustomEntry Title="Пароль"
-                                                           Margin="0, 20, 0, 0"
-                                                           IsEmptyValidator="True"
-                                                           IsPassword="True"></local:CustomEntry>
+                                        <control:CustomEntry Title="Пароль"
+                                                             Margin="0, 20, 0, 0"
+                                                             IsPassword="True"
+                                                             Text="{Binding User.Password, Mode=TwoWay}"/>
                                     </StackLayout>
 
                                     <Border HeightRequest="40"
@@ -67,16 +70,17 @@
                                             Padding="0, 0, 0, 2">
                                         </Button>
                                         <button:SfButton Text="Войти как гость!"
-                                            Margin="40, 0, 40, 0"
-                                            FontSize="14"
-                                            HeightRequest="35"
-                                            Padding="0, 0, 0, 2"
-                                            TextColor="{StaticResource MediumViolet}"
-                                            Background="Transparent">
+                                                         Margin="40, 0, 40, 0"
+                                                         FontSize="14"
+                                                         HeightRequest="35"
+                                                         Padding="0, 0, 0, 2"
+                                                         TextColor="{StaticResource MediumViolet}"
+                                                         Background="Transparent"
+                                                         Command="{Binding EnterAsGuestCommand}">
                                         </button:SfButton>
                                     </StackLayout>
-                            </StackLayout>
-                        </Grid>
+                                </StackLayout>
+                            </Grid>
                     </ScrollView>
                    </Grid>
                 </tabView:SfTabItem>
@@ -86,29 +90,45 @@
                     <ContentView>
                         <Grid>
                             <ScrollView>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"></RowDefinition>
-                                        <RowDefinition Height="*"></RowDefinition>
-                                    </Grid.RowDefinitions>
+                                <Grid RowDefinitions="Auto,*">
 
-                                    <local:RegistrationAdvantagesLabel x:Name="RegistrationAdvantages" 
-                                                               Title="Зарегестрируйтесь чтобы:"></local:RegistrationAdvantagesLabel>
+                                    <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
+                                                                         Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
                                     <StackLayout Grid.Row="1">
                                         <StackLayout Padding="20, 10, 20, 0">
-                                            <local:CustomEntry Title="Логин"
-                                                                IsEmptyValidator="True"></local:CustomEntry>
+                                            <control:CustomEntry x:Name="EmailEntry"
+                                                                 Title="Email"
+                                                                 Margin="0, 20, 0, 0"
+                                                                 TextChanged="EmailTextChanged"></control:CustomEntry>
 
-                                            <local:CustomEntry Title="Email"
-                                                               Margin="0, 20, 0, 0"
-                                                               IsEmptyValidator="True"></local:CustomEntry>
+                                            <control:CustomEntry x:Name="PasswordEntry"
+                                                                 Title="Пароль"
+                                                                 Margin="0, 20, 0, 0"
+                                                                 IsPassword="True"
+                                                                 TextChanged="PasswordTextChanged"></control:CustomEntry>
 
-                                            <local:CustomEntry Title="Пароль"
-                                                               Margin="0, 20, 0, 0"
-                                                               IsEmptyValidator="True"
-                                                               IsPassword="True"></local:CustomEntry>
+                                            <Label x:Name="RegistrationLenght"
+                                                   TextColor="Black"
+                                                   Margin="0, 12, 0, 0"
+                                                   FontSize="12"
+                                                   Text="Минимум 8 символов"/>
+                                            <Label x:Name="RegistrationDigits"
+                                                   TextColor="Black"
+                                                   Margin="0, 4, 0, 0"
+                                                   FontSize="12"                                                  
+                                                   Text="Содержатся буквы"/>
+                                            <Label x:Name="RegistrationLetters"
+                                                   TextColor="Black"
+                                                   Margin="0, 4, 0, 0"
+                                                   FontSize="12"
+                                                   Text="Содержатся цифры"/>
+
+                                            <control:CustomEntry x:Name="AllowPasswordEntry"
+                                                                 Title="Подтвердите пароль"
+                                                                 Margin="0, 20, 0, 0"
+                                                                 IsPassword="True"
+                                                                 TextChanged="AllowPasswordChanged"></control:CustomEntry>
                                         </StackLayout>
-
 
                                         <StackLayout Orientation="Vertical"
                                                      Spacing="10"
@@ -122,7 +142,6 @@
                                             </Button>
                                         </StackLayout>
                                     </StackLayout>
-
                                 </Grid>
                             </ScrollView>
                         </Grid>

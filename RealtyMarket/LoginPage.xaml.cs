@@ -1,3 +1,9 @@
+using RealtyMarket.Controls;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Windows.Input;
+
 namespace RealtyMarket;
 
 public partial class LoginPage : ContentPage
@@ -9,33 +15,78 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
     }
 
-    public async void EnterAsGuest(object sender, EventArgs e)
+    private void EmailTextChanged(object sender, TextChangedEventArgs e)
     {
-        await Shell.Current.GoToAsync("//CatalogPage");
+        string email = EmailEntry.Text;
+
+        if (string.IsNullOrEmpty(EmailEntry.Text))
+        {
+            EmailEntry.IsError = true;
+            EmailEntry.ErrorText = "Поле не может быть пустым";
+        }
+        else if(!Validators.IsValidEmail(email))
+        {
+            EmailEntry.IsError = true;
+            EmailEntry.ErrorText = "Неверный формат e-mail";
+        }
+        else
+        {
+            EmailEntry.IsError = false;
+        }
     }
 
-/*    private void OnSizeChanged(object sender, EventArgs e)
+    private void PasswordTextChanged(object sender, TextChangedEventArgs e)
     {
-        var viewModel = (LoginPageViewModel)BindingContext;
+        string password = PasswordEntry.Text;
+
+        if (!string.IsNullOrEmpty(password))
+        {
+            bool isMistake = true;
+            RegistrationDigits.TextColor = (isMistake &= password.Any(Char.IsDigit)) ? Colors.Green : Colors.Red;
+            RegistrationLetters.TextColor = (isMistake &= password.Any(Char.IsLetter)) ? Colors.Green : Colors.Red;
+            RegistrationLenght.TextColor = (isMistake &= password.Length >= 8) ? Colors.Green : Colors.Red;
+            PasswordEntry.IsError = !isMistake;
+            PasswordEntry.ErrorText = "Тебования не соблюдены";
+        }
+        else
+        {
+            RegistrationDigits.TextColor = Colors.Red;
+            RegistrationLetters.TextColor = Colors.Red;
+            RegistrationLenght.TextColor = Colors.Red;
+            PasswordEntry.IsError = true;
+            PasswordEntry.ErrorText = "Пароль не должен быть пустым";
+        }
+    }
+
+    private void AllowPasswordChanged(object sender, TextChangedEventArgs e)
+    {
+        string allowPassword = AllowPasswordEntry.Text;
+        string password = PasswordEntry.Text;
+
+        if(!allowPassword.Equals(password))
+        {
+            AllowPasswordEntry.ErrorText = "Пароли должны совпадать";
+            AllowPasswordEntry.IsError = true;
+        }
+        else
+        {
+            AllowPasswordEntry.IsError = false;
+        }
+    }
+
+    private void OnSizeChanged(object sender, EventArgs e)
+    {
         bool isLandscape = (Width > Height);
 
-       foreach (var item in LoginAdvanatages.ItemsSource)
-       {
-           item.FontSize = isLandscape ? 20 : 13;
-       }
-    }*/
-}
+        int fontSize = isLandscape ? 20 : 13;
 
-public class UserLoginInfo
-{
-    public string Login { get; set; }
+        ObservableCollection<RegistrationAdvantage> items = [
+                new() { Text = "Возможность публикации объявлений.", FontSize = fontSize},
+                new() { Text = "Личный кабинет.", FontSize = fontSize},
+                new() { Text = "Избранное и история.", FontSize = fontSize}
+            ];
 
-    public string Password { get; set; }
-}
-
-public class LoginPageViewModel 
-{
-    public LoginPageViewModel()
-    {
+        LoginAdvanatages.ItemsSource = items;
+        RegisterAdvantages.ItemsSource = items;
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace RealtyMarket
+﻿using Microsoft.Maui.Controls.Platform;
+using RealtyMarket.Controls;
+
+namespace RealtyMarket
 {
     public partial class App : Application
     {

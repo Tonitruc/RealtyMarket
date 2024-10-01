@@ -48,6 +48,6 @@
               Route ="LoginPage" />
 
     <ShellContent Title = "CatalogPage" 
-              ContentTemplate = "{DataTemplate local:LoginPage}" 
+              ContentTemplate = "{DataTemplate local:CatalogPage}" 
               Route ="CatalogPage" />
 </Shell>

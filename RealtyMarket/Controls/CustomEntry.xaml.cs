@@ -1,4 +1,4 @@
-namespace RealtyMarket
+namespace RealtyMarket.Controls
 {
     public partial class CustomEntry : ContentView
     {
@@ -11,7 +11,7 @@ namespace RealtyMarket
 
         public string Title
         {
-            get => GetValue(TitleProperty) as string ?? string.Empty;
+            get => GetValue(TitleProperty) as string;
             set => SetValue(TitleProperty, value);
         }
 
@@ -24,17 +24,8 @@ namespace RealtyMarket
 
         public string Text
         {
-            get => GetValue(TextProperty) as string ?? string.Empty;
+            get => GetValue(TextProperty) as string;
             set => SetValue(TextProperty, value);
-        }
-
-        public static readonly BindableProperty IsEmptyValidatorProperty = BindableProperty.Create(
-            nameof(IsEmptyValidator), typeof(bool), typeof(CustomEntry), false);
-
-        public bool IsEmptyValidator
-        {
-            get => (bool)GetValue(IsEmptyValidatorProperty);
-            set => SetValue(IsEmptyValidatorProperty, value);
         }
 
         private bool _isPasswordVisible = false;
@@ -53,10 +44,69 @@ namespace RealtyMarket
             set => SetValue(IsPasswordProperty, value);
         }
 
+        private bool _isFocused = false;
+
+        private bool _isError = false;
+
+        public static readonly BindableProperty IsErrorProperty = BindableProperty.Create(
+            nameof(IsError), typeof(bool), typeof(CustomEntry), false, propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (CustomEntry)bindable;
+                control._isError = (bool)newValue;
+            });
+
+        protected new bool IsFocused
+        {
+            get => _isFocused;
+            set
+            {
+                _isFocused = value;
+                OnPropertyChanged(nameof(CurrentColor));
+            }
+        }
+
+        public bool IsError
+        {
+            get => (bool)GetValue(IsErrorProperty);
+            set 
+            { 
+                SetValue(IsErrorProperty, value);
+                OnPropertyChanged(nameof(CurrentColor));
+            }
+        }
+
+        public Color CurrentColor
+        {
+            get
+            {
+                if (_isError)
+                    return Colors.Red;
+
+                if(!_isError && IsFocused)
+                    return Colors.MediumPurple;
+
+                return Colors.Black;
+            }
+        }
+
+        public static readonly BindableProperty ErrorTextProperty = BindableProperty.Create(
+            nameof(ErrorText), typeof(string), typeof(CustomEntry), "Error", propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (CustomEntry)bindable;
+                control.IsErrorMessage.Text = newValue as string;
+            });
+
+        public string ErrorText
+        {
+            get => GetValue(ErrorTextProperty) as string;
+            set => SetValue(ErrorTextProperty, value);
+        }
 
         public new event EventHandler Focused;
         public new event EventHandler Unfocused;
-        public event EventHandler TextChanged;
+
+        public delegate void TextChangedEventHandler(object sender, TextChangedEventArgs e);
+        public event TextChangedEventHandler TextChanged;
 
         public CustomEntry()
         {
@@ -64,6 +114,8 @@ namespace RealtyMarket
             EntryLine.Focused += OnEntryFocused;
             EntryLine.Unfocused += OnEntryUnfocused;
             EntryLine.TextChanged += OnEntryTextChanged;
+
+            BindingContext = this;
         }
 
         private static Task<bool> AnimateFontSize(Label label, double startSize, double endSize)
@@ -78,51 +130,27 @@ namespace RealtyMarket
 
         private async void OnEntryFocused(object sender, FocusEventArgs e)
         {
+            IsFocused = true;
+
             var translateTask = EntryName.TranslateTo(0, -15, 100, Easing.Linear);
             var fontAnimation = AnimateFontSize(EntryName, EntryName.FontSize, 12);
-            EntryName.TextColor = Colors.Blue;
 
             await Task.WhenAll(translateTask, fontAnimation);
-
-            if (IsEmptyValidator)
-            {
-                if (string.IsNullOrWhiteSpace(EntryLine.Text))
-                {
-                    IsEmptyErrorMessage.IsVisible = true;
-                    EntryName.TextColor = Colors.Red;
-                }
-                else
-                {
-                    EntryName.TextColor = Colors.Black;
-                }
-            }
 
             Focused?.Invoke(this, EventArgs.Empty);
         }
 
         private async void OnEntryUnfocused(object sender, FocusEventArgs e)
         {
+            IsFocused = false;
+
+
             if (string.IsNullOrWhiteSpace(EntryLine.Text))
             {
                 var translateTask = EntryName.TranslateTo(0, 0, 100, Easing.Linear);
                 var fontAnimation = AnimateFontSize(EntryName, EntryName.FontSize, 16);
-                EntryName.TextColor = Colors.Black;
 
                 await Task.WhenAll(translateTask, fontAnimation);
-
-                if (IsEmptyValidator)
-                {
-                    if (string.IsNullOrWhiteSpace(EntryLine.Text))
-                    {
-                        IsEmptyErrorMessage.IsVisible = true;
-                    }
-                    EntryName.TextColor = Colors.Black;
-                }
-            }
-            else
-            {
-                IsEmptyErrorMessage.IsVisible = false;
-                EntryName.TextColor = Colors.Black;
             }
 
             Unfocused?.Invoke(this, EventArgs.Empty);
@@ -130,13 +158,9 @@ namespace RealtyMarket
 
         private void OnEntryTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(EntryLine.Text))
-            {
-                IsEmptyErrorMessage.IsVisible = false;
-                EntryName.TextColor = Colors.Black;
-            }
+            Text = e.NewTextValue;
 
-            TextChanged?.Invoke(this, TextChangedEventArgs.Empty);
+            TextChanged?.Invoke(this, null);
         }
 
         private void UpdateGridStructure()
