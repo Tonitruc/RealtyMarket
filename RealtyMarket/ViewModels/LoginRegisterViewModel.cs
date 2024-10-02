@@ -2,6 +2,8 @@
 using RealtyMarket.Models;
 using MvvmHelpers;
 using MvvmHelpers.Commands;
+using RealtyMarket.Service;
+using RealtyMarket.Repository;
 
 namespace RealtyMarket.ViewModels
 {
@@ -9,22 +11,143 @@ namespace RealtyMarket.ViewModels
     {
         public UserLoginInfo User { get; set; }
 
+        public UserRegisterInfo NewUser { get; set; }
+
         public ICommand EnterAsGuestCommand { get; }
 
         public ICommand LoginCommand { get; }
 
         public ICommand RegisterCommand { get; }
 
-        public LoginRegisterViewModel()
+        private string _loginErrorMessage = string.Empty;
+
+        public string LoginErrorMessage
         {
-            User = new UserLoginInfo();
-            EnterAsGuestCommand = new AsyncCommand(EnterAsGuest);
+            get => _loginErrorMessage;
+            set => SetProperty(ref _loginErrorMessage, value);
         }
 
-        public static async Task EnterAsGuest()
+        private bool _isLoginError = false;
+
+        public bool IsLoginError
         {
+            get => _isLoginError;
+            set => SetProperty(ref _isLoginError, value);
+        }
+
+        private string _registerErrorMessage = string.Empty;
+
+        public string RegisterErrorMessage
+        {
+            get => _registerErrorMessage;
+            set => SetProperty(ref _registerErrorMessage, value);
+        }
+
+        private bool _isRegisterError = false;
+
+        public bool IsRegisterError
+        {
+            get => _isRegisterError;
+            set => SetProperty(ref _isRegisterError, value);
+        }
+
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => !_isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        private FirebaseAuthenticationService _authService;
+
+        private RegisteredUserRepository _registeredUserRepository;
+
+        public LoginRegisterViewModel(FirebaseAuthenticationService authService,
+            RegisteredUserRepository registeredUserRepository)
+        {
+            User = new UserLoginInfo();
+            NewUser = new UserRegisterInfo();
+            EnterAsGuestCommand = new AsyncCommand(EnterAsGuest);
+            RegisterCommand = new AsyncCommand(Register);
+            LoginCommand = new AsyncCommand(Login);
+
+            _authService = authService;
+            _registeredUserRepository = registeredUserRepository;
+        }
+
+        public async Task EnterAsGuest()
+        {
+            IsBusy = true;
             await SecureStorage.SetAsync("UserStatus", "Guest");
-            await Shell.Current.GoToAsync("//CatalogPage");
+            await Shell.Current.GoToAsync("//MainTabs");
+            IsBusy = false;
+        }
+
+        public async Task Register()
+        {
+            IsBusy = true;
+            RegisteredUser existUser = await _registeredUserRepository.GetByEmail(NewUser.Email);
+
+            if (existUser == null)
+            {
+                SingInResultEnum result = await _authService.RegisterUserAsync(NewUser.Email, NewUser.Password);
+                if (result == SingInResultEnum.Ok)
+                {
+                    IsRegisterError = false;
+                    await Shell.Current.GoToAsync("//MainTabs");
+                    await _registeredUserRepository.Add(new() { Email = NewUser.Email, Password = NewUser.Password });
+                }
+                else if (result == SingInResultEnum.EmailIsBusy)
+                {
+                    RegisterErrorMessage = "Email уже занят.";
+                    IsRegisterError = true;
+                }
+                else if (result == SingInResultEnum.InValidError)
+                {
+                    RegisterErrorMessage = "Непредвиденная ошибка.";
+                    IsRegisterError = true;
+                }
+            }
+            else
+            {
+                RegisterErrorMessage = "Email уже занят.";
+                IsRegisterError = true;
+            }
+            IsBusy = false;
+        }
+
+        public async Task Login()
+        {
+            IsBusy = true;
+
+            RegisteredUser existUser =  await _registeredUserRepository.GetByEmail(User.Email);
+
+            if (existUser != null)
+            {
+                SingInResultEnum result = await _authService.SignInUserAsync(User.Email, User.Password);
+                if (result == SingInResultEnum.Ok)
+                {
+                    IsLoginError = false;
+                    await Shell.Current.GoToAsync("//MainTabs");
+                }
+                else if (result == SingInResultEnum.EmailNotExist)
+                {
+                    LoginErrorMessage = "Неверный пароль.";
+                    IsLoginError = true;
+                }
+                else if (result == SingInResultEnum.InValidError)
+                {
+                    LoginErrorMessage = "Непредвиденная ошибка.";
+                    IsLoginError = true;
+                }
+            }
+            else
+            {
+                LoginErrorMessage = "Пользователь не найден, пройдите регистрацию.";
+                IsLoginError = true;
+            }
+            IsBusy = false;
         }
     }
 }

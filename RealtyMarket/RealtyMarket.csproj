@@ -55,13 +55,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\addadicon.png" />
+	  <None Remove="Resources\Images\catalogicon.png" />
+	  <None Remove="Resources\Images\favoritesicon.png" />
 	  <None Remove="Resources\Images\hide_password.png" />
 	  <None Remove="Resources\Images\logo.png" />
+	  <None Remove="Resources\Images\profileicon.png" />
 	  <None Remove="Resources\Images\registration_pluses.jpg" />
 	  <None Remove="Resources\Images\show_password.png" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Firebase.Auth" Version="1.0.0" />
+		<PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
@@ -78,16 +87,31 @@
          </ItemGroup>
 	
 	 <ItemGroup>
+	   <Compile Update="Views\LoginRegisterPage.xaml.cs">
+	     <DependentUpon>LoginRegisterPage.xaml</DependentUpon>
+	   </Compile>
+	 </ItemGroup>
+	
+	 <ItemGroup>
+	   <MauiXaml Update="Views\AddAdPage.xaml">
+	     <Generator>MSBuild:Compile</Generator>
+	   </MauiXaml>
 	   <MauiXaml Update="CatalogPage.xaml">
 	     <Generator>MSBuild:Compile</Generator>
 	   </MauiXaml>
 	   <MauiXaml Update="Controls\CustomEntry.xaml">
 	     <Generator>MSBuild:Compile</Generator>
 	   </MauiXaml>
-	   <MauiXaml Update="LoginPage.xaml">
+	   <MauiXaml Update="FavoritesPage.xaml">
+	     <Generator>MSBuild:Compile</Generator>
+	   </MauiXaml>
+	   <MauiXaml Update="Views\LoginRegisterPage.xaml">
 	     <Generator>MSBuild:Compile</Generator>
 	   </MauiXaml>
 	   <MauiXaml Update="Controls\RegistrationAdvantagesLabel.xaml">
+	     <Generator>MSBuild:Compile</Generator>
+	   </MauiXaml>
+	   <MauiXaml Update="Views\ProfilePage.xaml">
 	     <Generator>MSBuild:Compile</Generator>
 	   </MauiXaml>
 	 </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace RealtyMarket
+namespace RealtyMarket.Service
 {
     public static class Validators
     {

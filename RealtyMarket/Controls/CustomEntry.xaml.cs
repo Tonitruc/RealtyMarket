@@ -16,10 +16,10 @@ namespace RealtyMarket.Controls
         }
 
         public static readonly BindableProperty TextProperty = BindableProperty.Create(
-            nameof(Text), typeof(string), typeof(CustomEntry), "", propertyChanged: (bindable, oldValue, newValue) =>
+            nameof(Text), typeof(string), typeof(CustomEntry), "", BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 var control = (CustomEntry)bindable;
-                control.EntryLine.Text = newValue as string;
+                control.EntryLine.Text = newValue as string;             
             });
 
         public string Text
@@ -104,9 +104,7 @@ namespace RealtyMarket.Controls
 
         public new event EventHandler Focused;
         public new event EventHandler Unfocused;
-
-        public delegate void TextChangedEventHandler(object sender, TextChangedEventArgs e);
-        public event TextChangedEventHandler TextChanged;
+        public event EventHandler<TextChangedEventArgs> TextChanged;
 
         public CustomEntry()
         {
@@ -115,7 +113,11 @@ namespace RealtyMarket.Controls
             EntryLine.Unfocused += OnEntryUnfocused;
             EntryLine.TextChanged += OnEntryTextChanged;
 
-            BindingContext = this;
+            EntryLine.SetBinding(Entry.TextColorProperty, new Binding(nameof(TextProperty), BindingMode.TwoWay, source: this));
+            EntryName.SetBinding(Label.TextColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
+            Underline.SetBinding(BoxView.ColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
+            PasswordHideButton.SetBinding(ImageButton.IsVisibleProperty, new Binding(nameof(IsPassword), BindingMode.TwoWay, source: this));
+            IsErrorMessage.SetBinding(Label.IsVisibleProperty, new Binding(nameof(IsError), BindingMode.TwoWay, source: this));
         }
 
         private static Task<bool> AnimateFontSize(Label label, double startSize, double endSize)
@@ -158,9 +160,8 @@ namespace RealtyMarket.Controls
 
         private void OnEntryTextChanged(object sender, TextChangedEventArgs e)
         {
-            Text = e.NewTextValue;
-
-            TextChanged?.Invoke(this, null);
+            Text = EntryLine.Text;
+            TextChanged?.Invoke(this, new(Text, EntryLine.Text));
         }
 
         private void UpdateGridStructure()

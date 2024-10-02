@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
-namespace RealtyMarket
+namespace RealtyMarket.Controls
 {
     public class EffectButton : Button
     {
@@ -18,12 +18,12 @@ namespace RealtyMarket
         {
             _startColor = BackgroundColor;
 
-            await ColorTo(Colors.White, Colors.Gray, c => this.BackgroundColor = c, 250);
+            await ColorTo(Colors.White, Colors.Gray, c => BackgroundColor = c, 250);
         }
 
         private async void OnButtonReleased(object sender, EventArgs e)
         {
-            await ColorTo(Colors.Gray, Colors.White, c => this.BackgroundColor = c, 250);
+            await ColorTo(Colors.Gray, Colors.White, c => BackgroundColor = c, 250);
         }
 
         private Task<bool> ColorTo(Color fromColor, Color toColor, Action<Color> callback, uint length = 250, Easing easing = null)
@@ -40,7 +40,7 @@ namespace RealtyMarket
 
         private Task<bool> ColorAnimation(string name, Func<double, Color> transform, Action<Color> callback, uint length, Easing easing)
         {
-            easing ??= Easing.Linear;  
+            easing ??= Easing.Linear;
             var taskCompletionSource = new TaskCompletionSource<bool>();
 
             this.Animate(name, transform, callback: callback, length: length, easing: easing, finished: (v, c) => taskCompletionSource.SetResult(c));

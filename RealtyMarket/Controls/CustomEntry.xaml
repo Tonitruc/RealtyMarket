@@ -12,20 +12,17 @@
         <Label x:Name="EntryName"
                TranslationY="0"
                FontSize="16"
-               TextColor="{Binding CurrentColor}"
                Margin="0,8,0,0"/>
 
         <local:BorderlessEntry x:Name="EntryLine"
                                Focused="OnEntryFocused"
                                Unfocused="OnEntryUnfocused"
                                TextChanged="OnEntryTextChanged"
-                               TextColor="{Binding CurrentColor}"
                                VerticalOptions="Center"
                                IsPassword="False"/>
 
         <BoxView x:Name="Underline"
                  HeightRequest="2" 
-                 Color="{Binding CurrentColor}" 
                  Grid.ColumnSpan="2"
                  Margin="0,30,0,0"/>
 
@@ -33,13 +30,11 @@
                      Source="hide_password.png"
                      Grid.Column="1"
                      HeightRequest="30" 
-                     IsVisible="{Binding IsPassword, Mode=TwoWay}"
                      Clicked="OnTogglePasswordVisibilityTapped"/>
 
         <Label x:Name="IsErrorMessage"
                TextColor="Red"
                FontSize="12"
-               IsVisible="{Binding IsError, Mode=TwoWay}" 
                Margin="0,5,0,0" 
                Grid.Row="1"
                Grid.Column="0"/>

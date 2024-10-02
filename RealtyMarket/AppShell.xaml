@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:RealtyMarket"
+    xmlns:views="clr-namespace:RealtyMarket.Views"
     Shell.FlyoutBehavior="Disabled">
 
     <Shell.TitleView>
@@ -44,10 +45,25 @@
     </Shell.TitleView>
 
     <ShellContent Title = "LoginPage" 
-              ContentTemplate = "{DataTemplate local:LoginPage}" 
+              ContentTemplate = "{DataTemplate views:LoginRegisterPage}" 
               Route ="LoginPage" />
 
-    <ShellContent Title = "CatalogPage" 
-              ContentTemplate = "{DataTemplate local:CatalogPage}" 
-              Route ="CatalogPage" />
+    <TabBar IsVisible="True" x:Name="MainTabs" Route="MainTabs">
+        <Tab Title="Каталог" Icon="catalogicon.png">
+            <ShellContent Title = "CatalogPage" 
+                          ContentTemplate="{DataTemplate views:CatalogPage}" />
+        </Tab>
+        <Tab Title="Избранное" Icon="favoritesicon.png">
+            <ShellContent Title = "FavoritesPage" 
+                          ContentTemplate="{DataTemplate views:FavoritesPage}" />
+        </Tab>
+        <Tab Title="Добавить" Icon="addadicon.png">
+            <ShellContent Title = "CatalogPage" 
+                          ContentTemplate="{DataTemplate views:AddAdPage}" />
+        </Tab>
+        <Tab Title="Избранное" Icon="profileicon.png">
+            <ShellContent Title = "CatalogPage" 
+                          ContentTemplate="{DataTemplate views:ProfilePage}" />
+        </Tab>
+    </TabBar>
 </Shell>

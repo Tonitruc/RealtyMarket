@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:RealtyMarket" 
-             x:Class="RealtyMarket.CatalogPage"
-             Title="CatalogPage">
+             x:Class="RealtyMarket.Views.AddAdPage"
+             Shell.NavBarIsVisible="False"
+             Title="AddAdPage">
     <VerticalStackLayout>
         <Label 
-            Text="Welcome to .NET MAUI!"
+            Text="Add ad page"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
