@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RealtyMarket.Models
 {
-    public enum SingInResultEnum
+    public enum SignInResultEnum
     {
         EmailNotExist,
         WrongPassword,

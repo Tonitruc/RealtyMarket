@@ -1,8 +1,5 @@
 using RealtyMarket.Controls;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
 using RealtyMarket.Service;
 using RealtyMarket.ViewModels;
 
@@ -10,15 +7,19 @@ namespace RealtyMarket.Views
 {
     public partial class LoginRegisterPage : ContentPage
     {
-        private bool _isPasswordVisible;
 
         private readonly LoginRegisterViewModel _loginRegisterViewModel;
 
-        public LoginRegisterPage(LoginRegisterViewModel loginRegisterViewModel)
+        private readonly ConnectivityService _connectivityService;
+
+        public LoginRegisterPage(LoginRegisterViewModel loginRegisterViewModel, 
+            ConnectivityService connectivityService)
         {
             InitializeComponent();
 
-            BindingContext = _loginRegisterViewModel = loginRegisterViewModel;
+            _connectivityService = connectivityService;
+            _loginRegisterViewModel = loginRegisterViewModel;
+            BindingContext = _loginRegisterViewModel;
         }
 
         private void EmailTextChanged(object sender, EventArgs e)
@@ -128,6 +129,11 @@ namespace RealtyMarket.Views
             {
                 _loginRegisterViewModel.LoginCommand.Execute(this);
             }
+        }
+
+        public void EnterAsGuest(object sender, EventArgs e)
+        {
+            _loginRegisterViewModel.EnterAsGuestCommand.Execute(this);
         }
 
         private void OnSizeChanged(object sender, EventArgs e)

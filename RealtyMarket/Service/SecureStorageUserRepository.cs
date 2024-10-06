@@ -8,6 +8,7 @@ namespace RealtyMarket.Service
     {
         public const string CurrentUserInfoKey = "USER_KEY";
         public const string CurrentUserCredentialKey = "CREDENTIAL_KEY";
+        public const string CurrentUserStateKey = "USER_STATE_KEY";
 
         public (UserInfo userInfo, FirebaseCredential credential) ReadUser()
         {
@@ -36,6 +37,15 @@ namespace RealtyMarket.Service
 
                 Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserInfoKey, userInfoJson));
                 Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserCredentialKey, cedentialJson));
+
+                if(user.IsAnonymous)
+                {
+                    Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserStateKey, "Guest"));
+                }
+                else
+                {
+                    Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserStateKey, "Register"));
+                }
             }
             catch (Exception) { }
         }
@@ -44,6 +54,7 @@ namespace RealtyMarket.Service
         {
             SecureStorage.Default.Remove(CurrentUserInfoKey);
             SecureStorage.Default.Remove(CurrentUserCredentialKey);
+            SecureStorage.Default.Remove(CurrentUserStateKey);
         }
 
         public bool UserExists()
@@ -55,6 +66,11 @@ namespace RealtyMarket.Service
             }
 
             return true;
+        }
+
+        public async Task<string> GetUserState()
+        {
+            return await SecureStorage.Default.GetAsync(CurrentUserStateKey);
         }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Firebase.Auth;
 using RealtyMarket.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealtyMarket.Service
 {
@@ -22,7 +17,7 @@ namespace RealtyMarket.Service
             _storageUserRepository = storageUserRepository;
         }
 
-        public async Task<SingInResultEnum> RegisterUserAsync(string email, string password)
+        public async Task<SignInResultEnum> RegisterUserAsync(string email, string password)
         {
             try
             {
@@ -34,19 +29,19 @@ namespace RealtyMarket.Service
             {
                 if (ex.Reason == AuthErrorReason.EmailExists)
                 {
-                    return SingInResultEnum.EmailIsBusy;
+                    return SignInResultEnum.EmailIsBusy;
                 }
                 else
                 {
-                    return SingInResultEnum.InValidError;
+                    return SignInResultEnum.InValidError;
                 }
             }
             catch (Exception) { }
-            return SingInResultEnum.Ok;
+            return SignInResultEnum.Ok;
         }
 
 
-        public async Task<SingInResultEnum> SignInUserAsync(string email, string password)
+        public async Task<SignInResultEnum> SignInUserAsync(string email, string password)
         {
             try
             {
@@ -58,17 +53,33 @@ namespace RealtyMarket.Service
             {
                 if (ex.Reason == AuthErrorReason.Unknown)
                 {
-                    return SingInResultEnum.EmailNotExist;
+                    return SignInResultEnum.EmailNotExist;
                 }
                 else
                 {
-                    return SingInResultEnum.InValidError;
+                    return SignInResultEnum.InValidError;
                 }
             }
             catch (Exception) { }
-            return SingInResultEnum.Ok;
+            return SignInResultEnum.Ok;
         }
 
+        public async Task<SignInResultEnum> SignInAnonymousUserAsync()
+        {
+            try
+            {
+                var userCredential = _firebaseAuthClient.SignInAnonymouslyAsync().Result;
+                User user = GetCurrentUser();
+                _storageUserRepository.SaveUser(user);
+                if (userCredential.User != null)
+                {
+                    return SignInResultEnum.Ok;
+                }
+            }
+            catch (Exception) { }
+
+            return SignInResultEnum.InValidError;
+        }
 
         public void SignOutUser()
         {

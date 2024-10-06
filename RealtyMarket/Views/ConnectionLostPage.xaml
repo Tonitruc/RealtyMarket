@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             x:DataType="viewmodels:ConnectionLostViewModel"          
+             x:Class="RealtyMarket.Views.ConnectionLostPage"
+             Title="ConnectionLostPage">
+
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="LoadingTemplage">
+                <HorizontalStackLayout>
+                    <core:SfBusyIndicator AnimationType="CircularMaterial" 
+                                          IsRunning="True" 
+                                          TextColor="White" 
+                                          WidthRequest="80" 
+                                          HeightRequest="60" 
+                                          IndicatorColor="White"
+                                          VerticalOptions="Center" 
+                                          HorizontalOptions="End"/>
+                    <Label Text="Обновление..." FontSize="18" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" />
+                </HorizontalStackLayout>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="120,auto,auto,auto">
+        <Image Source="connection_lost.png"
+               HeightRequest="300"
+               Grid.Row="1"/>
+        <Label Grid.Row="2" 
+               Text="Соединение потеряно!"
+               FontSize="26"
+               FontFamily="VeryBold"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+        <buttons:SfButton IsVisible="{Binding IsLoading}"
+                          Margin="0,20,0,0" 
+                          Grid.Row="3"
+                          WidthRequest="220"
+                          Background="{StaticResource Primary}"
+                          Content="{x:StaticResource LoadingTemplage}"/>
+        <buttons:SfButton IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
+                          Margin="0,20,0,0" 
+                          Grid.Row="3"
+                          WidthRequest="220"
+                          HorizontalOptions="Center"
+                          Text="Обновить"
+                          FontSize="18"
+                          Command="{Binding ReturnToPageAsyncCommand}"
+                          Background="{StaticResource Primary}"/>
+        <core:SfBusyIndicator Margin="220,0,0,200"
+                              Grid.Row="1" 
+                              AnimationType="Globe" 
+                              IsRunning="True"/>
+        <Label Text="{Binding ReturnPage}" Grid.Row="0"
+               FontSize="20">
+            
+        </Label>
+    </Grid>
+</ContentPage>

@@ -1,13 +1,57 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              x:Class="RealtyMarket.Views.ProfilePage"
              Shell.NavBarIsVisible="False"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             x:DataType="viewmodels:ProfileViewModel"
              Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Your profile"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="happyTemplate">
+                <HorizontalStackLayout>
+                    <Label Text="Loading..." FontSize="20" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" />
+                </HorizontalStackLayout>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+
+        <VerticalStackLayout>
+            <HorizontalStackLayout HeightRequest="60">
+                <Border Margin="5" StrokeThickness="2">
+                    <Image Source="profileicon.png" Background="White"/>
+                </Border>
+                <Button Margin="0,0,0,0" 
+                    HeightRequest="40" 
+                    Text="Войти или зарегистрироваться" 
+                    TextColor="{StaticResource MediumViolet}"
+                    FontFamily="Futura"
+                    BackgroundColor="White"
+                    VerticalOptions="Center"
+                    FontAttributes="Bold"
+                    FontSize="17"/>
+            </HorizontalStackLayout>
+            <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"
+                 BackgroundColor="Gray"/>
+            <button:SfButton Margin="0,3,0,0"
+                            FontFamily="VeryBold"
+                            Stroke="Black" 
+                            StrokeThickness="3"
+                            FontSize="18"
+                            TextColor="Black"
+                            CornerRadius="0"
+                            ImageSize="20"
+                            HorizontalTextAlignment="Center"
+                            Text="Выйти из аккаунта"
+                            ImageSource="logout.png"
+                            ImageAlignment="End"
+                            Background="White"
+                            ShowIcon="True"
+                            Command="{Binding SignOutCommand}">
+            </button:SfButton>
+        </VerticalStackLayout>
+    </ContentPage.Content>
 </ContentPage>

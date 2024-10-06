@@ -13,173 +13,167 @@
              SizeChanged="OnSizeChanged"
              Title="LoginPage">
 
-    <Grid Padding="0,0,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid Padding="0,0,0,0" RowDefinitions="*">
         <tabView:SfTabView x:Name="TabView"
-                       Grid.Row="0"
-                       IndicatorWidthMode="Stretch">
+                          IndicatorWidthMode="Stretch"
+                           VerticalOptions="FillAndExpand">
             <tabView:SfTabView.Items>
                 <tabView:SfTabItem Header="Вход" IsEnabled="{Binding IsBusy}">
-                    <Grid>
-                        <ScrollView>
-                            <Grid  RowDefinitions="Auto,*">
-                                <VerticalStackLayout>
-                                    <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
-                                                               Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
+                    <ScrollView>
+                        <Grid RowDefinitions="Auto,*">
+                            <VerticalStackLayout>
+                                <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
+                                                                Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
 
-                                    <Frame CornerRadius="10" 
-                                           Margin="20,0,20,10"  
-                                           Padding="10" 
-                                           BackgroundColor="#e8c8db"
-                                           IsVisible="{Binding IsLoginError}">
-                                        <Label Text="{Binding LoginErrorMessage}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                    </Frame>
-                                </VerticalStackLayout>
+                                <Frame CornerRadius="10" 
+                                       Margin="20,0,20,10"  
+                                       Padding="10" 
+                                       BackgroundColor="#e8c8db"
+                                       IsVisible="{Binding IsLoginError}">
+                                    <Label Text="{Binding LoginErrorMessage}" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center" />
+                                </Frame>
+                            </VerticalStackLayout>
 
-                                <StackLayout Grid.Row="1">
-                                    <StackLayout Padding="20, 10, 20, 0">
-                                        <control:CustomEntry x:Name="LoginEmailEntry"
-                                                             Title="Email"    
-                                                             TextChanged="EmailTextChanged"
-                                                             Text="{Binding User.Email, Mode=TwoWay}"
-                                                             IsEnabled="{Binding IsBusy}"/>
+                            <StackLayout Grid.Row="1">
+                                <StackLayout Padding="20, 10, 20, 0">
+                                    <control:CustomEntry x:Name="LoginEmailEntry"
+                                                         Title="Email"    
+                                                         TextChanged="EmailTextChanged"
+                                                         Text="{Binding User.Email, Mode=TwoWay}"
+                                                         IsEnabled="{Binding IsBusy}"/>
 
-                                        <control:CustomEntry x:Name="LoginPasswordEntry"
-                                                             Title="Пароль"
-                                                             Margin="0, 20, 0, 0"
-                                                             IsPassword="True"
-                                                             TextChanged="LoginPasswordTextChanged"
-                                                             Text="{Binding User.Password, Mode=TwoWay}"
-                                                             IsEnabled="{Binding IsBusy}"/>
-                                    </StackLayout>
+                                    <control:CustomEntry x:Name="LoginPasswordEntry"
+                                                         Title="Пароль"
+                                                         Margin="0, 20, 0, 0"
+                                                         IsPassword="True"
+                                                         TextChanged="LoginPasswordTextChanged"
+                                                         Text="{Binding User.Password, Mode=TwoWay}"
+                                                         IsEnabled="{Binding IsBusy}"/>
+                                </StackLayout>
 
-                                    <Border HeightRequest="40"
-                                            WidthRequest="110"
-                                            HorizontalOptions="Start"
-                                            Margin="20,0,0,0"
-                                            StrokeThickness="0">
-                                        <button:SfButton Text="Забыли пароль?"
-                                                         Background="White"
-                                                         TextColor="{StaticResource MediumViolet}"
-                                                         HorizontalOptions="Center"
-                                                         VerticalOptions="Start"
-                                                         CornerRadius="0"
-                                                         HeightRequest="30"
-                                                         Margin="0, 0, 0, 0" BackgroundColor="#C0C0C0"
-                                                         IsEnabled="{Binding IsBusy}">
-                                        </button:SfButton>
-                                    </Border>
+                                <Border HeightRequest="40"
+                                        WidthRequest="110"
+                                        HorizontalOptions="Start"
+                                        Margin="20,0,0,0"
+                                        StrokeThickness="0">
+                                    <button:SfButton Text="Забыли пароль?"
+                                                      Background="White"
+                                                      TextColor="{StaticResource MediumViolet}"
+                                                      HorizontalOptions="Center"
+                                                      VerticalOptions="Start"
+                                                      CornerRadius="0"
+                                                      HeightRequest="30"
+                                                      Margin="0, 0, 0, 0" 
+                                                      BackgroundColor="#C0C0C0"
+                                                      IsEnabled="{Binding IsBusy}">
+                                    </button:SfButton>
+                                </Border>
 
-                                    <StackLayout Orientation="Vertical"
+                                <StackLayout Orientation="Vertical"
                                              Spacing="10"
                                              Margin="0,50,0,0">
-                                        <Button x:Name="LoginButton"
-                                                Text="Войти"
-                                                Margin="40, 0, 40, 0"
-                                                FontSize="14"
-                                                HeightRequest="35"
-                                                Padding="0, 0, 0, 2"
-                                                Clicked="LoginButtonClicked"
-                                                IsEnabled="{Binding IsBusy}">
-                                        </Button>
-                                        <button:SfButton Text="Войти как гость!"
-                                                         Margin="40, 0, 40, 0"
-                                                         FontSize="14"
-                                                         HeightRequest="35"
-                                                         Padding="0, 0, 0, 2"
-                                                         TextColor="{StaticResource MediumViolet}"
-                                                         Background="Transparent"
-                                                         Command="{Binding EnterAsGuestCommand}"
-                                                         IsEnabled="{Binding IsBusy}">
-                                        </button:SfButton>
-                                    </StackLayout>
+                                    <Button x:Name="LoginButton"
+                                            Text="Войти"
+                                            Margin="40, 0, 40, 0"
+                                            FontSize="14"
+                                            HeightRequest="35"
+                                            Padding="0, 0, 0, 2"
+                                            Clicked="LoginButtonClicked"
+                                            IsEnabled="{Binding IsBusy}">
+                                    </Button>
+                                    <button:SfButton Text="Войти как гость!"
+                                                      Margin="40, 0, 40, 0"
+                                                      FontSize="14"
+                                                      HeightRequest="35"
+                                                      Padding="0, 0, 0, 2"
+                                                      TextColor="{StaticResource MediumViolet}"
+                                                      Background="Transparent"
+                                                      Clicked="EnterAsGuest"
+                                                      IsEnabled="{Binding IsBusy}">
+                                    </button:SfButton>
                                 </StackLayout>
-                            </Grid>
-                        </ScrollView>
-                    </Grid>
+                            </StackLayout>
+                        </Grid>
+                    </ScrollView>
                 </tabView:SfTabItem>
 
-
                 <tabView:SfTabItem Header="Регистрация" IsEnabled="{Binding IsBusy}">
-                    <ContentView>
-                        <Grid>
-                            <ScrollView>
-                                <Grid RowDefinitions="Auto,*">
+                    <ScrollView VerticalOptions="FillAndExpand">
+                        <VerticalStackLayout>
+                            <VerticalStackLayout>
+                                <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
+                                                                      Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
 
-                                    <VerticalStackLayout>
-                                        <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
-                                                                         Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
+                                <Frame CornerRadius="10" 
+                                       Margin="20,0,20,10"  
+                                       Padding="10" 
+                                       BackgroundColor="#e8c8db"
+                                       IsVisible="{Binding IsRegisterError}">
+                                    <Label Text="{Binding RegisterErrorMessage}" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center" />
+                                </Frame>
+                            </VerticalStackLayout>
 
-                                        <Frame CornerRadius="10" 
-                                           Margin="20,0,20,10"  
-                                           Padding="10" 
-                                           BackgroundColor="#e8c8db"
-                                           IsVisible="{Binding IsRegisterError}">
-                                            <Label Text="{Binding RegisterErrorMessage}" HorizontalOptions="Center" VerticalOptions="Center" />
-                                        </Frame>
-                                    </VerticalStackLayout>
-                                    
-                                    <StackLayout Grid.Row="1">
-                                        <StackLayout Padding="20, 10, 20, 0">
-                                            <control:CustomEntry x:Name="RegisterEmailEntry"
-                                                                 Title="Email"
-                                                                 Margin="0, 20, 0, 0"
-                                                                 TextChanged="EmailTextChanged"
-                                                                 Text="{Binding NewUser.Email, Mode=TwoWay}"
-                                                                 IsEnabled="{Binding IsBusy}"></control:CustomEntry>
+                            <StackLayout Grid.Row="1">
+                                <StackLayout Padding="20, 10, 20, 0">
+                                    <control:CustomEntry x:Name="RegisterEmailEntry"
+                                                         Title="Email"
+                                                         Margin="0, 20, 0, 0"
+                                                         TextChanged="EmailTextChanged"
+                                                         Text="{Binding NewUser.Email, Mode=TwoWay}"
+                                                         IsEnabled="{Binding IsBusy}"/>
 
-                                            <control:CustomEntry x:Name="RegisterPasswordEntry"
-                                                                 Title="Пароль"
-                                                                 Margin="0, 20, 0, 0"
-                                                                 IsPassword="True"
-                                                                 TextChanged="RegisterPasswordTextChanged"
-                                                                 Text="{Binding NewUser.Password, Mode=TwoWay}"
-                                                                 IsEnabled="{Binding IsBusy}"></control:CustomEntry>
+                                    <control:CustomEntry x:Name="RegisterPasswordEntry"
+                                                         Title="Пароль"
+                                                         Margin="0, 20, 0, 0"
+                                                         IsPassword="True"
+                                                         TextChanged="RegisterPasswordTextChanged"
+                                                         Text="{Binding NewUser.Password, Mode=TwoWay}"
+                                                         IsEnabled="{Binding IsBusy}"/>
 
-                                            <Label x:Name="RegistrationLenght"
-                                                   TextColor="Black"
-                                                   Margin="0, 12, 0, 0"
-                                                   FontSize="12"
-                                                   Text="Минимум 8 символов"/>
-                                            <Label x:Name="RegistrationDigits"
-                                                   TextColor="Black"
-                                                   Margin="0, 4, 0, 0"
-                                                   FontSize="12"                                                  
-                                                   Text="Содержатся буквы"/>
-                                            <Label x:Name="RegistrationLetters"
-                                                   TextColor="Black"
-                                                   Margin="0, 4, 0, 0"
-                                                   FontSize="12"
-                                                   Text="Содержатся цифры"/>
+                                    <Label x:Name="RegistrationLenght"
+                                           TextColor="Black"
+                                           Margin="0, 12, 0, 0"
+                                           FontSize="12"
+                                           Text="Минимум 8 символов"/>
+                                    <Label x:Name="RegistrationDigits"
+                                           TextColor="Black"
+                                           Margin="0, 4, 0, 0"
+                                           FontSize="12"                                                  
+                                           Text="Содержатся буквы"/>
+                                    <Label x:Name="RegistrationLetters"
+                                           TextColor="Black"
+                                           Margin="0, 4, 0, 0"
+                                           FontSize="12"
+                                           Text="Содержатся цифры"/>
 
-                                            <control:CustomEntry x:Name="RegisterAllowPasswordEntry"
-                                                                 Title="Подтвердите пароль"
-                                                                 Margin="0, 20, 0, 0"
-                                                                 IsPassword="True"
-                                                                 TextChanged="AllowPasswordChanged"
-                                                                 IsEnabled="{Binding IsBusy}"></control:CustomEntry>
-                                        </StackLayout>
+                                    <control:CustomEntry x:Name="RegisterAllowPasswordEntry"
+                                                         Title="Подтвердите пароль"
+                                                         Margin="0, 20, 0, 0"
+                                                         IsPassword="True"
+                                                         TextChanged="AllowPasswordChanged"
+                                                         IsEnabled="{Binding IsBusy}"/>
+                                </StackLayout>
 
-                                        <StackLayout Orientation="Vertical"
-                                                     Spacing="10"
-                                                     Margin="0,50,0,0">
-                                            <Button x:Name="RegisterButton"
-                                                    Text="Зарегестрироваться"
-                                                    Margin="40, 0, 40, 0"
-                                                    FontSize="14"
-                                                    HeightRequest="35"
-                                                    Padding="0, 0, 0, 2"
-                                                    Clicked="RegistrationButtonClicked"
-                                                    IsEnabled="{Binding IsBusy}">
-                                            </Button>
-                                        </StackLayout>
-                                    </StackLayout>
-                                </Grid>
-                            </ScrollView>
-                        </Grid>
-                    </ContentView>
+                                <StackLayout Orientation="Vertical"
+                                             Spacing="10"
+                                             Margin="0,50,0,0">
+                                    <Button x:Name="RegisterButton"
+                                            Text="Зарегестрироваться"
+                                            Margin="40, 0, 40, 0"
+                                            FontSize="14"
+                                            HeightRequest="35"
+                                            Padding="0, 0, 0, 2"
+                                            Clicked="RegistrationButtonClicked"
+                                            IsEnabled="{Binding IsBusy}">
+                                    </Button>
+                                </StackLayout>
+                            </StackLayout>
+                        </VerticalStackLayout>
+                    </ScrollView>
                 </tabView:SfTabItem>
             </tabView:SfTabView.Items>
         </tabView:SfTabView>

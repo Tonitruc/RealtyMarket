@@ -79,8 +79,17 @@ namespace RealtyMarket.ViewModels
         public async Task EnterAsGuest()
         {
             IsBusy = true;
-            await SecureStorage.SetAsync("UserStatus", "Guest");
-            await Shell.Current.GoToAsync("//MainTabs");
+            SignInResultEnum result = await _authService.SignInAnonymousUserAsync();
+            if (result == SignInResultEnum.Ok)
+            {
+                IsLoginError = false;
+                await Shell.Current.GoToAsync("//MainTabs");
+            }
+            else if (result == SignInResultEnum.InValidError)
+            {
+                LoginErrorMessage = "Непредвиденная ошибка.";
+                IsLoginError = true;
+            }
             IsBusy = false;
         }
 
@@ -91,19 +100,19 @@ namespace RealtyMarket.ViewModels
 
             if (existUser == null)
             {
-                SingInResultEnum result = await _authService.RegisterUserAsync(NewUser.Email, NewUser.Password);
-                if (result == SingInResultEnum.Ok)
+                SignInResultEnum result = await _authService.RegisterUserAsync(NewUser.Email, NewUser.Password);
+                if (result == SignInResultEnum.Ok)
                 {
                     IsRegisterError = false;
                     await Shell.Current.GoToAsync("//MainTabs");
                     await _registeredUserRepository.Add(new() { Email = NewUser.Email, Password = NewUser.Password });
                 }
-                else if (result == SingInResultEnum.EmailIsBusy)
+                else if (result == SignInResultEnum.EmailIsBusy)
                 {
                     RegisterErrorMessage = "Email уже занят.";
                     IsRegisterError = true;
                 }
-                else if (result == SingInResultEnum.InValidError)
+                else if (result == SignInResultEnum.InValidError)
                 {
                     RegisterErrorMessage = "Непредвиденная ошибка.";
                     IsRegisterError = true;
@@ -125,18 +134,18 @@ namespace RealtyMarket.ViewModels
 
             if (existUser != null)
             {
-                SingInResultEnum result = await _authService.SignInUserAsync(User.Email, User.Password);
-                if (result == SingInResultEnum.Ok)
+                SignInResultEnum result = await _authService.SignInUserAsync(User.Email, User.Password);
+                if (result == SignInResultEnum.Ok)
                 {
                     IsLoginError = false;
                     await Shell.Current.GoToAsync("//MainTabs");
                 }
-                else if (result == SingInResultEnum.EmailNotExist)
+                else if (result == SignInResultEnum.EmailNotExist)
                 {
                     LoginErrorMessage = "Неверный пароль.";
                     IsLoginError = true;
                 }
-                else if (result == SingInResultEnum.InValidError)
+                else if (result == SignInResultEnum.InValidError)
                 {
                     LoginErrorMessage = "Непредвиденная ошибка.";
                     IsLoginError = true;

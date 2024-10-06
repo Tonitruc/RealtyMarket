@@ -38,6 +38,10 @@ namespace RealtyMarket.Repository
             catch (HttpRequestException ex) {
                 Console.WriteLine(ex.Message);
             }
+            catch(Exception)
+            {
+
+            }
 
             return null;
         }

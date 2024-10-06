@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Core.Platform;
+
 namespace RealtyMarket.Controls
 {
     public partial class CustomEntry : ContentView
@@ -132,6 +134,9 @@ namespace RealtyMarket.Controls
 
         private async void OnEntryFocused(object sender, FocusEventArgs e)
         {
+
+
+
             IsFocused = true;
 
             var translateTask = EntryName.TranslateTo(0, -15, 100, Easing.Linear);

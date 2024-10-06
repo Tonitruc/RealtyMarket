@@ -11,6 +11,6 @@ namespace RealtyMarket.Service
     {
         public const string Name = "RealtyMarket";
 
-        public static string BaseApiUri = "https://e165-2a0d-5600-41-d000-8b3b-d0e5-d0f8-cccc.ngrok-free.app/api";
+        public static string BaseApiUri = "https://5142-146-120-15-66.ngrok-free.app/api";
     }
 }
