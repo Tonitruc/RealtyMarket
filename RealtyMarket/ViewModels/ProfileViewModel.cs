@@ -1,5 +1,7 @@
-﻿using MvvmHelpers;
+﻿using Firebase.Auth;
+using MvvmHelpers;
 using MvvmHelpers.Commands;
+using RealtyMarket.Models;
 using RealtyMarket.Service;
 using System.Windows.Input;
 
@@ -9,16 +11,44 @@ namespace RealtyMarket.ViewModels
     {
         private readonly FirebaseAuthenticationService _authService;
 
-        public ICommand SignOutCommand { get; set; }
+        private readonly SecureStorageUserRepository _userRepository;
 
+        private bool _isRegisteredUser;
 
-        public ProfileViewModel(FirebaseAuthenticationService authService)
+        public bool IsRegisteredUser
         {
-            _authService = authService;
-            SignOutCommand = new MvvmHelpers.Commands.Command(SignOut);
+            get => _isRegisteredUser;
+            set => SetProperty(ref _isRegisteredUser, value);
         }
 
-        public async void SignOut()
+        public ICommand SignOutCommand { get; set; }
+
+        public UserInfo UserInfo { get; set; }
+
+        public ProfileViewModel(FirebaseAuthenticationService authService,
+            SecureStorageUserRepository userRepository)
+        {
+            _authService = authService;
+            SignOutCommand = new AsyncCommand(SignOut);
+            _userRepository = userRepository;
+        }
+
+        public async Task InitializeUserStateAsync()
+        {
+            string userState = await _userRepository.GetUserState();
+            if (userState == "Register")
+            {
+                IsRegisteredUser = true;
+                UserInfo = _userRepository.ReadUser().userInfo;
+            }
+            else
+            {
+                IsRegisteredUser = false;
+                UserInfo = new() { Email = "Unknown" };
+            }
+        }
+
+        public async Task SignOut()
         {
             _authService.SignOutUser();
             await Shell.Current.GoToAsync("//LoginPage");

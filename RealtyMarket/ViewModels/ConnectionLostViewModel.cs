@@ -43,11 +43,17 @@ namespace RealtyMarket.ViewModels
         public async Task ReturnToPageAsync()
         {
             IsLoading = true;
+
             if (_connectivityService.IsConnectedToInternet())
             {
-                await Shell.Current.GoToAsync($"{_returnPage}");
+                await Task.Run(async () =>
+                    await Shell.Current.GoToAsync($"{_returnPage}"));
             }
-            IsLoading = false;
+
+            Application.Current.Dispatcher.Dispatch(() =>
+            {
+                IsLoading = false;
+            });
         }
     }
 }

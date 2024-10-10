@@ -26,7 +26,7 @@ namespace RealtyMarket.Views
 
         public CatalogPageVewModel()
         {
-
+           
         }
     }
 }

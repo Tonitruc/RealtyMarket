@@ -12,5 +12,12 @@ namespace RealtyMarket.Views
 
             BindingContext = _profileViewModel = profileViewModel;
         }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            await _profileViewModel.InitializeUserStateAsync(); 
+        }
     }
 }

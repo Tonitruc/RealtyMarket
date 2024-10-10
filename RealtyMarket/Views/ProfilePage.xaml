@@ -5,38 +5,41 @@
              x:Class="RealtyMarket.Views.ProfilePage"
              Shell.NavBarIsVisible="False"
              xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
              x:DataType="viewmodels:ProfileViewModel"
              Title="ProfilePage">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <DataTemplate x:Key="happyTemplate">
-                <HorizontalStackLayout>
-                    <Label Text="Loading..." FontSize="20" HorizontalOptions="Start" VerticalOptions="Center" TextColor="White" />
-                </HorizontalStackLayout>
-            </DataTemplate>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    <ContentPage.Content>
+    <VerticalStackLayout>
+        <HorizontalStackLayout HeightRequest="60">
+            <Border Margin="5" StrokeThickness="2">
+                <Image Source="profileicon.png" Background="White"/>
+            </Border>
+            <control:GrButton Margin="0" 
+                                  IsVisible="{Binding IsRegisteredUser, Converter={StaticResource InverseBooleanConverter}}"
+                                  HeightRequest="40" 
+                                  WidthRequest="300"
+                                  Padding="0"
+                                  Text="Войти или зарегистрироваться" 
+                                  TextColor="{StaticResource MediumViolet}"
+                                  BackgroundColor="White"
+                                  VerticalOptions="Center"
+                                  FontSize="17"/>
 
-        <VerticalStackLayout>
-            <HorizontalStackLayout HeightRequest="60">
-                <Border Margin="5" StrokeThickness="2">
-                    <Image Source="profileicon.png" Background="White"/>
-                </Border>
-                <Button Margin="0,0,0,0" 
-                    HeightRequest="40" 
-                    Text="Войти или зарегистрироваться" 
-                    TextColor="{StaticResource MediumViolet}"
-                    FontFamily="Futura"
-                    BackgroundColor="White"
-                    VerticalOptions="Center"
-                    FontAttributes="Bold"
-                    FontSize="17"/>
-            </HorizontalStackLayout>
-            <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"
+            <control:GrButton Margin="0" 
+                              IsVisible="{Binding IsRegisteredUser}"
+                              HeightRequest="40" 
+                              WidthRequest="300"
+                              Padding="0"
+                              Text="{Binding UserInfo.Email}" 
+                              TextColor="{StaticResource MediumViolet}"
+                              BackgroundColor="White"
+                              VerticalOptions="Center"
+                              FontSize="17"/>
+
+        </HorizontalStackLayout>
+        <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"
                  BackgroundColor="Gray"/>
-            <button:SfButton Margin="0,3,0,0"
+        <button:SfButton Margin="0,3,0,0"
                             FontFamily="VeryBold"
                             Stroke="Black" 
                             StrokeThickness="3"
@@ -51,7 +54,6 @@
                             Background="White"
                             ShowIcon="True"
                             Command="{Binding SignOutCommand}">
-            </button:SfButton>
-        </VerticalStackLayout>
-    </ContentPage.Content>
+        </button:SfButton>
+    </VerticalStackLayout>
 </ContentPage>

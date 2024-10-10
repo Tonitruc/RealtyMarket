@@ -36,21 +36,28 @@ namespace RealtyMarket
 
         private async Task CheckUserAuthenticationAsync()
         {
-            bool isLoggedIn = _secureStorageUserRepository.UserExists();
-
-            if (isLoggedIn)
+            if(!_connectivityService.IsConnectedToInternet())
             {
-                await Dispatcher.DispatchAsync(() =>
-                {
-                    GoToAsync("//MainTabs");
-                });
+                await GoToAsync($"//NoInternetPage?ReturnPage=//LoginPage");
             }
             else
             {
-                await Dispatcher.DispatchAsync(() =>
+                bool isLoggedIn = _secureStorageUserRepository.UserExists();
+
+                if (isLoggedIn)
                 {
-                    GoToAsync("//LoginRegisterPage");
-                });
+                    await Dispatcher.DispatchAsync(() =>
+                    {
+                        GoToAsync("//MainTabs");
+                    });
+                }
+                else
+                {
+                    await Dispatcher.DispatchAsync(() =>
+                    {
+                        GoToAsync("//LoginRegisterPage");
+                    });
+                }
             }
         }
     }

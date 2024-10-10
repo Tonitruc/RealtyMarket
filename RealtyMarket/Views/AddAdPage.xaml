@@ -2,12 +2,134 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RealtyMarket.Views.AddAdPage"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:local="clr-namespace:RealtyMarket.Views"
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:dataForm="clr-namespace:Syncfusion.Maui.DataForm;assembly=Syncfusion.Maui.DataForm"
+             xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              Shell.NavBarIsVisible="False"
              Title="AddAdPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Add ad page"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ContentPage.BindingContext>
+        <viewmodels:AddAdViewModel/>
+    </ContentPage.BindingContext>
+
+    <ScrollView Scrolled="ScrollViewScrolled">
+        <Grid RowDefinitions="50,Auto,100,auto">
+        <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}">
+            <ImageButton Source="prev_page_arrow.png"
+                         HeightRequest="25"
+                         Margin="10,0,0,0"/>
+            <Label Grid.Column="1" Text="Добавить объявление"
+                   VerticalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   Margin="15,0,0,0"
+                   TextColor="White"/>
+        </Grid>
+        <Grid Margin="0,5,0,10"
+              Grid.Row="1">
+            <Label Text="Добавить фото"
+                   FontSize="18"
+                   Margin="10,0,0,0"
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"/>
+            <Image Source="gallery.png"
+                   HeightRequest="25"
+                   HorizontalOptions="End"
+                   Margin="0,0,80,0">
+                   
+            </Image>
+            <Label Text="{Binding AmountPhotos, StringFormat='{0} из 10'}"
+                   FontSize="18"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End"
+                   Margin="0,0,10,0"
+                   FontAttributes="Bold"/>
+        </Grid>
+        <syncfusion:SfListView x:Name="listView" Orientation="Horizontal"
+                               ItemsSource="{Binding Photos}"
+                               ItemSize="105"
+                               Grid.Row="2"
+                               ScrollBarVisibility="Never">
+            <syncfusion:SfListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Frame HeightRequest="100" 
+                           WidthRequest="100" 
+                           IsVisible="{Binding IsFirst}"
+                           BackgroundColor="White">
+                            <Border StrokeThickness="3" HeightRequest="100" WidthRequest="100"
+                                Stroke="{StaticResource DarkViolet}">
+                                <buttons:SfButton HeightRequest="100" 
+                                              WidthRequest="100" 
+                                              ImageSource="add_photo.png" 
+                                              ShowIcon="True"
+                                              ImageSize="50"
+                                              ImageAlignment="Default"
+                                              Background="White"></buttons:SfButton>
+                            </Border>
+                        </Frame>
+                        <Frame HeightRequest="100" 
+                           WidthRequest="100" 
+                           IsVisible="{Binding IsFirst, Converter={StaticResource InverseBooleanConverter}}"
+                           BackgroundColor="White">
+                            <Border StrokeThickness="2" HeightRequest="100" WidthRequest="100"
+                                Stroke="LightGray">
+                                <Grid>
+                                    <Image HeightRequest="100" 
+                                              WidthRequest="100" 
+                                              Source="{Binding ImageSource}" 
+                                              Background="White"/>
+                                    <ImageButton Margin="70,0,0,70"
+                                                 IsVisible="{Binding IsPhoto}"
+                                                 CornerRadius="2"
+                                                 Opacity="0.8"
+                                                 Source="minus.png"
+                                                 HeightRequest="20" 
+                                                 WidthRequest="25" 
+                                                 Background="LightGray"/>
+                                </Grid>
+                            </Border>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
+
+
+            <VerticalStackLayout Grid.Row="3">
+                <VerticalStackLayout x:Name="MainLayout" Margin="10,20,10,0">
+                    <control:GrEntry x:Name="NameEntry" 
+                                     Title="Название"
+                                     MaxLength="50"/>
+                    <editors:SfComboBox x:Name="CategoryComboBox"
+                                    ItemsSource="{Binding RealtyCategories}"
+                                    SelectionChanged="SfComboBox_SelectionChanged">
+                    </editors:SfComboBox>
+                </VerticalStackLayout>
+                <VerticalStackLayout x:Name="MainInputLayout" 
+                                     IsVisible="True">
+                    <Entry x:Name="NumberOfRoomsEntry" 
+                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=House}" 
+                       Placeholder="Количество комнат" />
+                    <Entry x:Name="SquareFootageEntry" 
+                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=House}" 
+                       Placeholder="Площадь" />
+                    <Entry x:Name="FloorNumberEntry" 
+                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Apartment}" 
+                       Placeholder="Этаж" />
+                    <Entry x:Name="NumberOfBedroomsEntry" 
+                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Apartment}" 
+                       Placeholder="Количество спален" />
+                    <Entry x:Name="SizeEntry" 
+                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Land}" 
+                       Placeholder="Размер" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+    </Grid>
+        </ScrollView>
 </ContentPage>

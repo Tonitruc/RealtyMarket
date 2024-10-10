@@ -25,12 +25,34 @@ namespace RealtyMarket
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("NexaDemo-Bold.ttf", "NexaDemoBold");
                     fonts.AddFont("Pavelt.ttf", "Pavelt");
                     fonts.AddFont("FuturaPrimer-Regular.ttf", "Futura");
                     fonts.AddFont("VeryBold-Bold.ttf", "VeryBold");
+
+                    //Nexa Fonts
+                    fonts.AddFont("Nexa Bold.ttf", "NexaBold");
+                    fonts.AddFont("Nexa Light.ttf", "NexaLight");
+                    fonts.AddFont("NexaDemo-Light.ttf", "NexaDemoLight");
+                    fonts.AddFont("NexaTextDemo-Bold.ttf", "NexaTextDemoBold");
+                    fonts.AddFont("NexaTextDemo-Light.ttf", "NexaTextDemoLight");
+                    fonts.AddFont("NexaText-Trial-Black.ttf", "NexaTextTrialBlack");
+                    fonts.AddFont("NexaText-Trial-BlackItalic.ttf", "NexaTextTrialBlackItalic");
+                    fonts.AddFont("NexaText-Trial-Book.ttf", "NexaTextTrialBook");
+                    fonts.AddFont("NexaText-Trial-BookItalic.ttf", "NexaTextTrialBookItalic");
+                    fonts.AddFont("NexaText-Trial-ExtraBold.ttf", "NexaTextTrialExtraBold");
+                    fonts.AddFont("NexaText-Trial-ExtraBoldItalic.ttf", "NexaTextTrialExtraBoldItalic");
+                    fonts.AddFont("NexaText-Trial-Heavy.ttf", "NexaTextTrialHeavy");
+                    fonts.AddFont("NexaText-Trial-HeavyItalic.ttf", "NexaTextTrialHeavyItalic");
+                    fonts.AddFont("Nexa-Trial-Bold.ttf", "NexaTrialBold");
+                    fonts.AddFont("Nexa-Trial-Book.ttf", "NexaTrialBook");
+                    fonts.AddFont("Nexa-Trial-ExtraBold.ttf", "NexaTrialExtraBold");
+                    fonts.AddFont("Nexa-Trial-ExtraBoldItalic.ttf", "NexaTrialExtraBoldItalic");
+                    fonts.AddFont("Nexa-Trial-Heavy.ttf", "NexaTrialHeavy");
+                    fonts.AddFont("Nexa-Trial-HeavyItalic.ttf", "NexaTrialHeavyItalic");
                 });
 
+            string key = "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1NpR2BGfV5ycEVFalhZTnZcUj0eQnxTdEFjUH1WcH1WQ2BYUEV1WA==";
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(key);
             builder.Services.AddSingleton<IUserRepository, SecureStorageUserRepository>();
 
             builder.Services.AddSingleton(services => new FirebaseAuthClient(new FirebaseAuthConfig()

@@ -1,5 +1,5 @@
+using Microsoft.Maui.Controls;
 using RealtyMarket.Controls;
-using System.Collections.ObjectModel;
 using RealtyMarket.Service;
 using RealtyMarket.ViewModels;
 
@@ -22,9 +22,47 @@ namespace RealtyMarket.Views
             BindingContext = _loginRegisterViewModel;
         }
 
+        private async void RegisterPageButtonClicked(object sender, EventArgs e)
+        {
+            App.Current.Resources.TryGetValue("Primary", out var colorvalue);
+
+            LoginPageButton.TextColor = Colors.Black;
+            RegisterPageButton.TextColor = (Color)colorvalue;
+
+            RegisterPage.TranslationX = Width;
+            RegisterPage.IsVisible = true;
+
+            var translateBoxViewTask = SelectBoxView.TranslateTo(SelectBoxView.Width, 0, 200, Easing.Linear);
+            var translateLoginPageTask = LoginPage.TranslateTo(-Width, 0, 200, Easing.Linear);
+            var translateRegisterPageTask = RegisterPage.TranslateTo(0, 0, 200, Easing.Linear);
+
+            await Task.WhenAll(translateBoxViewTask, translateLoginPageTask, translateRegisterPageTask);
+
+            LoginPage.IsVisible = false;
+        }
+
+        private async void LoginPageButtonClicked(object sender, EventArgs e)
+        {
+            App.Current.Resources.TryGetValue("Primary", out var colorvalue);
+
+            RegisterPageButton.TextColor = Colors.Black;
+            LoginPageButton.TextColor = (Color)colorvalue;
+
+            LoginPage.TranslationX = -Width;
+            LoginPage.IsVisible = true;
+
+            var translateBoxViewTask = SelectBoxView.TranslateTo(0, 0, 200, Easing.Linear);
+            var translateLoginPageTask = LoginPage.TranslateTo(0, 0, 200, Easing.Linear);
+            var translateRegisterPageTask = RegisterPage.TranslateTo(Width, 0, 200, Easing.Linear);
+
+            await Task.WhenAll(translateBoxViewTask, translateLoginPageTask, translateRegisterPageTask);
+
+            RegisterPage.IsVisible = false;
+        }
+
         private void EmailTextChanged(object sender, EventArgs e)
         {
-            if(sender is CustomEntry entry)
+            if (sender is GrEntry entry)
             {
                 string email = entry.Text;
 
@@ -54,7 +92,7 @@ namespace RealtyMarket.Views
                 LoginPasswordEntry.IsError = true;
                 LoginPasswordEntry.ErrorText = "Поле не может быть пустым";
             }
-            else if(password.Length < 8)
+            else if (password.Length < 8)
             {
                 LoginPasswordEntry.IsError = true;
                 LoginPasswordEntry.ErrorText = "Минимум 8 символов.";
@@ -95,7 +133,7 @@ namespace RealtyMarket.Views
             string allowPassword = RegisterAllowPasswordEntry.Text;
             string password = RegisterPasswordEntry.Text;
 
-            if (!allowPassword.Equals(password))
+            if (!allowPassword.Equals(password) || string.IsNullOrEmpty(password))
             {
                 RegisterAllowPasswordEntry.ErrorText = "Пароли должны совпадать";
                 RegisterAllowPasswordEntry.IsError = true;
@@ -134,22 +172,6 @@ namespace RealtyMarket.Views
         public void EnterAsGuest(object sender, EventArgs e)
         {
             _loginRegisterViewModel.EnterAsGuestCommand.Execute(this);
-        }
-
-        private void OnSizeChanged(object sender, EventArgs e)
-        {
-            bool isLandscape = (Width > Height);
-
-            int fontSize = isLandscape ? 20 : 13;
-
-            ObservableCollection<RegistrationAdvantage> items = [
-                    new() { Text = "Возможность публикации объявлений.", FontSize = fontSize},
-                new() { Text = "Личный кабинет.", FontSize = fontSize},
-                new() { Text = "Избранное и история.", FontSize = fontSize}
-                ];
-
-            LoginAdvanatages.ItemsSource = items;
-            RegisterAdvantages.ItemsSource = items;
         }
     }
 }

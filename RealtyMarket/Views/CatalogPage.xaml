@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:RealtyMarket.Views" 
              x:Class="RealtyMarket.Views.CatalogPage"
              xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
              Shell.NavBarIsVisible="False"
              Title="CatalogPage">
 
@@ -12,8 +13,16 @@
     </ContentPage.BindingContext>
 
     <VerticalStackLayout>
-        <control:CustomEntry x:Name="Fuck" Margin="0,100,0,0" Title="Тест" Text="{Binding Text} " IsPassword="true">
-
-        </control:CustomEntry>
+        <control:GrButton IsBusy="False"
+                          LoadingText="Загрузка..."
+                          HeightRequest="70"
+                          WidthRequest="100"
+                          BackgroundColor="{StaticResource DarkViolet}"
+                          IsEnabled="True"
+                          TextColor="White"
+                          CornerRadius="100"
+                          FontSize="18">
+                          
+        </control:GrButton>
     </VerticalStackLayout>
 </ContentPage>

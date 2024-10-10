@@ -1,181 +1,183 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:dataform="clr-namespace:Syncfusion.Maui.DataForm;assembly=Syncfusion.Maui.DataForm"
-             xmlns:dataForm="clr-namespace:Syncfusion.Maui.DataForm;assembly=Syncfusion.Maui.DataForm"
-             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
-             xmlns:busy="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
-             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
              xmlns:local="clr-namespace:RealtyMarket.Views"
              xmlns:control="clr-namespace:RealtyMarket.Controls"
              x:DataType="viewmodels:LoginRegisterViewModel"
              x:Class="RealtyMarket.Views.LoginRegisterPage"
-             SizeChanged="OnSizeChanged"
              Title="LoginPage">
 
-    <Grid Padding="0,0,0,0" RowDefinitions="*">
-        <tabView:SfTabView x:Name="TabView"
-                          IndicatorWidthMode="Stretch"
-                           VerticalOptions="FillAndExpand">
-            <tabView:SfTabView.Items>
-                <tabView:SfTabItem Header="Вход" IsEnabled="{Binding IsBusy}">
-                    <ScrollView>
-                        <Grid RowDefinitions="Auto,*">
-                            <VerticalStackLayout>
-                                <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
-                                                                Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
+    <Grid RowDefinitions="50,2,*" Margin="0">
+        <HorizontalStackLayout HeightRequest="50">
+            <control:GrButton x:Name="LoginPageButton" Text="Вход" BackgroundColor="White" EffectColor="LightGray" TextColor="Black" HeightRequest="50"
+                              Clicked="LoginPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}"/>
+            <control:GrButton x:Name="RegisterPageButton" Text="Регистрация" BackgroundColor="White" EffectColor="LightGray" TextColor="Black"
+                              Clicked="RegisterPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}"/>
+        </HorizontalStackLayout>
+        <BoxView x:Name="SelectBoxView" Grid.Row="1" HeightRequest="2" WidthRequest="{Binding Source={x:Reference LoginPageButton}, Path=Width}" 
+                 Color="{StaticResource DarkViolet}" HorizontalOptions="Start"></BoxView>
 
-                                <Frame CornerRadius="10" 
-                                       Margin="20,0,20,10"  
-                                       Padding="10" 
-                                       BackgroundColor="#e8c8db"
-                                       IsVisible="{Binding IsLoginError}">
-                                    <Label Text="{Binding LoginErrorMessage}" 
-                                           HorizontalOptions="Center" 
-                                           VerticalOptions="Center" />
-                                </Frame>
-                            </VerticalStackLayout>
+        <ContentView x:Name="LoginPage" Grid.Row="2">
+            <ScrollView>
+                <Grid RowDefinitions="Auto,*">
+                    <VerticalStackLayout>
+                        <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
+                                                             Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
 
-                            <StackLayout Grid.Row="1">
-                                <StackLayout Padding="20, 10, 20, 0">
-                                    <control:CustomEntry x:Name="LoginEmailEntry"
-                                                         Title="Email"    
-                                                         TextChanged="EmailTextChanged"
-                                                         Text="{Binding User.Email, Mode=TwoWay}"
-                                                         IsEnabled="{Binding IsBusy}"/>
+                        <Frame CornerRadius="10" 
+                               Margin="20,0,20,10"  
+                               Padding="10" 
+                               BackgroundColor="#e8c8db"
+                               IsVisible="{Binding IsLoginError}">
+                            <Label Text="{Binding LoginErrorMessage}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center"/>
+                        </Frame>
+                    </VerticalStackLayout>
 
-                                    <control:CustomEntry x:Name="LoginPasswordEntry"
-                                                         Title="Пароль"
-                                                         Margin="0, 20, 0, 0"
-                                                         IsPassword="True"
-                                                         TextChanged="LoginPasswordTextChanged"
-                                                         Text="{Binding User.Password, Mode=TwoWay}"
-                                                         IsEnabled="{Binding IsBusy}"/>
-                                </StackLayout>
+                    <StackLayout Grid.Row="1">
+                        <StackLayout Padding="20, 10, 20, 0">
+                            <control:GrEntry x:Name="LoginEmailEntry"
+                                             Title="Email"    
+                                             TextChanged="EmailTextChanged"
+                                             Text="{Binding User.Email, Mode=TwoWay}"
+                                             IsEnabled="{Binding IsBusy}"/>
 
-                                <Border HeightRequest="40"
-                                        WidthRequest="110"
-                                        HorizontalOptions="Start"
-                                        Margin="20,0,0,0"
-                                        StrokeThickness="0">
-                                    <button:SfButton Text="Забыли пароль?"
-                                                      Background="White"
-                                                      TextColor="{StaticResource MediumViolet}"
-                                                      HorizontalOptions="Center"
-                                                      VerticalOptions="Start"
-                                                      CornerRadius="0"
-                                                      HeightRequest="30"
-                                                      Margin="0, 0, 0, 0" 
-                                                      BackgroundColor="#C0C0C0"
-                                                      IsEnabled="{Binding IsBusy}">
-                                    </button:SfButton>
-                                </Border>
+                            <control:GrEntry x:Name="LoginPasswordEntry"
+                                             Title="Пароль"
+                                             Margin="0, 20, 0, 0"
+                                             IsPassword="True"
+                                             TextChanged="LoginPasswordTextChanged"
+                                             Text="{Binding User.Password, Mode=TwoWay}"
+                                             IsEnabled="{Binding IsBusy}"/>
+                        </StackLayout>
 
-                                <StackLayout Orientation="Vertical"
-                                             Spacing="10"
-                                             Margin="0,50,0,0">
-                                    <Button x:Name="LoginButton"
-                                            Text="Войти"
-                                            Margin="40, 0, 40, 0"
-                                            FontSize="14"
-                                            HeightRequest="35"
-                                            Padding="0, 0, 0, 2"
-                                            Clicked="LoginButtonClicked"
-                                            IsEnabled="{Binding IsBusy}">
-                                    </Button>
-                                    <button:SfButton Text="Войти как гость!"
-                                                      Margin="40, 0, 40, 0"
-                                                      FontSize="14"
-                                                      HeightRequest="35"
-                                                      Padding="0, 0, 0, 2"
-                                                      TextColor="{StaticResource MediumViolet}"
-                                                      Background="Transparent"
-                                                      Clicked="EnterAsGuest"
-                                                      IsEnabled="{Binding IsBusy}">
-                                    </button:SfButton>
-                                </StackLayout>
-                            </StackLayout>
-                        </Grid>
-                    </ScrollView>
-                </tabView:SfTabItem>
+                        <control:GrButton Text="Забыли пароль?"
+                                          BackgroundColor="White"
+                                          TextColor="{StaticResource MediumViolet}"
+                                          HorizontalOptions="Start"
+                                          VerticalOptions="Start"
+                                          Padding="0"
+                                          CornerRadius="0"
+                                          WidthRequest="120"
+                                          EffectColor="LightGray"
+                                          HeightRequest="30"
+                                          Margin="15,0,0,0" 
+                                          IsEnabled="{Binding IsBusy}">
+                        </control:GrButton>
 
-                <tabView:SfTabItem Header="Регистрация" IsEnabled="{Binding IsBusy}">
-                    <ScrollView VerticalOptions="FillAndExpand">
-                        <VerticalStackLayout>
-                            <VerticalStackLayout>
-                                <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
-                                                                      Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
+                        <StackLayout Orientation="Vertical"
+                                     Spacing="10"
+                                     Margin="0,50,0,0">
+                            <control:GrButton x:Name="LoginButton"
+                                              FontSize="24"
+                                              Text="Войти"
+                                              TextColor="White"
+                                              EffectColor="White"
+                                              BackgroundColor="{StaticResource DarkViolet}"
+                                              Margin="40, 0, 40, 0"
+                                              HeightRequest="40"
+                                              WidthRequest="200"
+                                              Padding="0, 0, 0, 2"
+                                              Clicked="LoginButtonClicked"
+                                              LoadingText="Загрузка..."
+                                              IsBusy="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                            </control:GrButton>
+                            <control:GrButton Text="Войти как гость!"
+                                              Margin="40, 0, 40, 0"
+                                              FontSize="14"
+                                              HeightRequest="35"
+                                              Padding="0, 0, 0, 2"
+                                              TextColor="{StaticResource MediumViolet}"
+                                              Background="Transparent"
+                                              Clicked="EnterAsGuest"
+                                              IsEnabled="{Binding IsBusy}">
+                            </control:GrButton>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+            </ScrollView>
+        </ContentView>
 
-                                <Frame CornerRadius="10" 
-                                       Margin="20,0,20,10"  
-                                       Padding="10" 
-                                       BackgroundColor="#e8c8db"
-                                       IsVisible="{Binding IsRegisterError}">
-                                    <Label Text="{Binding RegisterErrorMessage}" 
-                                           HorizontalOptions="Center" 
-                                           VerticalOptions="Center" />
-                                </Frame>
-                            </VerticalStackLayout>
+        <ContentView x:Name="RegisterPage" Grid.Row="2" IsVisible="False">
+            <ScrollView>
+                <VerticalStackLayout>
+                    <VerticalStackLayout>
+                        <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
+                                                             Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
 
-                            <StackLayout Grid.Row="1">
-                                <StackLayout Padding="20, 10, 20, 0">
-                                    <control:CustomEntry x:Name="RegisterEmailEntry"
-                                                         Title="Email"
-                                                         Margin="0, 20, 0, 0"
-                                                         TextChanged="EmailTextChanged"
-                                                         Text="{Binding NewUser.Email, Mode=TwoWay}"
-                                                         IsEnabled="{Binding IsBusy}"/>
+                        <Frame CornerRadius="10" 
+                               Margin="20,0,20,10"  
+                               Padding="10" 
+                               BackgroundColor="#e8c8db"
+                               IsVisible="{Binding IsRegisterError}">
+                            <Label Text="{Binding RegisterErrorMessage}" 
+                                   HorizontalOptions="Center" 
+                                   VerticalOptions="Center" />
+                        </Frame>
+                    </VerticalStackLayout>
 
-                                    <control:CustomEntry x:Name="RegisterPasswordEntry"
-                                                         Title="Пароль"
-                                                         Margin="0, 20, 0, 0"
-                                                         IsPassword="True"
-                                                         TextChanged="RegisterPasswordTextChanged"
-                                                         Text="{Binding NewUser.Password, Mode=TwoWay}"
-                                                         IsEnabled="{Binding IsBusy}"/>
+                    <StackLayout Grid.Row="1">
+                        <StackLayout Padding="20, 10, 20, 0">
+                            <control:GrEntry x:Name="RegisterEmailEntry"
+                                             Title="Email"
+                                             Margin="0, 20, 0, 0"
+                                             TextChanged="EmailTextChanged"
+                                             Text="{Binding NewUser.Email, Mode=TwoWay}"
+                                             IsEnabled="{Binding IsBusy}"/>
 
-                                    <Label x:Name="RegistrationLenght"
-                                           TextColor="Black"
-                                           Margin="0, 12, 0, 0"
-                                           FontSize="12"
-                                           Text="Минимум 8 символов"/>
-                                    <Label x:Name="RegistrationDigits"
-                                           TextColor="Black"
-                                           Margin="0, 4, 0, 0"
-                                           FontSize="12"                                                  
-                                           Text="Содержатся буквы"/>
-                                    <Label x:Name="RegistrationLetters"
-                                           TextColor="Black"
-                                           Margin="0, 4, 0, 0"
-                                           FontSize="12"
-                                           Text="Содержатся цифры"/>
+                            <control:GrEntry x:Name="RegisterPasswordEntry"
+                                             Title="Пароль"
+                                             Margin="0, 20, 0, 0"
+                                             IsPassword="True"
+                                             TextChanged="RegisterPasswordTextChanged"
+                                             Text="{Binding NewUser.Password, Mode=TwoWay}"
+                                             IsEnabled="{Binding IsBusy}"/>
 
-                                    <control:CustomEntry x:Name="RegisterAllowPasswordEntry"
-                                                         Title="Подтвердите пароль"
-                                                         Margin="0, 20, 0, 0"
-                                                         IsPassword="True"
-                                                         TextChanged="AllowPasswordChanged"
-                                                         IsEnabled="{Binding IsBusy}"/>
-                                </StackLayout>
+                            <Label x:Name="RegistrationLenght"
+                                   TextColor="Black"
+                                   Margin="0, 12, 0, 0"
+                                   FontSize="12"
+                                   Text="Минимум 8 символов"/>
+                            <Label x:Name="RegistrationDigits"
+                                   TextColor="Black"
+                                   Margin="0, 4, 0, 0"
+                                   FontSize="12"                                                  
+                                   Text="Содержатся буквы"/>
+                            <Label x:Name="RegistrationLetters"
+                                   TextColor="Black"
+                                   Margin="0, 4, 0, 0"
+                                   FontSize="12"
+                                   Text="Содержатся цифры"/>
 
-                                <StackLayout Orientation="Vertical"
-                                             Spacing="10"
-                                             Margin="0,50,0,0">
-                                    <Button x:Name="RegisterButton"
-                                            Text="Зарегестрироваться"
-                                            Margin="40, 0, 40, 0"
-                                            FontSize="14"
-                                            HeightRequest="35"
-                                            Padding="0, 0, 0, 2"
-                                            Clicked="RegistrationButtonClicked"
-                                            IsEnabled="{Binding IsBusy}">
-                                    </Button>
-                                </StackLayout>
-                            </StackLayout>
-                        </VerticalStackLayout>
-                    </ScrollView>
-                </tabView:SfTabItem>
-            </tabView:SfTabView.Items>
-        </tabView:SfTabView>
+                            <control:GrEntry x:Name="RegisterAllowPasswordEntry"
+                                             Title="Подтвердите пароль"
+                                             Margin="0, 20, 0, 0"
+                                             IsPassword="True"
+                                             TextChanged="AllowPasswordChanged"
+                                             IsEnabled="{Binding IsBusy}"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Vertical"
+                                     Spacing="10"
+                                     Margin="0,50,0,0">
+                            <control:GrButton x:Name="RegisterButton"
+                                              Text="Зарегестрироваться"
+                                              TextColor="White"
+                                              EffectColor="White"
+                                              BackgroundColor="{StaticResource DarkViolet}"
+                                              Margin="40, 0, 40, 0"
+                                              HeightRequest="45"
+                                              WidthRequest="200"
+                                              Padding="0, 0, 0, 2"
+                                              LoadingText="Загрузка..."
+                                              Clicked="RegistrationButtonClicked"
+                                              IsBusy="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                            </control:GrButton>
+                        </StackLayout>
+                    </StackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+        </ContentView>
     </Grid>
 </ContentPage>
