@@ -7,9 +7,9 @@
              xmlns:control="clr-namespace:RealtyMarket.Controls"
              xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
-             xmlns:dataForm="clr-namespace:Syncfusion.Maui.DataForm;assembly=Syncfusion.Maui.DataForm"
              xmlns:inputLayout="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:chip="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              Shell.NavBarIsVisible="False"
              Title="AddAdPage">
 
@@ -17,9 +17,9 @@
         <viewmodels:AddAdViewModel/>
     </ContentPage.BindingContext>
 
-    <ScrollView Scrolled="ScrollViewScrolled">
-        <Grid RowDefinitions="50,Auto,100,auto">
-        <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}">
+    <Grid RowDefinitions="*">
+        <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+              HeightRequest="50" VerticalOptions="Start">
             <ImageButton Source="prev_page_arrow.png"
                          HeightRequest="25"
                          Margin="10,0,0,0"/>
@@ -30,61 +30,63 @@
                    Margin="15,0,0,0"
                    TextColor="White"/>
         </Grid>
-        <Grid Margin="0,5,0,10"
+        <ScrollView Scrolled="ScrollViewScrolled" Grid.Row="0">
+            <Grid RowDefinitions="50,Auto,100,auto">
+                <Grid Margin="0,5,0,10"
               Grid.Row="1">
-            <Label Text="Добавить фото"
+                    <Label Text="Добавить фото"
                    FontSize="18"
                    Margin="10,0,0,0"
                    VerticalOptions="Center"
                    FontAttributes="Bold"/>
-            <Image Source="gallery.png"
+                    <Image Source="gallery.png"
                    HeightRequest="25"
                    HorizontalOptions="End"
                    Margin="0,0,80,0">
-                   
-            </Image>
-            <Label Text="{Binding AmountPhotos, StringFormat='{0} из 10'}"
+
+                    </Image>
+                    <Label Text="{Binding AmountPhotos, StringFormat='{0} из 10'}"
                    FontSize="18"
                    VerticalOptions="Center"
                    HorizontalOptions="End"
                    Margin="0,0,10,0"
                    FontAttributes="Bold"/>
-        </Grid>
-        <syncfusion:SfListView x:Name="listView" Orientation="Horizontal"
+                </Grid>
+                <syncfusion:SfListView x:Name="listView" Orientation="Horizontal"
                                ItemsSource="{Binding Photos}"
                                ItemSize="105"
                                Grid.Row="2"
                                ScrollBarVisibility="Never">
-            <syncfusion:SfListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Frame HeightRequest="100" 
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Frame HeightRequest="100" 
                            WidthRequest="100" 
                            IsVisible="{Binding IsFirst}"
                            BackgroundColor="White">
-                            <Border StrokeThickness="3" HeightRequest="100" WidthRequest="100"
+                                    <Border StrokeThickness="3" HeightRequest="100" WidthRequest="100"
                                 Stroke="{StaticResource DarkViolet}">
-                                <buttons:SfButton HeightRequest="100" 
+                                        <buttons:SfButton HeightRequest="100" 
                                               WidthRequest="100" 
                                               ImageSource="add_photo.png" 
                                               ShowIcon="True"
                                               ImageSize="50"
                                               ImageAlignment="Default"
                                               Background="White"></buttons:SfButton>
-                            </Border>
-                        </Frame>
-                        <Frame HeightRequest="100" 
+                                    </Border>
+                                </Frame>
+                                <Frame HeightRequest="100" 
                            WidthRequest="100" 
                            IsVisible="{Binding IsFirst, Converter={StaticResource InverseBooleanConverter}}"
                            BackgroundColor="White">
-                            <Border StrokeThickness="2" HeightRequest="100" WidthRequest="100"
+                                    <Border StrokeThickness="2" HeightRequest="100" WidthRequest="100"
                                 Stroke="LightGray">
-                                <Grid>
-                                    <Image HeightRequest="100" 
+                                        <Grid>
+                                            <Image HeightRequest="100" 
                                               WidthRequest="100" 
                                               Source="{Binding ImageSource}" 
                                               Background="White"/>
-                                    <ImageButton Margin="70,0,0,70"
+                                            <ImageButton Margin="70,0,0,70"
                                                  IsVisible="{Binding IsPhoto}"
                                                  CornerRadius="2"
                                                  Opacity="0.8"
@@ -92,44 +94,214 @@
                                                  HeightRequest="20" 
                                                  WidthRequest="25" 
                                                  Background="LightGray"/>
-                                </Grid>
-                            </Border>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </syncfusion:SfListView.ItemTemplate>
-        </syncfusion:SfListView>
+                                        </Grid>
+                                    </Border>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
 
 
-            <VerticalStackLayout Grid.Row="3">
-                <VerticalStackLayout x:Name="MainLayout" Margin="10,20,10,0">
-                    <control:GrEntry x:Name="NameEntry" 
-                                     Title="Название"
-                                     MaxLength="50"/>
-                    <editors:SfComboBox x:Name="CategoryComboBox"
+                <VerticalStackLayout Grid.Row="3">
+                    <VerticalStackLayout x:Name="MainLayout" Margin="10,20,10,0">
+                        <control:GrEntry x:Name="AdvertismentNameEntry" 
+                                         Title="Название"
+                                         Message="*Обязательное поле"
+                                         MaxLength="50"/>
+                        <editors:SfComboBox x:Name="CategoryComboBox"
+                                            Margin="0,15,0,0"
                                     ItemsSource="{Binding RealtyCategories}"
                                     SelectionChanged="SfComboBox_SelectionChanged">
-                    </editors:SfComboBox>
-                </VerticalStackLayout>
-                <VerticalStackLayout x:Name="MainInputLayout" 
+                        </editors:SfComboBox>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout x:Name="MainInputLayout" 
                                      IsVisible="True">
-                    <Entry x:Name="NumberOfRoomsEntry" 
-                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=House}" 
-                       Placeholder="Количество комнат" />
-                    <Entry x:Name="SquareFootageEntry" 
-                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=House}" 
-                       Placeholder="Площадь" />
-                    <Entry x:Name="FloorNumberEntry" 
-                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Apartment}" 
-                       Placeholder="Этаж" />
-                    <Entry x:Name="NumberOfBedroomsEntry" 
-                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Apartment}" 
-                       Placeholder="Количество спален" />
-                    <Entry x:Name="SizeEntry" 
-                       IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter=Land}" 
-                       Placeholder="Размер" />
+                        <control:GrEntry x:Name="CommonAreEntry" 
+                                     Title="Общая площадь, кв.м" 
+                                     Keyboard="Numeric"
+                                     TextColor="Gray"
+                                     Color="Gray"
+                                     Message="*Обязательное поле"
+                                     Margin="10,20,10,0"
+                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Any'}"/>
+                        <control:GrEntry x:Name="LivingAreaEntry" 
+                                     Title="Жилая площадь, кв.м" 
+                                     Keyboard="Numeric"
+                                     Margin="10,15,10,0"
+                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                        <control:GrEntry x:Name="KitchenAreaEntry" 
+                                     Title="Кухонная площадь, кв.м" 
+                                     Keyboard="Numeric"
+                                     Margin="10,15,10,0"
+                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboLayout x:Name="AmountFloorsCombo"
+                                           Title="Количество этажей"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding AmountFloors}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                        <control:GrComboLayout x:Name="AmountRoomsCombo"
+                                           Title="Количество комнат"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding AmountRooms}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                        <control:GrComboLayout x:Name="FlatToiletCombo"
+                                           Title="Туалет"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding FlatToilet}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboLayout x:Name="HouseToiletCombo"
+                                           Title="Санузел"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding HouseToilet}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='House'}"/>
+                        <Grid IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                             Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"
+                          Margin="15,15,10,0">
+                            <Label Text="Проходная комната" HorizontalOptions="Start" Margin="0,0,0,0" FontSize="18" VerticalOptions="Center"/>
+                            <control:GrSfSwitch x:Name="IsEntranceRoomSwitch" IsOn="False" 
+                                            AllowIndeterminateState="false" 
+                                            Scale="0.8"
+                                            HorizontalOptions="End"/>
+                            <BoxView Margin="0,50,0,0" HeightRequest="3" BackgroundColor="LightGray"/>
+                        </Grid>
+                        <control:GrComboLayout x:Name="CeilingHeight"
+                                           Title="Высота потолков"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding CeilingHeight}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                        <control:GrEntry x:Name="FlatFloorEntry" 
+                                     Title="Этаж" 
+                                     Keyboard="Numeric"
+                                     Margin="10,15,10,0"
+                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrEntry x:Name="FloorNumberEntry" 
+                                     Title="Этажность дома" 
+                                     Keyboard="Numeric"
+                                     Margin="10,15,10,0"
+                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboLayout x:Name="BalconyTypeCombo"
+                                           Title="Балкон"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding BalconyTypes}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboLayout x:Name="RepariTypeCombo"
+                                           Title="Ремонт"
+                                           FontFamily="NexaBold"
+                                           Margin="0,15,10,0"
+                                           SelectColor="{StaticResource ExtraViolet}"
+                                           Items="{Binding RepairTypes}"
+                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboBox x:Name="ConveniencesComboBox" 
+                                            Margin="10,20,10,0"
+                                            Items="{Binding FlatConvenitnces}"
+                                            Title="Обустройство дома" 
+                                            HeightRequest="50" 
+                                            SelectedColor="{StaticResource ExtraViolet}"
+                                            IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                                Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrComboLayout x:Name="NewnessCombo"
+                                              Title="Состояние"
+                                              FontFamily="NexaBold"
+                                              Margin="0,15,10,0"
+                                              SelectColor="{StaticResource ExtraViolet}"
+                                              Items="{Binding NewnessTypes}"
+                                              IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                                Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                        <control:GrComboLayout x:Name="GasSystemCombo"
+                                              Title="Газ"
+                                              FontFamily="NexaBold"
+                                              Margin="0,15,10,0"
+                                              SelectColor="{StaticResource ExtraViolet}"
+                                              Items="{Binding NewnessTypes}"
+                                              IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                                Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='House'}"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Margin="10,20,10,0">
+                        <Grid RowDefinitions="Auto">
+                            <control:GrEntry x:Name="CostEntry" 
+                                             Title="Цена" 
+                                             Keyboard="Numeric"
+                                             MaxLength="10"
+                                             Margin="0,10,0,0"/>
+                            <Border Margin="0,0,0,25" 
+                                    Padding="0"
+                                    HeightRequest="35" 
+                                    WidthRequest="80" 
+                                    Stroke="{StaticResource Gray600}" 
+                                    StrokeThickness="2"
+                                    HorizontalOptions="End">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="4"/>
+                                </Border.StrokeShape>
+                            </Border>
+                            <editors:SfComboBox x:Name="CurrencyComboBox"
+                                                Margin="0,0,3,21"
+                                                Background="Transparent"
+                                                HeightRequest="41"
+                                                ItemsSource="{Binding Currencys}"
+                                                IsClearButtonVisible="False"
+                                                HorizontalOptions="End"
+                                                WidthRequest="74"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Margin="10,20,10,0">
+                        <Label Text="О продавце" FontSize="32"/>
+                        <control:GrEntry x:Name="NameEntry" 
+                                     Title="Имя" 
+                                     TextColor="Gray"
+                                     Color="Gray"
+                                     Message="*Обязательное поле"
+                                     Margin="10,15,10,0"/>
+                        <control:GrEntry x:Name="EmailEntry" 
+                                     Title="Email" 
+                                     Keyboard="Email"
+                                     TextColor="Gray"
+                                     Color="Gray"
+                                     Message="*Обязательное поле"
+                                     Margin="10,15,10,0"/>
+                        <control:GrEntry x:Name="NumberEntry" 
+                                     Title="Номер телефона" 
+                                     Keyboard="Telephone"
+                                     Text="+375"
+                                     TextColor="Gray"
+                                     Color="Gray"
+                                     Margin="10,15,10,0"/>
+                    </VerticalStackLayout>
+                    <control:GrButton Margin="0,20,0,20"
+                                      Text="Подать объявление" 
+                                      HeightRequest="45"
+                                      WidthRequest="300"
+                                      Padding="0"
+                                      TextColor="White"
+                                      FontSize="20"
+                                      BackgroundColor="{StaticResource DarkViolet}"/>
                 </VerticalStackLayout>
-            </VerticalStackLayout>
-    </Grid>
+            </Grid>
         </ScrollView>
+    </Grid>
 </ContentPage>

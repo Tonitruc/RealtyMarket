@@ -14,6 +14,7 @@
             <Border Margin="5" StrokeThickness="2">
                 <Image Source="profileicon.png" Background="White"/>
             </Border>
+           
             <control:GrButton Margin="0" 
                                   IsVisible="{Binding IsRegisteredUser, Converter={StaticResource InverseBooleanConverter}}"
                                   HeightRequest="40" 
@@ -35,6 +36,7 @@
                               BackgroundColor="White"
                               VerticalOptions="Center"
                               FontSize="17"/>
+            
 
         </HorizontalStackLayout>
         <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"

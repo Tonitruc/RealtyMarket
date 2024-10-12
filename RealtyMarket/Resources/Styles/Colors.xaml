@@ -44,16 +44,20 @@
     <Color x:Key="Blue200Accent">#72ACF1</Color>
     <Color x:Key="Blue300Accent">#A7CBF6</Color>
 
-    <!-- My colors -->
+    <!-- My colors --> 
+    <Color x:Key="ExtraViolet">#5a189a</Color>
     <Color x:Key="DarkViolet">#6a00f4</Color>
     <Color x:Key="MediumDarkViolet">#8900f2</Color>
     <Color x:Key="MediumViolet">#a100f2</Color>
+    <Color x:Key="PinkViolet">#d100d1</Color>
     <Color x:Key="LightViolet">#e0aaff</Color>
     <Color x:Key="VeryLightViolet">#e7e4f9</Color>
+    <SolidColorBrush x:Key="ExtraVioletBrush" Color="{StaticResource ExtraViolet}"></SolidColorBrush>
     <SolidColorBrush x:Key="DarkVioletBtush" Color="{StaticResource DarkViolet}"></SolidColorBrush>
     <SolidColorBrush x:Key="MediumDarkVioletBtush" Color="{StaticResource MediumDarkViolet}"></SolidColorBrush>
     <SolidColorBrush x:Key="MediumVioletBtush" Color="{StaticResource MediumViolet}"></SolidColorBrush>
+    <SolidColorBrush x:Key="PinkVioletBrush" Color="{StaticResource PinkViolet}"></SolidColorBrush>
     <SolidColorBrush x:Key="LightVioletBtush" Color="{StaticResource LightViolet}"></SolidColorBrush>
     <SolidColorBrush x:Key="VeryLightVioletBtush" Color="{StaticResource VeryLightViolet}"></SolidColorBrush>
-
+    
 </ResourceDictionary>

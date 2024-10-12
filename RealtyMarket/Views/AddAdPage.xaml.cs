@@ -26,6 +26,8 @@ namespace RealtyMarket.Views
             BindingContext = viewModel = new AddAdViewModel();
 
             Shell.SetTabBarIsVisible(this, false);
+
+            CategoryComboBox.SelectedIndex = 0;
         }
 
         private void SfComboBox_SelectionChanged(object sender, Syncfusion.Maui.Inputs.SelectionChangedEventArgs e)
@@ -34,20 +36,6 @@ namespace RealtyMarket.Views
             if(selectedIndex == -1)
             {
                 return;
-            }
-
-            string text = CategoryComboBox.SelectedValue.ToString();
-            if (text == "Квартира")
-            {
-                MainInputLayout.Children.Add(new GrComboLayout() { Title = "Тип сделки", Items = ["Продажа", "Аренда"], Margin = new Thickness(0, 10, 0, 0) });
-                MainInputLayout.Children.Add(new GrEntry() { Title = "Адресс", Margin = new Thickness(10, 20, 10, 0)});
-                MainInputLayout.Children.Add(new GrEntry() { Title = "Общая площадь, кв.м.", Keyboard = Keyboard.Numeric, Margin = new Thickness(10, 20, 10, 0)});
-                MainInputLayout.Children.Add(new GrEntry() { Title = "Жилая площадь, кв.м.", Keyboard = Keyboard.Numeric, Margin = new Thickness(10, 20, 10, 0)});
-                MainInputLayout.Children.Add(new GrEntry() { Title = "Площадь кухни, кв.м.", Keyboard = Keyboard.Numeric, Margin = new Thickness(10, 20, 10, 0)});
-            }
-            else if(text == "Дом")
-            {
-                 
             }
         }
 
@@ -61,7 +49,7 @@ namespace RealtyMarket.Views
             }
             else
             {
-                PageTitle.TranslateTo(0, 0, 250, Easing.CubicOut);
+                PageTitle.TranslateTo(0, 0, 50, Easing.CubicOut);
             }
 
             previousScrollY = newScrollY;

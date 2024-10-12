@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mct:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:mct="clr-namespace:Mopups.Pages;assembly=Mopups"
+               xmlns:local="clr-namespace:RealtyMarket.Controls"
+               x:Class="RealtyMarket.Controls.GrPopupComboBox"
+               Background="#80000000">
+
+    <ScrollView>
+        <Grid x:Name="MainLayout" VerticalOptions="End" RowDefinitions="Auto">
+            <Border BackgroundColor="White" Padding="20" IsVisible="True">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20,20,0,0"></RoundRectangle>
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Margin="0,0,0,20" Grid.Row="0" ColumnDefinitions="*,30" RowDefinitions="Auto,2">
+                        <Label x:Name="TitleLabel" Margin="0,0,0,5" FontSize="18"/>
+                        <BoxView HeightRequest="2" BackgroundColor="Gray" Grid.Row="1" Grid.ColumnSpan="2"/>
+                        <ImageButton Source="cross.png" Grid.Column="1" HeightRequest="20" WidthRequest="20" Clicked="CloseButtonClicked"/>
+                    </Grid>
+                    <ScrollView x:Name="ScrollView" Grid.Row="1">
+                        <VerticalStackLayout>
+                            <VerticalStackLayout x:Name="ContentLayout"/>
+                            <Grid x:Name="AllowLayout" Margin="0,20,0,0">
+                                <local:GrButton Text="Очистить" 
+                                                Padding="0"
+                                                FontSize="14"
+                                                TextColor="Black"
+                                                BackgroundColor="White" 
+                                                EffectColor="LightGray" 
+                                                HorizontalOptions="Start"
+                                                HeightRequest="40"
+                                                WidthRequest="80"
+                                                Clicked="ClearButtonClicked"/>
+                                <local:GrButton x:Name="AllowButton" 
+                                                Padding="0"
+                                                FontSize="14"
+                                                TextColor="White"
+                                                BackgroundColor="DarkViolet"
+                                                Text="Применить" 
+                                                EffectColor="LightGray" 
+                                                HorizontalOptions="End"
+                                                HeightRequest="40"
+                                                WidthRequest="140"
+                                                Clicked="AllowButtonClicked"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollView>
+
+</mct:PopupPage>
