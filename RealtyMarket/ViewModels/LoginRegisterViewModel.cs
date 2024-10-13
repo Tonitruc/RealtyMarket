@@ -59,12 +59,14 @@ namespace RealtyMarket.ViewModels
             set => SetProperty(ref _isBusy, value);
         }
 
-        private FirebaseAuthenticationService _authService;
+        private readonly FirebaseAuthenticationService _authService;
 
-        private RegisteredUserRepository _registeredUserRepository;
+        private readonly RegisteredUserRepository _registeredUserRepository;
+
+        private readonly SecureStorageUserRepository _secureStorageUserRepository;
 
         public LoginRegisterViewModel(FirebaseAuthenticationService authService,
-            RegisteredUserRepository registeredUserRepository)
+            RegisteredUserRepository registeredUserRepository, SecureStorageUserRepository secureStorageUserRepository)
         {
             User = new UserLoginInfo();
             NewUser = new UserRegisterInfo();
@@ -79,6 +81,14 @@ namespace RealtyMarket.ViewModels
         public async Task EnterAsGuest()
         {
             IsBusy = true;
+
+            string userStatus = await _secureStorageUserRepository.GetUserState();
+
+            if (userStatus == "Guest")
+            {
+                await Shell.Current.GoToAsync("//MainTabs");
+            }
+
             SignInResultEnum result = await _authService.SignInAnonymousUserAsync();
             if (result == SignInResultEnum.Ok)
             {

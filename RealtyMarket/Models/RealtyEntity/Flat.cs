@@ -5,9 +5,9 @@ namespace RealtyMarket.Models.RealtyEntity
     public class Flat : ResidentialRealty
     {
 
-        public BalconyType BalconyType { get; set; }
+        public string BalconyType { get; set; }
 
-        public RepairType RepairType { get; set; }
+        public string RepairType { get; set; }
 
         public bool IsEntranceRoom { get; set; }
 

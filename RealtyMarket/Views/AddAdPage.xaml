@@ -13,16 +13,13 @@
              Shell.NavBarIsVisible="False"
              Title="AddAdPage">
 
-    <ContentPage.BindingContext>
-        <viewmodels:AddAdViewModel/>
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="*">
         <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
               HeightRequest="50" VerticalOptions="Start">
             <ImageButton Source="prev_page_arrow.png"
                          HeightRequest="25"
-                         Margin="10,0,0,0"/>
+                         Margin="10,0,0,0"
+                         Command="{Binding ReturnCommand}"/>
             <Label Grid.Column="1" Text="Добавить объявление"
                    VerticalOptions="Center"
                    FontSize="20"
@@ -35,44 +32,44 @@
                 <Grid Margin="0,5,0,10"
               Grid.Row="1">
                     <Label Text="Добавить фото"
-                   FontSize="18"
-                   Margin="10,0,0,0"
-                   VerticalOptions="Center"
-                   FontAttributes="Bold"/>
+                           FontSize="18"
+                           Margin="10,0,0,0"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"/>
                     <Image Source="gallery.png"
-                   HeightRequest="25"
-                   HorizontalOptions="End"
-                   Margin="0,0,80,0">
+                           HeightRequest="25"
+                           HorizontalOptions="End"
+                           Margin="0,0,80,0">
 
                     </Image>
                     <Label Text="{Binding AmountPhotos, StringFormat='{0} из 10'}"
-                   FontSize="18"
-                   VerticalOptions="Center"
-                   HorizontalOptions="End"
-                   Margin="0,0,10,0"
-                   FontAttributes="Bold"/>
+                           FontSize="18"
+                           VerticalOptions="Center"
+                           HorizontalOptions="End"
+                           Margin="0,0,10,0"
+                           FontAttributes="Bold"/>
                 </Grid>
                 <syncfusion:SfListView x:Name="listView" Orientation="Horizontal"
-                               ItemsSource="{Binding Photos}"
-                               ItemSize="105"
-                               Grid.Row="2"
-                               ScrollBarVisibility="Never">
+                                       ItemsSource="{Binding Photos}"
+                                       ItemSize="105"
+                                       Grid.Row="2"
+                                       ScrollBarVisibility="Never">
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
                                 <Frame HeightRequest="100" 
-                           WidthRequest="100" 
-                           IsVisible="{Binding IsFirst}"
-                           BackgroundColor="White">
+                                       WidthRequest="100" 
+                                       IsVisible="{Binding IsFirst}"
+                                       BackgroundColor="White">
                                     <Border StrokeThickness="3" HeightRequest="100" WidthRequest="100"
                                 Stroke="{StaticResource DarkViolet}">
                                         <buttons:SfButton HeightRequest="100" 
-                                              WidthRequest="100" 
-                                              ImageSource="add_photo.png" 
-                                              ShowIcon="True"
-                                              ImageSize="50"
-                                              ImageAlignment="Default"
-                                              Background="White"></buttons:SfButton>
+                                                          WidthRequest="100" 
+                                                          ImageSource="add_photo.png" 
+                                                          ShowIcon="True"
+                                                          ImageSize="50"
+                                                          ImageAlignment="Default"
+                                                          Background="White"/>
                                     </Border>
                                 </Frame>
                                 <Frame HeightRequest="100" 
@@ -111,8 +108,7 @@
                                          MaxLength="50"/>
                         <editors:SfComboBox x:Name="CategoryComboBox"
                                             Margin="0,15,0,0"
-                                    ItemsSource="{Binding RealtyCategories}"
-                                    SelectionChanged="SfComboBox_SelectionChanged">
+                                    ItemsSource="{Binding RealtyCategories}">
                         </editors:SfComboBox>
                     </VerticalStackLayout>
                     <VerticalStackLayout x:Name="MainInputLayout" 
@@ -181,25 +177,27 @@
                             <BoxView Margin="0,50,0,0" HeightRequest="3" BackgroundColor="LightGray"/>
                         </Grid>
                         <control:GrComboLayout x:Name="CeilingHeight"
-                                           Title="Высота потолков"
-                                           FontFamily="NexaBold"
-                                           Margin="0,15,10,0"
-                                           SelectColor="{StaticResource ExtraViolet}"
-                                           Items="{Binding CeilingHeight}"
-                                           IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
-                                              Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
+                                               Title="Высота потолков"
+                                               FontFamily="NexaBold"
+                                               Margin="0,15,10,0"
+                                               SelectColor="{StaticResource ExtraViolet}"
+                                               Items="{Binding CeilingHeight}"
+                                               IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                                Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
                         <control:GrEntry x:Name="FlatFloorEntry" 
-                                     Title="Этаж" 
-                                     Keyboard="Numeric"
-                                     Margin="10,15,10,0"
-                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
-                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                                         Title="Этаж" 
+                                         TextChanged="IntValidatorEntry"
+                                         Keyboard="Numeric"
+                                         Margin="10,15,10,0"
+                                         IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                            Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
                         <control:GrEntry x:Name="FloorNumberEntry" 
-                                     Title="Этажность дома" 
-                                     Keyboard="Numeric"
-                                     Margin="10,15,10,0"
-                                     IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
-                                        Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                                         Title="Этажность дома" 
+                                         TextChanged="IntValidatorEntry"
+                                         Keyboard="Numeric"
+                                         Margin="10,15,10,0"
+                                         IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                            Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
                         <control:GrComboLayout x:Name="BalconyTypeCombo"
                                            Title="Балкон"
                                            FontFamily="NexaBold"
@@ -216,7 +214,7 @@
                                            Items="{Binding RepairTypes}"
                                            IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
                                               Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
-                        <control:GrComboBox x:Name="ConveniencesComboBox" 
+                        <control:GrComboBox x:Name="FlatConveniencesComboBox" 
                                             Margin="10,20,10,0"
                                             Items="{Binding FlatConvenitnces}"
                                             Title="Обустройство дома" 
@@ -224,6 +222,12 @@
                                             SelectedColor="{StaticResource ExtraViolet}"
                                             IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
                                                 Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='Flat'}"/>
+                        <control:GrEntry x:Name="ConstructedYearEntry" 
+                                        Title="Год постройки" 
+                                        Keyboard="Numeric"
+                                        Margin="10,15,10,0"
+                                        IsVisible="{Binding Source={x:Reference CategoryComboBox}, Path=SelectedItem, 
+                                            Converter={StaticResource CategoryToVisibilityConverter}, ConverterParameter='ResidentialRealty'}"/>
                         <control:GrComboLayout x:Name="NewnessCombo"
                                               Title="Состояние"
                                               FontFamily="NexaBold"
@@ -272,34 +276,38 @@
                     <VerticalStackLayout Margin="10,20,10,0">
                         <Label Text="О продавце" FontSize="32"/>
                         <control:GrEntry x:Name="NameEntry" 
-                                     Title="Имя" 
-                                     TextColor="Gray"
-                                     Color="Gray"
-                                     Message="*Обязательное поле"
-                                     Margin="10,15,10,0"/>
+                                         Title="Имя" 
+                                         TextColor="Gray"
+                                         Color="Gray"
+                                         Message="*Обязательное поле"
+                                         Margin="10,15,10,0"/>
                         <control:GrEntry x:Name="EmailEntry" 
-                                     Title="Email" 
-                                     Keyboard="Email"
-                                     TextColor="Gray"
-                                     Color="Gray"
-                                     Message="*Обязательное поле"
-                                     Margin="10,15,10,0"/>
+                                         IsEnabled="False"
+                                         Title="Email" 
+                                         Keyboard="Email"
+                                         TextColor="Gray"
+                                         Color="Gray"
+                                         Message="*Обязательное поле"
+                                         Margin="10,15,10,0"/>
                         <control:GrEntry x:Name="NumberEntry" 
-                                     Title="Номер телефона" 
-                                     Keyboard="Telephone"
-                                     Text="+375"
-                                     TextColor="Gray"
-                                     Color="Gray"
-                                     Margin="10,15,10,0"/>
+                                         Title="Номер телефона" 
+                                         Keyboard="Telephone"
+                                         Text="+375"
+                                         TextColor="Gray"
+                                         Color="Gray"
+                                         Margin="10,15,10,0"/>
                     </VerticalStackLayout>
                     <control:GrButton Margin="0,20,0,20"
+                                      IsBusy="{Binding IsLoading}"
                                       Text="Подать объявление" 
                                       HeightRequest="45"
                                       WidthRequest="300"
+                                      LoadingText="Добавление..."
                                       Padding="0"
                                       TextColor="White"
                                       FontSize="20"
-                                      BackgroundColor="{StaticResource DarkViolet}"/>
+                                      BackgroundColor="{StaticResource DarkViolet}"
+                                      Clicked="AddAdvertismentButtonClicked"/>
                 </VerticalStackLayout>
             </Grid>
         </ScrollView>

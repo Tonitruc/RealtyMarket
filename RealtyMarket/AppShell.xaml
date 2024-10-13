@@ -52,18 +52,22 @@
     <TabBar IsVisible="True" x:Name="MainTabs" Route="MainTabs">
         <Tab Title="Каталог" Icon="catalogicon.png">
             <ShellContent Title = "CatalogPage" 
-                          ContentTemplate="{DataTemplate views:CatalogPage}" />
+                          Route="CatalogPage"
+                          ContentTemplate="{DataTemplate views:MapPage}" />
         </Tab>
         <Tab Title="Избранное" Icon="favoritesicon.png">
             <ShellContent Title = "FavoritesPage" 
+                          Route="FavoritePage"
                           ContentTemplate="{DataTemplate views:FavoritesPage}" />
         </Tab>
         <Tab Title="Добавить" Icon="addadicon.png">
-            <ShellContent Title = "CatalogPage" 
+            <ShellContent Title = "AddAdPage" 
+                          Route="AddAdPage"
                           ContentTemplate="{DataTemplate views:AddAdPage}" />
         </Tab>
         <Tab Title="Профиль" Icon="profileicon.png">
-            <ShellContent Title = "CatalogPage" 
+            <ShellContent Title = "ProfilePage" 
+                          Route="ProfilePage"
                           ContentTemplate="{DataTemplate views:ProfilePage}" />
         </Tab>
     </TabBar>

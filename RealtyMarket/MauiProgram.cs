@@ -9,6 +9,7 @@ using Firebase.Auth.Repository;
 using Microsoft.Extensions.Http;
 using RealtyMarket.Repository;
 using CommunityToolkit.Maui;
+using Firebase.Database;
 
 namespace RealtyMarket
 {
@@ -80,7 +81,13 @@ namespace RealtyMarket
             builder.Services.AddTransient<ProfileViewModel>();
             builder.Services.AddTransient<ProfilePage>();
 
-            builder.Services.AddHttpClient<RegisteredUserRepository>();
+            builder.Services.AddTransient<AddAdViewModel>();
+            builder.Services.AddTransient<AddAdPage>();
+
+            builder.Services.AddScoped<RegisteredUserRepository>();
+
+            builder.Services.AddSingleton<FirebaseClient>(sp =>
+                new FirebaseClient("https://realtymarket-e4db0-default-rtdb.firebaseio.com/"));
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

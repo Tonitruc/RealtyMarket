@@ -11,6 +11,6 @@ namespace RealtyMarket.Service
     {
         public const string Name = "RealtyMarket";
 
-        public static string BaseApiUri = "https://5142-146-120-15-66.ngrok-free.app/api";
+        public readonly static string BaseApiUri = "https://realtymarket-e4db0-default-rtdb.firebaseio.com";
     }
 }

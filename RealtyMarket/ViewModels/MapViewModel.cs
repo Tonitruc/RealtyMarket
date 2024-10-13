@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RealtyMarket.Models.RealtyEntity.Enums
+namespace RealtyMarket.ViewModels
 {
-    public enum Newness
+    class MapViewModel
     {
-        New,
-        Secondary
     }
 }

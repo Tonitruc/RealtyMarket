@@ -1,46 +1,40 @@
-﻿using Microsoft.Maui.ApplicationModel.Communication;
+﻿using Firebase.Database;
+using Microsoft.Maui.ApplicationModel.Communication;
 using RealtyMarket.Models;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Firebase.Database.Query;
 
 namespace RealtyMarket.Repository
 {
     public class RegisteredUserRepository : IServerRepository<RegisteredUser>
     {
-        private readonly HttpClient _httpClient;
+        private readonly FirebaseClient _firebaseClient;
 
-        public override string Controller => "User";
+        public override string Controller => "registeredUsers";
 
 
-        public RegisteredUserRepository(HttpClient httpClient)
+        public RegisteredUserRepository(FirebaseClient fireBase)
         {
-            _httpClient = httpClient;
+            _firebaseClient = fireBase;
         }
 
         public async Task<RegisteredUser> GetByEmail(string email)
         {
             try
             {
-                var url = GetBasetUrl() + "/" + email;
-                HttpResponseMessage response = await _httpClient.GetAsync(
-                    GetBasetUrl() + "/" + email);
+                var users = await _firebaseClient
+                                    .Child(Controller)
+                                    .OrderBy("Email")
+                                    .EqualTo(email)
+                                    .OnceAsync<RegisteredUser>();
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-
-                    RegisteredUser user = JsonSerializer.Deserialize<RegisteredUser>(responseData);
-
-                    return user;
-                }
+                return users.FirstOrDefault()?.Object;
             }
-            catch (HttpRequestException ex) {
-                Console.WriteLine(ex.Message);
-            }
-            catch(Exception)
+            catch (Exception ex) 
             {
-
+                Console.WriteLine(ex.Message);
             }
 
             return null;
@@ -54,23 +48,8 @@ namespace RealtyMarket.Repository
 
         public override async Task<bool> Add(RegisteredUser entity)
         {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
-                    GetBasetUrl(), entity);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    string responseData = await response.Content.ReadAsStringAsync();
-
-                    RegisteredUser user = JsonSerializer.Deserialize<RegisteredUser>(responseData);
-
-                    return true;
-                }
-            }
-            catch (HttpRequestException) { }
-
-            return false;
+            await _firebaseClient.Child(Controller).PostAsync(entity);
+            return true;
         }
     }
 }

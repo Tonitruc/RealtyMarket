@@ -81,10 +81,12 @@ namespace RealtyMarket.Service
             return SignInResultEnum.InValidError;
         }
 
-        public void SignOutUser()
+        public async void SignOutUser()
         {
             _firebaseAuthClient.SignOut();
-            _storageUserRepository.DeleteUser();
+            
+            if(await _storageUserRepository.GetUserState() != "Guest")
+                _storageUserRepository.DeleteUser();
         }
 
         public User GetCurrentUser()

@@ -2,6 +2,10 @@
 using RealtyMarket.Models;
 using RealtyMarket.Models.RealtyEntity;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using MvvmHelpers.Commands;
+using RealtyMarket.Service;
+using RealtyMarket.Repository;
 
 
 namespace RealtyMarket.ViewModels
@@ -23,7 +27,21 @@ namespace RealtyMarket.ViewModels
             get => _isVisible;
             set => SetProperty(ref _isVisible, value);
         }
-        
+
+        private bool _isLoading = false;
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set => SetProperty(ref _isLoading, value);
+        }
+
+        private readonly SecureStorageUserRepository _secureStorageUserRepository;
+
+        private readonly RegisteredUserRepository _registeredUserRepository;
+
+        public RegisteredUser User { get; set; }
+
         public Advertisement Advertisement { get; set; }
 
         #region AdvertismentParam
@@ -37,40 +55,15 @@ namespace RealtyMarket.ViewModels
 
         public ObservableCollection<PhotoItem> Photos { get; private set; }
 
-        public Command AddPhotoCommand { get; }
+        public MvvmHelpers.Commands.Command AddPhotoCommand { get; }
 
-        public Command<PhotoItem> RemovePhotoCommand { get; }
+        public MvvmHelpers.Commands.Command<PhotoItem> RemovePhotoCommand { get; }
 
         public ObservableCollection<string> RealtyCategories { get; } = [
                 "Не выбрано",
                 "Квартира",
                 "Дом"
                 ];
-
-        private RealtyCategory _selectedCategory;
-
-        public string SelectedCategory
-        {
-            get
-            {
-                if (_selectedCategory == RealtyCategory.Flat)
-                    return "Квартира";
-                else if (_selectedCategory == RealtyCategory.House)
-                    return "Дом";
-
-                return "Не выбрано";
-            }
-            set
-            {
-                //TODO проверить првоерку
-                Enum.TryParse(value, out RealtyCategory result);
-                if (result == 0)
-                {
-                    result = RealtyCategory.None;
-                }
-                SetProperty(ref _selectedCategory, result);
-            }
-        }
 
         public ObservableCollection<string> Currencys { get; } = [
             "$", "€", "BYN", "Z$"
@@ -118,7 +111,8 @@ namespace RealtyMarket.ViewModels
             "Парковка",
             "Домофон",
             "Подвал",
-            "Виденаблюдение"
+            "Видеонаблюдение",
+            "Двор для выгула мопсов"
         ];
 
         #endregion
@@ -135,7 +129,10 @@ namespace RealtyMarket.ViewModels
 
         #endregion
 
-        public AddAdViewModel()
+        public ICommand ReturnCommand { get; set; }
+
+        public AddAdViewModel(SecureStorageUserRepository secureStorageUserRepository,
+            RegisteredUserRepository registeredUserRepotisotry)
         {
             Photos = new ObservableCollection<PhotoItem>();
 
@@ -146,12 +143,27 @@ namespace RealtyMarket.ViewModels
                 Photos.Add(new PhotoItem());  
             }
 
-            AddPhotoCommand = new Command(async () => await AddPhotoAsync());
-            RemovePhotoCommand = new Command<PhotoItem>(RemovePhoto);
+            AddPhotoCommand = new MvvmHelpers.Commands.Command(async () => await AddPhotoAsync());
+            RemovePhotoCommand = new MvvmHelpers.Commands.Command<PhotoItem>(RemovePhoto);
 
             Advertisement = new Advertisement() { Realty = new ResidentialRealty()};
+
+            ReturnCommand = new AsyncCommand(ReturnToMainTabs);
+
+            _secureStorageUserRepository = secureStorageUserRepository;
+            _registeredUserRepository = registeredUserRepotisotry;
         }
 
+        public async Task GetUserInfo()
+        {
+            var userInfo = _secureStorageUserRepository.ReadUser();
+            User = await _registeredUserRepository.GetByEmail(userInfo.userInfo.Email);
+        }
+
+        public async Task ReturnToMainTabs()
+        {
+            await Shell.Current.GoToAsync("//CatalogPage");
+        }
 
 
         #region Work with photo

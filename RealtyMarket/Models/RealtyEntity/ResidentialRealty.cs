@@ -16,12 +16,12 @@ namespace RealtyMarket.Models.RealtyEntity
 
         public int AmountFloors { get; set; }
 
-        public DateTime ConstructionYear { get; set; }
+        public int ConstructionYear { get; set; }
 
-        public CeilingHeight CeilingHeight { get; set; }
+        public string CeilingHeight { get; set; }
 
-        public List<string> Conveniences { get; set; }
+        public List<string> Conveniences { get; set; } = [];
 
-        public Newness Newness { get; set; }
+        public string Newness { get; set; }
     }
 }

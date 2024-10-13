@@ -31,6 +31,18 @@ namespace RealtyMarket
                     await DisplayAlert("", $"{e.Target.Location.OriginalString}", "Ok");
                     await GoToAsync($"//NoInternetPage?ReturnPage={e.Target.Location.OriginalString}");
                 }
+
+
+                if (e.Target.Location.ToString() == "AddAdPage")
+                {
+                    string userStatus = await _secureStorageUserRepository.GetUserState();
+
+                    if(userStatus == "Guest")
+                    {
+                        e.Cancel();
+                        await GoToAsync("//LoginRegisterPage");
+                    }
+                }
             }
         }
 

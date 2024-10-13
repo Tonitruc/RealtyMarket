@@ -166,7 +166,7 @@
                                               TextColor="White"
                                               EffectColor="White"
                                               BackgroundColor="{StaticResource DarkViolet}"
-                                              Margin="40, 0, 40, 0"
+                                              Margin="40, 0, 40, 20"
                                               HeightRequest="45"
                                               WidthRequest="200"
                                               Padding="0, 0, 0, 2"

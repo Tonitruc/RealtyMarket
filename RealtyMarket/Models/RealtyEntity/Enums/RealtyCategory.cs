@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace RealtyMarket.Models.RealtyEntity.Enums
 {
-    public enum RepairType
+    public enum RealtyCategory
     {
-        Cosmetic,
-        Euro,
-        Design,
-        ConstructionFinishing,
-        WithoutFinishing,
-        EmergencyCondition
+        None = 0,
+        Flat,
+        House
     }
 }

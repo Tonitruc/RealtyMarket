@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RealtyMarket.Views.MapPage"
+             xmlns:maps="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
+             Title="MapPage"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,50">
+        <WebView x:Name="MapWebView"/>
+        <Button Grid.Row="1" Text="Получить координаты" Clicked="OnGetCoordinatesClicked"/>
+    </Grid>
+
+</ContentPage>
