@@ -1,6 +1,9 @@
 using RealtyMarket.Controls;
 using RealtyMarket.Models;
+using RealtyMarket.Models.OtherEntity;
 using RealtyMarket.Models.RealtyEntity;
+using RealtyMarket.Models.RealtyEntity.Enums;
+using RealtyMarket.Repository;
 using RealtyMarket.Service;
 using RealtyMarket.ViewModels;
 using Syncfusion.Maui.DataForm;
@@ -15,27 +18,42 @@ namespace RealtyMarket.Views
     {
         private readonly AddAdViewModel _viewModel;
 
-        private VerticalStackLayout _currentInputData;
+        private readonly MapPage _mapPage;
 
-        private double previousScrollY;
+        private RealtyLocation _lastLocation;
 
-        public AddAdPage(AddAdViewModel viewModel)
+        private readonly AdvertisementRepository _advertisementRepository;
+
+        private double _previousScrollY;
+
+
+        public AddAdPage(AddAdViewModel viewModel,
+            AdvertisementRepository advertisementRepository)
         {
             InitializeComponent();
 
+            _advertisementRepository = advertisementRepository; 
             BindingContext = _viewModel = viewModel;
 
             Shell.SetTabBarIsVisible(this, false);
 
             CategoryComboBox.SelectedIndex = 0;
             CurrencyComboBox.SelectedIndex = 0;
+
+            _mapPage = new MapPage();
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             await _viewModel.GetUserInfo();
             
+            if(_viewModel.User == null)
+            {
+                return;
+            }
+
             EmailEntry.Text = _viewModel.User.Email;
             NameEntry.Text = _viewModel.User.Name;
 
@@ -49,7 +67,7 @@ namespace RealtyMarket.Views
         {
             double newScrollY = e.ScrollY;
 
-            if (newScrollY > previousScrollY)
+            if (newScrollY > _previousScrollY)
             {
                 PageTitle.TranslateTo(0, -PageTitle.Height, 250, Easing.CubicIn);
             }
@@ -58,14 +76,19 @@ namespace RealtyMarket.Views
                 PageTitle.TranslateTo(0, 0, 50, Easing.CubicOut);
             }
 
-            previousScrollY = newScrollY;
+            _previousScrollY = newScrollY;
         }
 
         #region AddAdvertisment
 
-        private void AddAdvertismentButtonClicked(object sender, EventArgs e)
+        private async void AddAdvertismentButtonClicked(object sender, EventArgs e)
         {
-            if (!ValidateData())
+            if (CategoryComboBox.SelectedIndex == 0)
+            {
+                await DisplayAlert("Ошибка", "Выберите категорию", "Ок");
+            }
+
+            if (ValidateData())
             {
                 return;
             }
@@ -74,33 +97,52 @@ namespace RealtyMarket.Views
             {
                 _viewModel.Advertisement.Realty = new Flat();
                 SaveFlatData();
-                Flat flat = _viewModel.Advertisement.Realty as Flat;
+                await _viewModel.PublishAdvertisement();
             }
             else if (CategoryComboBox.SelectedIndex == 2)
             {
                 _viewModel.Advertisement.Realty = new PrivateHouse();
+                SavePrivateHouseData();
+                await _viewModel.PublishAdvertisement();
             }
         }
 
         private void SaveShareData()
         {
+            _viewModel.Advertisement.PublishDate = DateTime.Now;
+            _viewModel.Advertisement.UserEmail = EmailEntry.Text;
+            _viewModel.Advertisement.SellerName = NameEntry.Text;
+            _viewModel.Advertisement.SellerNumber = NumberEntry.Text;
+            _viewModel.Advertisement.RealtyCategory = "Квартира";
+            _viewModel.Advertisement.Type = AdvertisementTypesCombo.SelectedText;
+            _viewModel.Advertisement.Description = DescriptionEditor.Text;
+            _viewModel.Advertisement.Currency = CurrencyComboBox.SelectedItem.ToString();
+            _viewModel.Advertisement.Cost = Convert.ToDouble(CostEntry.Text);
+
             _viewModel.Advertisement.Name = AdvertismentNameEntry.Text;
             _viewModel.Advertisement.RealtyCategory = CategoryComboBox.SelectedItem.ToString();
-            _viewModel.Advertisement.Realty.Area = Convert.ToDouble(CommonAreEntry.Text);
-            _viewModel.Advertisement.Realty.Location = new Models.OtherEntity.Location(0.0, 0.0);
+            _viewModel.Advertisement.Realty.Area = Convert.ToDouble(CommonAreaEntry.Text);
+            _viewModel.Advertisement.Realty.Location = _lastLocation;
         }
 
         private void SaveResidentalRealtyData()
         {
             ResidentialRealty rR = _viewModel.Advertisement.Realty as ResidentialRealty;
 
-            rR.AmountFloors = Convert.ToInt32(AmountFloorsCombo.SelectedText.Substring(0, 1));
+            if (AmountFloorsCombo.SelectedIndex != -1)
+                rR.AmountFloors = Convert.ToInt32(AmountFloorsCombo.SelectedText.Substring(0, 1));
+            else
+                rR.AmountFloors = -1;
 
-            rR.AmountRooms = Convert.ToInt32(AmountFloorsCombo.SelectedText.Substring(0, 1));
+            if (AmountRoomsCombo.SelectedIndex != -1)
+                rR.AmountRooms = Convert.ToInt32(AmountRoomsCombo.SelectedText.Substring(0, 1));
+            else
+                rR.AmountRooms = -1;
 
-            rR.CeilingHeight = CeilingHeight.SelectedText;
+            if (CeilingHeight.SelectedIndex != -1) 
+                rR.CeilingHeight = CeilingHeight.SelectedText;
 
-            if(!string.IsNullOrEmpty(ConstructedYearEntry.Text))
+            if (!string.IsNullOrEmpty(ConstructedYearEntry.Text))
             {
                 rR.ConstructionYear = Convert.ToInt32(ConstructedYearEntry.Text);
             }
@@ -166,14 +208,47 @@ namespace RealtyMarket.Views
             }
         }
 
+        private void SavePrivateHouseData()
+        {
+            SaveShareData();
+            SaveResidentalRealtyData();
+            PrivateHouse ph = _viewModel.Advertisement.Realty as PrivateHouse;
+
+            ph.HouseType = HouseTypesCombo.SelectedText;
+            ph.SewerageSystem = SewerageSystemCombo.SelectedText;
+            ph.GasSystem = HouseGasSystem.SelectedText;
+            ph.HasElectricity = IsHasElectricityCheck.IsOn.Value;
+            ph.TerritoryConveniences = TerritoryConveniences.SelectedItems.ToList();
+            ph.Water = HouseWaterTypes.SelectedText;
+        }
+
         private bool ValidateData()
         {
-            LivingAreaEntry.IsError = CostEntry.IsError = NumberEntry.IsError = false;
+            CommonAreaEntry.IsError = CostEntry.IsError = NumberEntry.IsError = 
+                AdvertismentNameEntry.IsError = AdvertisementTypeError.IsVisible = AddressEntry.IsError = false;
 
-            if (string.IsNullOrEmpty(LivingAreaEntry.Text))
+            if(AdvertisementTypesCombo.SelectedIndex == -1)
             {
-                LivingAreaEntry.IsError = true;
-                LivingAreaEntry.ErrorText = "Поле не может быть пустым";
+                AdvertisementTypeError.IsVisible = true;
+            }
+
+            var text = AddressEntry.Text; //TODO Placeholder not Text
+            if (string.IsNullOrEmpty(AddressEntry.Text))
+            {
+                AddressEntry.IsError = true;
+                AddressEntry.ErrorText = "Выберите адрес";
+            }
+
+            if (string.IsNullOrEmpty(AdvertismentNameEntry.Text))
+            {
+                AdvertismentNameEntry.IsError = true;
+                AdvertismentNameEntry.ErrorText = "Поле не может быть пустым";
+            }
+
+            if (string.IsNullOrEmpty(CommonAreaEntry.Text))
+            {
+                CommonAreaEntry.IsError = true;
+                CommonAreaEntry.ErrorText = "Укажите общую площадь";
             }
 
             if (string.IsNullOrEmpty(CostEntry.Text))
@@ -188,20 +263,44 @@ namespace RealtyMarket.Views
                 NumberEntry.ErrorText = "Укажите номер телефона";
             }
 
-            return LivingAreaEntry.IsError && CostEntry.IsError && NumberEntry.IsError;
+            return CommonAreaEntry.IsError || CostEntry.IsError || NumberEntry.IsError || AdvertisementTypeError.IsVisible
+                 || AdvertismentNameEntry.IsError || AddressEntry.IsError;
         }
 
         #endregion
 
         private void IntValidatorEntry(object sender, TextChangedEventArgs e)
         {
-            if (!e.NewTextValue.All(Char.IsDigit))
+            if (e.NewTextValue.Contains('.'))
             {
                 if(sender is GrEntry entry)
-                {
+                {   
                     entry.Text = e.OldTextValue;
                 }
             }
+        }
+
+        private async void SfEffectsView_AnimationCompleted(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(_mapPage);
+
+            RealtyLocation result = await _mapPage.GetMapResultAsync();
+
+            _lastLocation = result;
+            AddressEntry.Text = result.Address;
+        }
+
+        private void RemovePhotoClicked(object sender, EventArgs e)
+        {
+            if(sender is ImageButton ib)
+            {
+                _viewModel.RemovePhotoCommand.Execute(ib.BindingContext);
+            }
+        }
+
+        private void AddPhotoClicked(object sender, EventArgs e)
+        {
+            _viewModel.AddPhotoCommand.Execute(null);
         }
     }
 }

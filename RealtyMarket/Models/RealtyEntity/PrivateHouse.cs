@@ -6,8 +6,6 @@ namespace RealtyMarket.Models.RealtyEntity
     {
         public string HouseType { get; set; }
 
-        public int Readiness { get; set; }
-
         public bool HasElectricity { get; set; }
 
         public string Water { get; set; }

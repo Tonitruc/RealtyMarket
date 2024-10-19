@@ -11,5 +11,7 @@
         public string Number { get; set; } = string.Empty;
 
         public string Password { get; set; } = string.Empty;
+
+        public string UserImageUrl { get; set; } = string.Empty;
     }
 }

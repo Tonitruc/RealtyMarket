@@ -4,25 +4,59 @@
              xmlns:local="clr-namespace:RealtyMarket.Views" 
              x:Class="RealtyMarket.Views.CatalogPage"
              xmlns:control="clr-namespace:RealtyMarket.Controls"
-             xmlns:map="clr-namespace:Syncfusion.Maui.Maps;assembly=Syncfusion.Maui.Maps"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:model="clr-namespace:RealtyMarket.Models"
+             xmlns:viewmodel="clr-namespace:RealtyMarket.ViewModels"
              Shell.NavBarIsVisible="False"
+             x:DataType="viewmodel:CatalogViewModel"
              Title="CatalogPage">
 
-    <ContentPage.BindingContext>
-        <local:CatalogPageVewModel/>
-    </ContentPage.BindingContext>
-
-    <VerticalStackLayout>
-        <control:GrButton IsBusy="False"
-                          LoadingText="Загрузка..."
-                          HeightRequest="70"
-                          WidthRequest="100"
-                          BackgroundColor="{StaticResource DarkViolet}"
-                          IsEnabled="True"
-                          TextColor="White"
-                          CornerRadius="100"
-                          FontSize="18">
-                          
-        </control:GrButton>
+    <VerticalStackLayout Margin="0,10,0,0">
+        <Grid ColumnDefinitions="0.8*,0.2*">
+            <SearchBar Placeholder="Поиск..." 
+                       HorizontalOptions="Fill"/>
+            <ImageButton Source="filter.png" 
+                         HeightRequest="30" 
+                         Grid.Column="1"/>
+        </Grid>
+        <ScrollView Margin="10,0,10,0">
+            <syncfusion:SfListView x:Name="CatalogView" Orientation="Vertical"
+                                   ItemsSource="{Binding Advertisements}"
+                                   ItemSize="220"
+                                   ItemSpacing="0">
+                <syncfusion:SfListView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Advertisement">
+                        <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                            <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
+                                <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
+                                    <Image Source="{Binding ImageUrls, Converter={StaticResource ImageUrlConverter}}" 
+                                           BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                </Border>
+                                <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
+                                    <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
+                                           TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
+                                    <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1"/>
+                                    <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
+                                    <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3"/>
+                                    <Label x:Name="Cost" Text="{Binding Cost, StringFormat='Цена: {0}'}"
+                                           VerticalOptions="End" Grid.Row="4"/>
+                                </Grid>
+                                <control:GrButton Text="Подробнее" 
+                                                  Grid.Row="1" 
+                                                  Grid.Column="1" 
+                                                  Padding="0"
+                                                  Margin="5,10,5,2"
+                                                  BackgroundColor="{StaticResource DarkViolet}"
+                                                  TextColor="White"
+                                                  VerticalOptions="Fill"
+                                                  TextAlligment="Center"   
+                                                  HorizontalOptions="Fill"
+                                                  CornerRadius="5"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </syncfusion:SfListView.ItemTemplate>
+            </syncfusion:SfListView>
+        </ScrollView>
     </VerticalStackLayout>
 </ContentPage>

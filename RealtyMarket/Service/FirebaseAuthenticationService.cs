@@ -11,7 +11,7 @@ namespace RealtyMarket.Service
 
 
         public FirebaseAuthenticationService(FirebaseAuthClient firebaseAuthClient
-            , SecureStorageUserRepository storageUserRepository)
+            ,SecureStorageUserRepository storageUserRepository)
         {
             _firebaseAuthClient = firebaseAuthClient;
             _storageUserRepository = storageUserRepository;
@@ -81,12 +81,12 @@ namespace RealtyMarket.Service
             return SignInResultEnum.InValidError;
         }
 
-        public async void SignOutUser()
+        public async Task SignOutUser()
         {
-            _firebaseAuthClient.SignOut();
-            
-            if(await _storageUserRepository.GetUserState() != "Guest")
-                _storageUserRepository.DeleteUser();
+            //_firebaseAuthClient.SignOut();
+
+            var userStatus = await _storageUserRepository.GetUserState();
+            _storageUserRepository.DeleteUser();
         }
 
         public User GetCurrentUser()

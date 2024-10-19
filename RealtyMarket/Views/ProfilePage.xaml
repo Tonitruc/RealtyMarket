@@ -10,52 +10,89 @@
              Title="ProfilePage">
 
     <VerticalStackLayout>
-        <HorizontalStackLayout HeightRequest="60">
+        <Grid ColumnDefinitions="0.2*,*" HeightRequest="60">
             <Border Margin="5" StrokeThickness="2">
                 <Image Source="profileicon.png" Background="White"/>
             </Border>
            
             <control:GrButton Margin="0" 
-                                  IsVisible="{Binding IsRegisteredUser, Converter={StaticResource InverseBooleanConverter}}"
-                                  HeightRequest="40" 
-                                  WidthRequest="300"
-                                  Padding="0"
-                                  Text="Войти или зарегистрироваться" 
-                                  TextColor="{StaticResource MediumViolet}"
-                                  BackgroundColor="White"
-                                  VerticalOptions="Center"
-                                  FontSize="17"/>
+                              IsVisible="{Binding IsRegisteredUser, Converter={StaticResource InverseBooleanConverter}}"
+                              Grid.Column="1"
+                              EffectColor="LightGray"
+                              TextAlligment="Start"
+                              VerticalOptions="FillAndExpand"
+                              HorizontalOptions="FillAndExpand"
+                              Padding="0"
+                              FontFamily="NexaDemoBold"
+                              Text="Войти или зарегистрироваться" 
+                              TextColor="{StaticResource MediumViolet}"
+                              BackgroundColor="White"                       
+                              FontSize="17"/>
 
             <control:GrButton Margin="0" 
+                              Grid.Column="1"
                               IsVisible="{Binding IsRegisteredUser}"
                               HeightRequest="40" 
-                              WidthRequest="300"
                               Padding="0"
-                              Text="{Binding UserInfo.Email}" 
+                              FontFamily="NexaDemoBold"
+                              Text="{Binding Email}" 
                               TextColor="{StaticResource MediumViolet}"
                               BackgroundColor="White"
-                              VerticalOptions="Center"
+                              TextAlligment="Start"
+                              EffectColor="LightGray"
+                              VerticalOptions="FillAndExpand"
+                              HorizontalOptions="FillAndExpand"
                               FontSize="17"/>
             
-
-        </HorizontalStackLayout>
+        </Grid>
         <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"
                  BackgroundColor="Gray"/>
         <button:SfButton Margin="0,3,0,0"
-                            FontFamily="VeryBold"
-                            Stroke="Black" 
-                            StrokeThickness="3"
-                            FontSize="18"
-                            TextColor="Black"
-                            CornerRadius="0"
-                            ImageSize="20"
-                            HorizontalTextAlignment="Center"
-                            Text="Выйти из аккаунта"
-                            ImageSource="logout.png"
-                            ImageAlignment="End"
-                            Background="White"
-                            ShowIcon="True"
-                            Command="{Binding SignOutCommand}">
-        </button:SfButton>
+                         FontFamily="VeryBold"
+                         Stroke="Black" 
+                         StrokeThickness="3"
+                         FontSize="18"
+                         TextColor="Black"
+                         CornerRadius="0"
+                         ImageSize="20"
+                         HorizontalTextAlignment="Center"
+                         Text="Мои объявления"
+                         ImageSource="cart_icon.png"
+                         ImageAlignment="End"
+                         Background="White"
+                         ShowIcon="True"
+                         Command="{Binding SignOutCommand}"/>
+
+        <button:SfButton Margin="0,3,0,0"
+                         FontFamily="VeryBold"
+                         Stroke="Black" 
+                         StrokeThickness="3"
+                         FontSize="18"
+                         TextColor="Black"
+                         CornerRadius="0"
+                         ImageSize="20"
+                         HorizontalTextAlignment="Center"
+                         Text="Избранное"
+                         ImageSource="heart_icon.png"
+                         ImageAlignment="End"
+                         Background="White"
+                         ShowIcon="True"
+                         Command="{Binding SignOutCommand}"/>
+
+        <button:SfButton Margin="0,3,0,0"
+                         FontFamily="VeryBold"
+                         Stroke="Black" 
+                         StrokeThickness="3"
+                         FontSize="18"
+                         TextColor="Black"
+                         CornerRadius="0"
+                         ImageSize="20"
+                         HorizontalTextAlignment="Center"
+                         Text="Выйти из аккаунта"
+                         ImageSource="logout.png"
+                         ImageAlignment="End"
+                         Background="White"
+                         ShowIcon="True"
+                         Command="{Binding SignOutCommand}"/>
     </VerticalStackLayout>
 </ContentPage>

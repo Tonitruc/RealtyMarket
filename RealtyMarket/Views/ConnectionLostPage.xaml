@@ -34,9 +34,5 @@
                               Grid.Row="1" 
                               AnimationType="Globe" 
                               IsRunning="True"/>
-        <Label Text="{Binding ReturnPage}" Grid.Row="0"
-               FontSize="20">
-            
-        </Label>
     </Grid>
 </ContentPage>

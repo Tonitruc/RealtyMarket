@@ -54,7 +54,7 @@ namespace RealtyMarket
 
             string key = "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1NpR2BGfV5ycEVFalhZTnZcUj0eQnxTdEFjUH1WcH1WQ2BYUEV1WA==";
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(key);
-            builder.Services.AddSingleton<IUserRepository, SecureStorageUserRepository>();
+            builder.Services.AddTransient<SecureStorageUserRepository>();
 
             builder.Services.AddSingleton(services => new FirebaseAuthClient(new FirebaseAuthConfig()
             {
@@ -64,7 +64,6 @@ namespace RealtyMarket
                 {
                     new EmailProvider(),
                 },
-                UserRepository = services.GetRequiredService<IUserRepository>()
             }));
 
             builder.Services.AddSingleton<AppShell>();
@@ -84,7 +83,18 @@ namespace RealtyMarket
             builder.Services.AddTransient<AddAdViewModel>();
             builder.Services.AddTransient<AddAdPage>();
 
+            builder.Services.AddTransient<CatalogViewModel>();
+            builder.Services.AddTransient<CatalogPage>();
+
             builder.Services.AddScoped<RegisteredUserRepository>();
+            builder.Services.AddScoped<RealtyRepository>();
+            builder.Services.AddScoped<AdvertisementRepository>();
+            builder.Services.AddScoped<RealtyLocationRepository>();
+            builder.Services.AddTransient<ImageBBRepository>();
+
+            builder.Services.AddHttpClient<ImageBBRepository>();
+
+            //SecureStorage.RemoveAll();
 
             builder.Services.AddSingleton<FirebaseClient>(sp =>
                 new FirebaseClient("https://realtymarket-e4db0-default-rtdb.firebaseio.com/"));

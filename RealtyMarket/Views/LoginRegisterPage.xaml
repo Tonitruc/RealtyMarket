@@ -7,22 +7,26 @@
              x:Class="RealtyMarket.Views.LoginRegisterPage"
              Title="LoginPage">
 
-    <Grid RowDefinitions="50,2,*" Margin="0">
-        <HorizontalStackLayout HeightRequest="50">
-            <control:GrButton x:Name="LoginPageButton" Text="Вход" BackgroundColor="White" EffectColor="LightGray" TextColor="Black" HeightRequest="50"
-                              Clicked="LoginPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}"/>
+    <Grid RowDefinitions="0.06*,Auto,0.90*" Margin="0">
+        <Grid ColumnDefinitions="*,*" HeightRequest="50">
+            <control:GrButton x:Name="LoginPageButton" Text="Вход" BackgroundColor="White" EffectColor="LightGray" TextColor="Black"
+                              Clicked="LoginPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}" CornerRadius="0" DisableTextColor="Black"
+                              DisableBackgroundColor="{StaticResource Gray100}" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0"/>
             <control:GrButton x:Name="RegisterPageButton" Text="Регистрация" BackgroundColor="White" EffectColor="LightGray" TextColor="Black"
-                              Clicked="RegisterPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}"/>
-        </HorizontalStackLayout>
-        <BoxView x:Name="SelectBoxView" Grid.Row="1" HeightRequest="2" WidthRequest="{Binding Source={x:Reference LoginPageButton}, Path=Width}" 
-                 Color="{StaticResource DarkViolet}" HorizontalOptions="Start"></BoxView>
+                              Clicked="RegisterPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}" CornerRadius="0" DisableTextColor="Black"
+                              DisableBackgroundColor="{StaticResource Gray100}" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="1"/>
+        </Grid>
+        <BoxView HeightRequest="2" Grid.Row="1" x:Name="SelectBoxView"
+                 WidthRequest="{Binding Source={x:Reference LoginButton}, Path=WidthRequest}"
+                 HorizontalOptions="Start"
+                 Color="{StaticResource DarkViolet}"></BoxView>
 
         <ContentView x:Name="LoginPage" Grid.Row="2">
             <ScrollView>
                 <Grid RowDefinitions="Auto,*">
                     <VerticalStackLayout>
                         <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
-                                                             Title="Войди чтобы:"></control:RegistrationAdvantagesLabel>
+                                                             Title="Войди чтобы получить:"></control:RegistrationAdvantagesLabel>
 
                         <Frame CornerRadius="10" 
                                Margin="20,0,20,10"  
@@ -40,31 +44,19 @@
                             <control:GrEntry x:Name="LoginEmailEntry"
                                              Title="Email"    
                                              TextChanged="EmailTextChanged"
+                                             FocusedColor="{StaticResource MediumDarkViolet}"                                         
                                              Text="{Binding User.Email, Mode=TwoWay}"
                                              IsEnabled="{Binding IsBusy}"/>
 
                             <control:GrEntry x:Name="LoginPasswordEntry"
                                              Title="Пароль"
                                              Margin="0, 20, 0, 0"
+                                             FocusedColor="{StaticResource MediumDarkViolet}"
                                              IsPassword="True"
                                              TextChanged="LoginPasswordTextChanged"
                                              Text="{Binding User.Password, Mode=TwoWay}"
                                              IsEnabled="{Binding IsBusy}"/>
                         </StackLayout>
-
-                        <control:GrButton Text="Забыли пароль?"
-                                          BackgroundColor="White"
-                                          TextColor="{StaticResource MediumViolet}"
-                                          HorizontalOptions="Start"
-                                          VerticalOptions="Start"
-                                          Padding="0"
-                                          CornerRadius="0"
-                                          WidthRequest="120"
-                                          EffectColor="LightGray"
-                                          HeightRequest="30"
-                                          Margin="15,0,0,0" 
-                                          IsEnabled="{Binding IsBusy}">
-                        </control:GrButton>
 
                         <StackLayout Orientation="Vertical"
                                      Spacing="10"
@@ -77,6 +69,8 @@
                                               BackgroundColor="{StaticResource DarkViolet}"
                                               Margin="40, 0, 40, 0"
                                               HeightRequest="40"
+                                              DisableBackgroundColor="{StaticResource DisableColor}"
+                                              DisableTextColor="White"
                                               WidthRequest="200"
                                               Padding="0, 0, 0, 2"
                                               Clicked="LoginButtonClicked"
@@ -84,12 +78,15 @@
                                               IsBusy="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
                             </control:GrButton>
                             <control:GrButton Text="Войти как гость!"
+                                              BackgroundColor="White"
                                               Margin="40, 0, 40, 0"
                                               FontSize="14"
                                               HeightRequest="35"
                                               Padding="0, 0, 0, 2"
                                               TextColor="{StaticResource MediumViolet}"
-                                              Background="Transparent"
+                                              DisableBackgroundColor="White"
+                                              DisableTextColor="#825194"
+                                              EffectColor="LightGray"
                                               Clicked="EnterAsGuest"
                                               IsEnabled="{Binding IsBusy}">
                             </control:GrButton>
@@ -104,7 +101,7 @@
                 <VerticalStackLayout>
                     <VerticalStackLayout>
                         <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
-                                                             Title="Зарегестрируйтесь чтобы:"></control:RegistrationAdvantagesLabel>
+                                                             Title="Зарегестрируйтесь чтобы получить:"></control:RegistrationAdvantagesLabel>
 
                         <Frame CornerRadius="10" 
                                Margin="20,0,20,10"  
@@ -122,6 +119,7 @@
                             <control:GrEntry x:Name="RegisterEmailEntry"
                                              Title="Email"
                                              Margin="0, 20, 0, 0"
+                                             FocusedColor="{StaticResource MediumDarkViolet}"                                            
                                              TextChanged="EmailTextChanged"
                                              Text="{Binding NewUser.Email, Mode=TwoWay}"
                                              IsEnabled="{Binding IsBusy}"/>
@@ -130,6 +128,7 @@
                                              Title="Пароль"
                                              Margin="0, 20, 0, 0"
                                              IsPassword="True"
+                                             FocusedColor="{StaticResource MediumDarkViolet}"                                            
                                              TextChanged="RegisterPasswordTextChanged"
                                              Text="{Binding NewUser.Password, Mode=TwoWay}"
                                              IsEnabled="{Binding IsBusy}"/>
@@ -154,6 +153,7 @@
                                              Title="Подтвердите пароль"
                                              Margin="0, 20, 0, 0"
                                              IsPassword="True"
+                                             FocusedColor="{StaticResource MediumDarkViolet}"                                            
                                              TextChanged="AllowPasswordChanged"
                                              IsEnabled="{Binding IsBusy}"/>
                         </StackLayout>
@@ -169,6 +169,8 @@
                                               Margin="40, 0, 40, 20"
                                               HeightRequest="45"
                                               WidthRequest="200"
+                                              DisableBackgroundColor="{StaticResource DisableColor}"
+                                              DisableTextColor="White"
                                               Padding="0, 0, 0, 2"
                                               LoadingText="Загрузка..."
                                               Clicked="RegistrationButtonClicked"

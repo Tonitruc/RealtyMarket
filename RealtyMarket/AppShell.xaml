@@ -22,11 +22,10 @@
                    Grid.Column="0"
                    Margin="0" />
 
-            <StackLayout Orientation="Vertical"
-                         Grid.Column="1">
+            <VerticalStackLayout Grid.Column="1">
                 <Label Text="Realty"
                        FontFamily="Pavelt"
-                       FontSize="12"
+                       FontSize="14"
                        FontAttributes="None"
                        VerticalOptions="Center"
                        HorizontalOptions="Start"
@@ -35,13 +34,13 @@
 
                 <Label Text="Market"
                        FontFamily="Pavelt"
-                       FontSize="12"
+                       FontSize="14"
                        FontAttributes="None"
                        VerticalOptions="Center"
                        HorizontalOptions="Start"
                        TextColor="White"
                        Margin="10,0,0,0" />
-            </StackLayout>
+            </VerticalStackLayout>
         </Grid>
     </Shell.TitleView>
 
@@ -53,11 +52,11 @@
         <Tab Title="Каталог" Icon="catalogicon.png">
             <ShellContent Title = "CatalogPage" 
                           Route="CatalogPage"
-                          ContentTemplate="{DataTemplate views:MapPage}" />
+                          ContentTemplate="{DataTemplate views:CatalogPage}" />
         </Tab>
         <Tab Title="Избранное" Icon="favoritesicon.png">
             <ShellContent Title = "FavoritesPage" 
-                          Route="FavoritePage"
+                          Route="FavoritesPage"
                           ContentTemplate="{DataTemplate views:FavoritesPage}" />
         </Tab>
         <Tab Title="Добавить" Icon="addadicon.png">
@@ -75,4 +74,7 @@
     <ShellContent Title = "ConnectionLostPage" 
                   ContentTemplate="{DataTemplate views:ConnectionLostPage}" 
                   Route="NoInternetPage"/>
+    <ShellContent Title = "Map" 
+                  ContentTemplate="{DataTemplate views:MapPage}" 
+                  Route="MapPage"/>
 </Shell>

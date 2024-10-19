@@ -1,72 +1,55 @@
 using Microsoft.Maui.Platform;
+using RealtyMarket.Models.OtherEntity;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 
 namespace RealtyMarket.Views;
 
 public partial class MapPage : ContentPage
 {
-	public MapPage()
-	{
-		InitializeComponent();
+    private TaskCompletionSource<RealtyLocation> _taskCompletionSource;
+
+    private RealtyLocation _lastLocation;
+
+    public MapPage()
+    {
+        InitializeComponent();
 
         Shell.SetTabBarIsVisible(this, false);
 
-        string htmlSource = @"
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset='utf-8'>
-        <title>Yandex Map</title>
-        <script src='https://api-maps.yandex.ru/2.1/?apikey=3225bb0b-e2a7-455f-9c95-ce49d86acbcb&lang=ru_RU' type='text/javascript'></script>
-        <script type='text/javascript'>
-            ymaps.ready(init);
-            var myMap;
-            var lastCoords = [0, 0];
+        MapWebView.Navigating += OnWebViewNavigating;
 
-            function init(){
-                myMap = new ymaps.Map('map', {
-                    center: [55.76, 37.64], 
-                    zoom: 10,
-                    controls: [],
-                    theme: 'islands#dark'
-                }, {
-                    suppressMapOpenBlock: true, 
-                    yandexMapDisablePoiInteractivity: true
-                }); 
+        LoadHtmlToWebView();
+    }
 
-                // Добавляем событие на клик
-                myMap.events.add('click', function (e) {
-                    lastCoords = e.get('coords');
-                    placeMarker(lastCoords);
-                });
-            }
+    protected async override void OnAppearing()
+    {
+        base.OnAppearing();
 
-            function placeMarker(coords) {
-                var myPlacemark = new ymaps.Placemark(coords, {}, {
-                    preset: 'islands#icon',
-                    iconColor: '#0095b6'
-                });
+        if (_lastLocation != null)
+        {
+            await MapWebView.EvaluateJavaScriptAsync($"waitForMapReadyAndSetCoordinates({_lastLocation.Latinude}, {_lastLocation.Longitude});");
+        }
 
-                myMap.geoObjects.removeAll(); 
-                myMap.geoObjects.add(myPlacemark);
-            }
+        _taskCompletionSource = new TaskCompletionSource<RealtyLocation>();
+    }
 
-            function getLastCoordinates() {
-                return JSON.stringify({
-                    lat: lastCoords[0].toFixed(6),
-                    lng: lastCoords[1].toFixed(6)
-                });
-            }
-        </script>
-    </head>
-    <body>
-        <div id='map' style='width: 100%; height: 100vh;'></div>
-    </body>
-    </html>";
+    public Task<RealtyLocation> GetMapResultAsync()
+    {
+        return _taskCompletionSource.Task;
+    }
+
+    private async void LoadHtmlToWebView()
+    {
+
+        using var stream = await FileSystem.OpenAppPackageFileAsync("map.html");
+        using var reader = new StreamReader(stream);
+
+        var contents = reader.ReadToEnd();
 
         MapWebView.Source = new HtmlWebViewSource
         {
-            Html = htmlSource
+            Html = contents
         };
     }
 
@@ -80,11 +63,51 @@ public partial class MapPage : ContentPage
 
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {
-                string lat = doc.RootElement.GetProperty("lat").GetString();
-                string lng = doc.RootElement.GetProperty("lng").GetString();
-
-                Console.WriteLine($"Широта: {lat}, Долгота: {lng}");
+                RealtyLocation location = new()
+                {
+                    Latinude = Convert.ToDouble(doc.RootElement.GetProperty("lat").GetString().Replace(".", ",")),
+                    Longitude = Convert.ToDouble(doc.RootElement.GetProperty("lng").GetString().Replace(".", ",")),
+                    Address = doc.RootElement.GetProperty("address").GetString()
+                };
+                _lastLocation = location;
+                _taskCompletionSource.SetResult(location);
+                await Navigation.PopAsync();
             }
+        }
+    }
+
+    private void OnSearchAddressClicked(object sender, EventArgs e)
+    {
+        string address = SearchEntry.Text;
+
+        if (!string.IsNullOrWhiteSpace(address))
+        {
+            address = address.Replace("'", "\\'").Replace("\"", "\\\"");
+
+            MapWebView.EvaluateJavaScriptAsync($"searchAddress('{address}');");
+        }
+    }
+
+    private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
+    {
+        if (e.Url.StartsWith("app://address"))
+        {
+            e.Cancel = true;
+
+            var uri = new Uri(e.Url);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var address = query.Get("value");
+
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                SearchEntry.Text = address;
+            }
+        }
+        else if (e.Url.StartsWith("app://log"))
+        {
+            e.Cancel = true; 
+            var message = e.Url.Substring("app://log?message=".Length);
+            Console.WriteLine($"JS log: {Uri.UnescapeDataString(message)}"); 
         }
     }
 }

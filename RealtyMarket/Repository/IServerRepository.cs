@@ -14,9 +14,6 @@ namespace RealtyMarket.Repository
         public abstract string Controller { get; }
 
 
-        public abstract Task<bool> GetAll();
-        public abstract Task<bool> Add(T entity);
-
         public string GetBasetUrl()
         {
             return BaseUrl + "/" + Controller;

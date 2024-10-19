@@ -8,6 +8,8 @@ namespace RealtyMarket
 
         private readonly ConnectivityService _connectivityService;
 
+        private readonly List<string> NeedRegisterPages;
+
         public AppShell(SecureStorageUserRepository secureStorageUserRepository,
             ConnectivityService connectivityService)
         {
@@ -16,9 +18,30 @@ namespace RealtyMarket
             _secureStorageUserRepository = secureStorageUserRepository;
             _connectivityService = connectivityService;
 
-            Task.Run(CheckUserAuthenticationAsync);
-
             Navigating += CheckConnetionNavigating;
+            Navigating += CheckUserAuthenticationAsync;
+
+            NeedRegisterPages = [
+                "//FavoritesPage",
+                "//AddAdPage",
+                "//MainTabs/AddAdPage",
+                "//MainTabs/FavoritesPage"
+                ];
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            bool isLoggedIn = await _secureStorageUserRepository.UserExists();
+            if(isLoggedIn)
+            {
+                await GoToAsync("//MainTabs");
+            }
+            else
+            {
+                await GoToAsync("//LoginPage");
+            }
         }
 
         private async void CheckConnetionNavigating(object sender, ShellNavigatingEventArgs e)
@@ -28,47 +51,27 @@ namespace RealtyMarket
                 if (!e.Target.Location.OriginalString.StartsWith("//NoInternetPage"))
                 {
                     e.Cancel();
-                    await DisplayAlert("", $"{e.Target.Location.OriginalString}", "Ok");
                     await GoToAsync($"//NoInternetPage?ReturnPage={e.Target.Location.OriginalString}");
-                }
-
-
-                if (e.Target.Location.ToString() == "AddAdPage")
-                {
-                    string userStatus = await _secureStorageUserRepository.GetUserState();
-
-                    if(userStatus == "Guest")
-                    {
-                        e.Cancel();
-                        await GoToAsync("//LoginRegisterPage");
-                    }
                 }
             }
         }
 
-        private async Task CheckUserAuthenticationAsync()
+        private async void CheckUserAuthenticationAsync(object sender, ShellNavigatingEventArgs e)
         {
-            if(!_connectivityService.IsConnectedToInternet())
+            var newPage = e.Target.Location.OriginalString;
+            if (!_connectivityService.IsConnectedToInternet())
             {
-                await GoToAsync($"//NoInternetPage?ReturnPage=//LoginPage");
+                await GoToAsync($"//NoInternetPage?ReturnPage={newPage}");
             }
             else
             {
-                bool isLoggedIn = _secureStorageUserRepository.UserExists();
+                var user = await _secureStorageUserRepository.ReadUser();
+                var userStatus = await _secureStorageUserRepository.GetUserState();
 
-                if (isLoggedIn)
+                if (userStatus == "Guest" && NeedRegisterPages.Contains(newPage))
                 {
-                    await Dispatcher.DispatchAsync(() =>
-                    {
-                        GoToAsync("//MainTabs");
-                    });
-                }
-                else
-                {
-                    await Dispatcher.DispatchAsync(() =>
-                    {
-                        GoToAsync("//LoginRegisterPage");
-                    });
+                    e.Cancel();
+                    await GoToAsync("//LoginPage");
                 }
             }
         }

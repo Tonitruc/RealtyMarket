@@ -41,6 +41,20 @@ namespace RealtyMarket.Controls
                 control.ButtonFrame.WidthRequest = (double)newValue;
             });
 
+        public static readonly BindableProperty HorizontalOptionsProperty = BindableProperty.Create(
+            nameof(HorizontalOptions), typeof(LayoutOptions), typeof(GrButton), LayoutOptions.Start, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrButton)bindable;
+                control.ButtonFrame.HorizontalOptions = (LayoutOptions)newValue;
+            });
+
+        public static readonly BindableProperty VerticalOptionsProperty = BindableProperty.Create(
+            nameof(VerticalOptions), typeof(LayoutOptions), typeof(GrButton), LayoutOptions.Start, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrButton)bindable;
+                control.ButtonFrame.VerticalOptions = (LayoutOptions)newValue;
+            });
+
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(
             nameof(CornerRadius), typeof(float), typeof(GrButton), 5.0f, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
@@ -73,14 +87,17 @@ namespace RealtyMarket.Controls
             nameof(IsEnabled), typeof(bool), typeof(GrButton), true, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 var control = (GrButton)bindable;
+                control.DarkEffect.BackgroundColor = control.DisableBackgroundColor;
                 control.DarkEffect.IsVisible = !(bool)newValue;
                 if((bool)newValue)
                 {
                     control.ButtonFrame.Opacity = 1;
+                    control.ButtonLabel.TextColor = control.TextColor;
                 }
                 else
                 {
                     control.ButtonFrame.Opacity = 0.5;
+                    control.ButtonLabel.TextColor = control.DisableTextColor;
                 }
             });
 
@@ -114,6 +131,19 @@ namespace RealtyMarket.Controls
                 control.ButtonFrame.Padding = (Thickness)newValue;
             });
 
+        public static readonly BindableProperty TextAlligmentProperty = BindableProperty.Create(
+            nameof(TextAlligment), typeof(TextAlignment), typeof(GrButton), TextAlignment.Center, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrButton)bindable;
+                control.ButtonLabel.HorizontalTextAlignment = (TextAlignment)newValue;
+            });
+
+        public TextAlignment TextAlligment
+        {
+            get => (TextAlignment)GetValue(TextAlligmentProperty);
+            set => SetValue(TextAlligmentProperty, value);
+        }
+
         public string Text
         {
             get => GetValue(TextProperty) as string;
@@ -143,6 +173,23 @@ namespace RealtyMarket.Controls
             set => SetValue(WidthRequestProperty, value);
         }
 
+        public double Width
+        {
+            get => ButtonFrame.Width;
+        }
+
+        public LayoutOptions HorizontalOptions
+        {
+            get => (LayoutOptions)GetValue(HorizontalOptionsProperty);
+            set => SetValue(HorizontalOptionsProperty, value);
+        }
+
+        public LayoutOptions VerticalOptions
+        {
+            get => (LayoutOptions)GetValue(VerticalOptionsProperty);
+            set => SetValue(VerticalOptionsProperty, value);
+        }
+
         public float CornerRadius
         {
             get => (float)GetValue(CornerRadiusProperty);
@@ -159,6 +206,22 @@ namespace RealtyMarket.Controls
         {
             get => GetValue(TextColorProperty) as Color;
             set => SetValue(TextColorProperty, value);
+        }
+
+        private Color _disableBackgroundColor = Colors.LightGray;
+
+        public Color DisableBackgroundColor
+        {
+            get => _disableBackgroundColor;
+            set => _disableBackgroundColor = value;
+        }
+
+        private Color _disableTextColor = Colors.LightGray;
+
+        public Color DisableTextColor
+        {
+            get => _disableTextColor;
+            set => _disableTextColor = value;
         }
 
         public double FontSize

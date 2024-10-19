@@ -1,32 +1,28 @@
 using MvvmHelpers;
+using RealtyMarket.ViewModels;
+using Syncfusion.Maui.Core.Carousel;
 using System.ComponentModel;
 
 namespace RealtyMarket.Views
 {
     public partial class CatalogPage : ContentPage
     {
-        public CatalogPage()
+        private readonly CatalogViewModel _viewModel;
+
+        public CatalogPage(CatalogViewModel viewModel)
         {
             InitializeComponent();
 
+            BindingContext = _viewModel = viewModel;
+
             Shell.SetTitleView(this, null);
         }
-    }
 
-    public class CatalogPageVewModel : ObservableObject
-    {
-        private string _text;
-
-        public string Text
+        protected override async void OnAppearing()
         {
-            get => _text;
-            set => SetProperty(ref _text, value);
+            base.OnAppearing();
 
-        }
-
-        public CatalogPageVewModel()
-        {
-           
+            await _viewModel.GetAdvertisements();
         }
     }
 }

@@ -4,18 +4,18 @@ using System.Text.Json;
 
 namespace RealtyMarket.Service
 {
-    public class SecureStorageUserRepository : IUserRepository
+    public class SecureStorageUserRepository
     {
         public const string CurrentUserInfoKey = "USER_KEY";
         public const string CurrentUserCredentialKey = "CREDENTIAL_KEY";
         public const string CurrentUserStateKey = "USER_STATE_KEY";
 
-        public (UserInfo userInfo, FirebaseCredential credential) ReadUser()
+        public async Task<(UserInfo userInfo, FirebaseCredential credential)> ReadUser()
         {
             try
             {
-                string userInfoJson = Task.Run(() => SecureStorage.Default.GetAsync(CurrentUserInfoKey)).Result;
-                string credntialJson = Task.Run(() => SecureStorage.Default.GetAsync(CurrentUserCredentialKey)).Result;
+                string userInfoJson = await SecureStorage.GetAsync(CurrentUserInfoKey);
+                string credntialJson = await SecureStorage.GetAsync(CurrentUserCredentialKey);
 
                 UserInfo userInfo = JsonSerializer.Deserialize<UserInfo>(userInfoJson);
                 FirebaseCredential credential = JsonSerializer.Deserialize<FirebaseCredential>(credntialJson);
@@ -28,23 +28,23 @@ namespace RealtyMarket.Service
             }
         }
 
-        public void SaveUser(User user)
+        public async void SaveUser(User user)
         {
             try
             {
                 var userInfoJson = JsonSerializer.Serialize(user.Info);
                 var cedentialJson = JsonSerializer.Serialize(user.Credential);
 
-                Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserInfoKey, userInfoJson));
-                Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserCredentialKey, cedentialJson));
+                await SecureStorage.SetAsync(CurrentUserInfoKey, userInfoJson);
+                await SecureStorage.SetAsync(CurrentUserCredentialKey, cedentialJson);
 
                 if(user.IsAnonymous)
                 {
-                    Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserStateKey, "Guest"));
+                    await SecureStorage.SetAsync(CurrentUserStateKey, "Guest");
                 }
                 else
                 {
-                    Task.Run(() => SecureStorage.Default.SetAsync(CurrentUserStateKey, "Register"));
+                    await SecureStorage.SetAsync(CurrentUserStateKey, "Register");
                 }
             }
             catch (Exception) { }
@@ -52,14 +52,14 @@ namespace RealtyMarket.Service
 
         public void DeleteUser()
         {
-            SecureStorage.Default.Remove(CurrentUserInfoKey);
-            SecureStorage.Default.Remove(CurrentUserCredentialKey);
-            SecureStorage.Default.Remove(CurrentUserStateKey);
+            SecureStorage.Remove(CurrentUserInfoKey);
+            SecureStorage.Remove(CurrentUserCredentialKey);
+            SecureStorage.Remove(CurrentUserStateKey);
         }
 
-        public bool UserExists()
+        public async Task<bool> UserExists()
         {
-            var userInfo = ReadUser();
+            var userInfo = await ReadUser();
             if(userInfo.Equals((null, null)))
             {
                 return false;
@@ -70,7 +70,7 @@ namespace RealtyMarket.Service
 
         public async Task<string> GetUserState()
         {
-            return await SecureStorage.Default.GetAsync(CurrentUserStateKey);
+            return await SecureStorage.GetAsync(CurrentUserStateKey);
         }
     }
 }

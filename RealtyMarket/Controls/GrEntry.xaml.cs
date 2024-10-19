@@ -32,7 +32,9 @@ namespace RealtyMarket.Controls
             nameof(Text), typeof(string), typeof(GrEntry), "", BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 var control = (GrEntry)bindable;
+                control.EntryLine.TextChanged -= control.OnEntryTextChanged;
                 control.EntryLine.Text = newValue as string;
+                control.EntryLine.TextChanged += control.OnEntryTextChanged;
                 control.OnEntryFocused(control.EntryLine, null);
                 control.IsFocused = false;
             });
@@ -91,6 +93,14 @@ namespace RealtyMarket.Controls
             {
                 var control = (GrEntry)bindable;
                 control._isError = (bool)newValue;
+                if(!string.IsNullOrEmpty(control.Message))
+                {
+                    control.MessageLabel.IsVisible = false;
+                }
+                else
+                {
+                    control.MessageLabel.IsVisible = true;
+                }
                 control.OnPropertyChanged(nameof(CurrentColor));
             });
 
@@ -202,6 +212,18 @@ namespace RealtyMarket.Controls
             set => SetValue(KeyboardProperty, value);
         }
 
+        public static readonly BindableProperty ImageSourceProperty = BindableProperty.Create(
+            nameof(ImageSource), typeof(string), typeof(GrEntry), "", propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrEntry)bindable;
+                control.UpdateGridStructure();
+            });
+
+        public string ImageSource
+        {
+            get => GetValue(ImageSourceProperty) as string;
+            set => SetValue(ImageSourceProperty, value);
+        }
 
         public new event EventHandler Focused;
         public new event EventHandler Unfocused;
@@ -215,6 +237,7 @@ namespace RealtyMarket.Controls
             EntryLine.TextChanged += OnEntryTextChanged;
 
             EntryLine.SetBinding(Entry.TextColorProperty, new Binding(nameof(TextProperty), BindingMode.TwoWay, source: this));
+            //EntryImage.SetBinding(Image.HeightProperty, new Binding(nameof(EntryLine.HeightProperty), BindingMode.TwoWay, source: EntryLine));
             EntryName.SetBinding(Label.TextColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
             Underline.SetBinding(BoxView.ColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
             PasswordHideButton.SetBinding(ImageButton.IsVisibleProperty, new Binding(nameof(IsPassword), BindingMode.TwoWay, source: this));
@@ -263,10 +286,11 @@ namespace RealtyMarket.Controls
 
         private void OnEntryTextChanged(object sender, TextChangedEventArgs e)
         {
-            Text = EntryLine.Text;
+            var oldText = Text;
+            Text = e.NewTextValue;
             _entryLength = Text.Length;
             MaxLengthLabel.Text = $"{_entryLength}/{MaxLength}";
-            TextChanged?.Invoke(this, new(Text, EntryLine.Text));
+            TextChanged?.Invoke(this, new(oldText, EntryLine.Text));
         }
 
         private void UpdateGridStructure()
@@ -274,17 +298,43 @@ namespace RealtyMarket.Controls
             ParentGrid.ColumnDefinitions.Clear();
 
             if (IsPassword)
-            {
+            {  
+                if(!string.IsNullOrEmpty(ImageSource))
+                {
+                    ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = EntryImage.HeightRequest + 5 });
+                    EntryImage.IsVisible = true;
+                }
                 ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
                 ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = 40 });
 
                 PasswordHideButton.IsVisible = true;
 
-                Grid.SetColumnSpan(Underline, 2);
-                Grid.SetColumn(PasswordHideButton, 1);
+                if (string.IsNullOrEmpty(ImageSource))
+                {
+                    Grid.SetColumnSpan(Underline, 2);
+                    Grid.SetColumn(PasswordHideButton, 1);
+                }
+                else
+                {
+                    EntryImage.Source = ImageSource;
+                    Grid.SetColumn(EntryLine, 1);
+                    Grid.SetColumn(Underline, 1);
+                    Grid.SetColumnSpan(Underline, 2);
+                    Grid.SetColumn(PasswordHideButton, 2);
+                }
+            }
+            else if(!string.IsNullOrEmpty(ImageSource))
+            {
+                EntryImage.IsVisible = true;
+                ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = EntryImage.HeightRequest + 5 });
+                ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                EntryImage.Source = ImageSource;
+                Grid.SetColumn(EntryLine, 1);
+                Grid.SetColumn(Underline, 1);
             }
             else
             {
+                EntryImage.IsVisible = false;
                 ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
                 PasswordHideButton.IsVisible = false;
             }

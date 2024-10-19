@@ -40,13 +40,13 @@ namespace RealtyMarket.Repository
             return null;
         }
 
-        public override Task<bool> GetAll()
+        public Task<bool> GetAll()
         {
             throw new NotImplementedException();
         }
 
 
-        public override async Task<bool> Add(RegisteredUser entity)
+        public async Task<bool> Add(RegisteredUser entity)
         {
             await _firebaseClient.Child(Controller).PostAsync(entity);
             return true;

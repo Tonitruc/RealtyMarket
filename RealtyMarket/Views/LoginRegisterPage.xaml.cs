@@ -114,7 +114,7 @@ namespace RealtyMarket.Views
                 RegistrationLetters.TextColor = (isMistake &= password.Any(Char.IsLetter)) ? Colors.Green : Colors.Red;
                 RegistrationLenght.TextColor = (isMistake &= password.Length >= 8) ? Colors.Green : Colors.Red;
                 RegisterPasswordEntry.IsError = !isMistake;
-                RegisterPasswordEntry.ErrorText = "Тебования не соблюдены";
+                RegisterPasswordEntry.ErrorText = "Требования не соблюдены";
             }
             else
             {
@@ -151,8 +151,8 @@ namespace RealtyMarket.Views
             AllowPasswordChanged(RegisterAllowPasswordEntry, e);
 
             if (!(RegisterPasswordEntry.IsError
-                && RegisterEmailEntry.IsError
-                && RegisterAllowPasswordEntry.IsError))
+                || RegisterEmailEntry.IsError
+                || RegisterAllowPasswordEntry.IsError))
             {
                 _loginRegisterViewModel.RegisterCommand.Execute(this);
             }
@@ -163,7 +163,7 @@ namespace RealtyMarket.Views
             LoginPasswordTextChanged(LoginPasswordEntry, e);
             EmailTextChanged(LoginEmailEntry, e);
 
-            if (!(LoginPasswordEntry.IsError && LoginEmailEntry.IsError))
+            if (!(LoginPasswordEntry.IsError || LoginEmailEntry.IsError))
             {
                 _loginRegisterViewModel.LoginCommand.Execute(this);
             }

@@ -76,24 +76,18 @@ namespace RealtyMarket.ViewModels
 
             _authService = authService;
             _registeredUserRepository = registeredUserRepository;
+            _secureStorageUserRepository = secureStorageUserRepository;
         }
 
         public async Task EnterAsGuest()
         {
             IsBusy = true;
 
-            string userStatus = await _secureStorageUserRepository.GetUserState();
-
-            if (userStatus == "Guest")
-            {
-                await Shell.Current.GoToAsync("//MainTabs");
-            }
-
             SignInResultEnum result = await _authService.SignInAnonymousUserAsync();
             if (result == SignInResultEnum.Ok)
             {
                 IsLoginError = false;
-                await Shell.Current.GoToAsync("//MainTabs");
+                await Shell.Current.GoToAsync("//CatalogPage");
             }
             else if (result == SignInResultEnum.InValidError)
             {

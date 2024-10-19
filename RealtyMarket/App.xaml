@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <converters:CategoryVisibilityConverter x:Key="CategoryToVisibilityConverter"/>
+            <converters:ImageUrlConverter x:Key="ImageUrlConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />

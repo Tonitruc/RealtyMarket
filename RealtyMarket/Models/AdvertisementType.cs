@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RealtyMarket.Models.RealtyEntity.Enums
+namespace RealtyMarket.Models
 {
-    public enum RealtyCategory
+    public enum AdvertisementType
     {
-        None = 0,
-        Flat,
-        PrivateHouse
+        Purchase,
+        Rent
     }
 }

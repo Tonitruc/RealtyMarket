@@ -4,7 +4,7 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="RealtyMarket.Controls.GrButton">
-    <Grid>
+    <Grid RowDefinitions="*">
         <BoxView x:Name="WaveEffect"
                  Opacity="0"
                  WidthRequest="0"
@@ -25,35 +25,35 @@
         <ContentView ZIndex="0">
             <mr:Frame x:Name="ButtonFrame"
                       CornerRadius="10"
-                      WidthRequest="200"
-                      HeightRequest="50"
-                      VerticalOptions="Center"
-                      HorizontalOptions="Center"
                       Tapping="ButtonFrame_Tapping"                    
                       LongPressing="ButtonFrame_LongPressing"
                       LongPressed="ButtonFrame_LongPressed"
                       HasShadow="False">
                 <Grid ColumnDefinitions="0.3*,0.7*">
                     <core:SfBusyIndicator x:Name="LoadingIndicator"
-                                      Margin="0,0,0,0"
-                                      Grid.Row="0"
-                                      IsVisible="False"
-                                      AnimationType="CircularMaterial" 
-                                      IndicatorColor="{Binding Source={x:Reference ButtonLabel}, Path=TextColor}"
-                                      IsRunning="True"/>
+                                          HeightRequest="{Binding Source={x:Reference ButtonLabel}, Path=Height}"
+                                          Grid.Row="0"
+                                          IsVisible="False"
+                                          Scale="0.6"
+                                          AnimationType="CircularMaterial" 
+                                          IndicatorColor="{Binding Source={x:Reference ButtonLabel}, Path=TextColor}"
+                                          IsRunning="True"/>
                     <Label x:Name="LoadingLabel"
                            Grid.Column="1"
                            IsVisible="False"
                            FontSize="{Binding Source={x:Reference ButtonLabel}, Path=FontSize}"
                            TextColor="{Binding Source={x:Reference ButtonLabel}, Path=TextColor}"
                            HorizontalOptions="Start"
-                           Margin="10,0,0,0"
+                           Margin="5,0,0,0"
                            FontFamily="{Binding Source={x:Reference ButtonLabel}, Path=FontFamily}"
                            VerticalOptions="Center"/>
                     <Label x:Name="ButtonLabel" 
+                           Margin="5,0,0,0"
                            Grid.ColumnSpan="2"
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center"/>
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="Fill" 
+                           VerticalTextAlignment="Center"
+                           VerticalOptions="Fill"/>
                 </Grid>    
             </mr:Frame>
         </ContentView>

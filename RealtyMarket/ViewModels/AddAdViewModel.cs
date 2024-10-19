@@ -6,21 +6,22 @@ using System.Windows.Input;
 using MvvmHelpers.Commands;
 using RealtyMarket.Service;
 using RealtyMarket.Repository;
+using Microsoft.Maui.Controls;
 
 
 namespace RealtyMarket.ViewModels
 {
     public class PhotoItem
     {
-        public bool IsFirst { get; set; } = false;
+        public bool IsButton { get; set; } = false;
+
         public ImageSource ImageSource { get; set; } = null;
-        public bool IsPhoto => ImageSource != null;
-        public bool IsAddButton => ImageSource == null;  
+
+        public bool IsEmpty => ImageSource != null;
     }
 
     public class AddAdViewModel : ObservableObject
     {
-
         public bool _isVisible;
         public bool IsVisible
         {
@@ -46,23 +47,16 @@ namespace RealtyMarket.ViewModels
 
         #region AdvertismentParam
 
-        private int _amountPhotos = 0;
-        public int AmountPhotos
-        {
-            get => _amountPhotos;
-            set => SetProperty(ref _amountPhotos, value);
-        }
+        public ObservableCollection<string> AdvertisementTypes { get; } = [
+            "Продажа",
+            "Аренда"
+            ];
 
-        public ObservableCollection<PhotoItem> Photos { get; private set; }
-
-        public MvvmHelpers.Commands.Command AddPhotoCommand { get; }
-
-        public MvvmHelpers.Commands.Command<PhotoItem> RemovePhotoCommand { get; }
 
         public ObservableCollection<string> RealtyCategories { get; } = [
-                "Не выбрано",
-                "Квартира",
-                "Дом"
+            "Не выбрано",
+            "Квартира",
+            "Дом"
                 ];
 
         public ObservableCollection<string> Currencys { get; } = [
@@ -119,32 +113,46 @@ namespace RealtyMarket.ViewModels
 
         #region HouseParam
 
-        public ObservableCollection<string> HouseToilet { get; } = [
+        public ObservableCollection<string> HouseTypes { get; } = [
+            "Дом", "Коттедж", "Дача", "Таунхаус", "Другое"
+            ];
+
+        public ObservableCollection<string> WaterTypes { get; } = [
+            "Сезонная", "Скважина", "Колодец", "Центральная", "Отсутствует"
+            ];
+
+        public ObservableCollection<string> SewerageSystemTypes { get; } = [
             "В доме", "На улице", "Выгребная яма", "Биологическое разложение", "C/y на улице"
             ];
 
         public ObservableCollection<string> GasSystems { get; } = [
-            "В доме", "На улице", "Выгребная яма", "Биологическое разложение", "C/y на улице"
+            "В доме", "Подведен к дому", "Нету"
         ];
+
+        public ObservableCollection<string> TerritoryConveniences { get; } = [
+            "Рядом водоем", "Рядом лес", "Баня", "Беседка", "Мангал", "Бассейн", 
+            "Другие постройки"
+            ];
 
         #endregion
 
         public ICommand ReturnCommand { get; set; }
 
+        private readonly AdvertisementRepository _advertisementRepository;
+
         public AddAdViewModel(SecureStorageUserRepository secureStorageUserRepository,
-            RegisteredUserRepository registeredUserRepotisotry)
+            RegisteredUserRepository registeredUserRepotisotry, 
+            AdvertisementRepository advertisementRepository,
+            ImageBBRepository imageBBRepository)
         {
-            Photos = new ObservableCollection<PhotoItem>();
-
-            Photos.Add(new PhotoItem() { IsFirst = true });
-
-            for (int i = 1; i < 10; i++)
+            Photos = [new() { IsButton = true }];
+            for (int i = 0; i < 9; i++)
             {
-                Photos.Add(new PhotoItem());  
+                Photos.Add(new());
             }
 
-            AddPhotoCommand = new MvvmHelpers.Commands.Command(async () => await AddPhotoAsync());
-            RemovePhotoCommand = new MvvmHelpers.Commands.Command<PhotoItem>(RemovePhoto);
+            AddPhotoCommand = new AsyncCommand(PickImageAsync);
+            RemovePhotoCommand = new MvvmHelpers.Commands.Command<PhotoItem>(RemovePhotoAsync);
 
             Advertisement = new Advertisement() { Realty = new ResidentialRealty()};
 
@@ -152,11 +160,13 @@ namespace RealtyMarket.ViewModels
 
             _secureStorageUserRepository = secureStorageUserRepository;
             _registeredUserRepository = registeredUserRepotisotry;
+            _advertisementRepository = advertisementRepository;
+            _imageBBRepository = imageBBRepository;
         }
 
         public async Task GetUserInfo()
         {
-            var userInfo = _secureStorageUserRepository.ReadUser();
+            var userInfo = await _secureStorageUserRepository.ReadUser();
             User = await _registeredUserRepository.GetByEmail(userInfo.userInfo.Email);
         }
 
@@ -168,55 +178,84 @@ namespace RealtyMarket.ViewModels
 
         #region Work with photo
 
-        private async Task AddPhotoAsync()
+        private readonly ImageBBRepository _imageBBRepository;
+
+        public ICommand AddPhotoCommand { get; }
+
+        public ICommand RemovePhotoCommand { get; }
+
+        public ObservableCollection<PhotoItem> Photos { get; set; }
+
+        private int _amountPhotos = 0;
+        public int AmountPhotos
+        {
+            get => _amountPhotos;
+            set => SetProperty(ref _amountPhotos, value);
+        }
+
+        public async Task PickImageAsync()
         {
             try
             {
-                var result = await FilePicker.PickAsync(new PickOptions
+                var result = await FilePicker.PickMultipleAsync(new PickOptions
                 {
+                    PickerTitle = "Выберите изображение.",
                     FileTypes = FilePickerFileType.Images,
-                    PickerTitle = "Выберите изображение"
                 });
 
                 if (result != null)
                 {
-                    var stream = await result.OpenReadAsync();
-                    var imageSource = ImageSource.FromStream(() => stream);
-
-                    int addButtonIndex = Photos.IndexOf(Photos.First(x => x.IsAddButton));
-                    if (addButtonIndex != -1)
+                    var images = result.ToList();
+                    foreach (var image in images)
                     {
-                        Photos[addButtonIndex].ImageSource = imageSource;
-
-                        if (addButtonIndex + 1 < Photos.Count)
+                        using (var stream = await image.OpenReadAsync())
                         {
-                            Photos[addButtonIndex + 1] = new PhotoItem();
-                            _amountPhotos++;
+                            var memoryStream = new MemoryStream();
+                            await stream.CopyToAsync(memoryStream);
+                            var imageData = memoryStream.ToArray();
+
+                            var imageSource = ImageSource.FromStream(() => new MemoryStream(imageData));
+
+                            if (AmountPhotos == 9)
+                            {
+                                Photos.RemoveAt(0);
+                                Photos.Insert(0, new PhotoItem() { ImageSource = imageSource });
+                            }
+                            else
+                            {
+                                Photos.RemoveAt(9);
+                                Photos.Insert(1, new PhotoItem() { ImageSource = imageSource });
+                            }
+                            AmountPhotos++;
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Ошибка", ex.Message, "ОК");
-            }
+            catch (Exception) { }
         }
 
-        private void RemovePhoto(PhotoItem photo)
+        public void RemovePhotoAsync(PhotoItem photoItem)
         {
-            if (photo.IsPhoto)
-            {
-                int photoIndex = Photos.IndexOf(photo);
-                Photos[photoIndex] = new PhotoItem();
-
-                int addButtonIndex = Photos.IndexOf(Photos.First(x => x.IsAddButton));
-                if (addButtonIndex > photoIndex)
-                {
-                    Photos.Move(addButtonIndex, photoIndex); 
-                }
-            }
+            Photos.Remove(photoItem);
+            Photos.Add(new());
+            AmountPhotos--;
         }
 
         #endregion
+
+        public async Task PublishAdvertisement()
+        {
+            for( int i = 0; i < 10; i++)
+            {
+                if(Photos[i].ImageSource != null)
+                {
+                    string imageUrl = await _imageBBRepository.Add(Photos[i].ImageSource);
+                    Advertisement.ImageUrls.Add(imageUrl);
+                }
+            }
+
+            await _advertisementRepository.Add(Advertisement);
+            await Shell.Current.GoToAsync("//ProfilePage");
+        }
     }
 }

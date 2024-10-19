@@ -23,7 +23,13 @@ namespace RealtyMarket.ViewModels
 
         public ICommand SignOutCommand { get; set; }
 
-        public UserInfo UserInfo { get; set; }
+        public string _email;
+        
+        public string Email
+        {
+            get => _email;
+            set => SetProperty<string>(ref _email, value);
+        }
 
         public ProfileViewModel(FirebaseAuthenticationService authService,
             SecureStorageUserRepository userRepository)
@@ -39,18 +45,19 @@ namespace RealtyMarket.ViewModels
             if (userState == "Register")
             {
                 IsRegisteredUser = true;
-                UserInfo = _userRepository.ReadUser().userInfo;
+                var user = await _userRepository.ReadUser();
+                Email = user.userInfo.Email;
             }
             else
             {
                 IsRegisteredUser = false;
-                UserInfo = new() { Email = "Unknown" };
+                Email = "Unknown";
             }
         }
 
         public async Task SignOut()
         {
-            _authService.SignOutUser();
+            await _authService.SignOutUser();
             await Shell.Current.GoToAsync("//LoginPage");
         }
     }
