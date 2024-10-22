@@ -20,6 +20,18 @@ namespace RealtyMarket.Repository
             _firebaseClient = fireBase;
         }
 
+        public async Task UpdateUser(RegisteredUser user, string userId)
+        {
+            try
+            {
+                await _firebaseClient
+                    .Child(Controller)
+                    .Child(userId)
+                    .PutAsync(user);
+            }
+            catch (Exception) { }
+        }
+
         public async Task<RegisteredUser> GetByEmail(string email)
         {
             try
@@ -30,7 +42,10 @@ namespace RealtyMarket.Repository
                                     .EqualTo(email)
                                     .OnceAsync<RegisteredUser>();
 
-                return users.FirstOrDefault()?.Object;
+                var userEntity = users.FirstOrDefault();
+                RegisteredUser user = userEntity.Object;
+                user.Id = userEntity.Key;
+                return user;
             }
             catch (Exception ex) 
             {
@@ -50,6 +65,44 @@ namespace RealtyMarket.Repository
         {
             await _firebaseClient.Child(Controller).PostAsync(entity);
             return true;
+        }
+
+        public async Task AddFavorite(string email, string adId)
+        {
+            var user = await GetByEmail(email);
+
+            user.Favorites.Add(adId);
+
+            await _firebaseClient
+                    .Child(Controller)
+                    .Child(user.Id)
+                    .PutAsync(new RegisteredUser()
+                    {
+                        UserImageUrl = user.UserImageUrl,
+                        Password = user.Password,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Favorites = user.Favorites
+                    });
+        }
+
+        public async Task DeleteFavorite(string email, string adId)
+        {
+            var user = await GetByEmail(email);
+
+            user.Favorites.Remove(adId);
+
+            await _firebaseClient
+                    .Child(Controller)
+                    .Child(user.Id)
+                    .PutAsync(new RegisteredUser()
+                    {
+                        UserImageUrl = user.UserImageUrl,
+                        Password = user.Password,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Favorites = user.Favorites
+                    });
         }
     }
 }

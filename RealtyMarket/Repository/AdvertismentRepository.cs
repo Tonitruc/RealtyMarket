@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RealtyMarket.Converters;
+using System.Runtime.InteropServices;
+using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace RealtyMarket.Repository
 {
@@ -19,33 +21,32 @@ namespace RealtyMarket.Repository
     {
         private readonly FirebaseClient _firebaseClient;
 
-        private readonly RealtyRepository _realtyRepository;
-
         public override string Controller => "advertisement";
 
-        public AdvertisementRepository(FirebaseClient fireBase, 
-            RealtyRepository realtyRepository)
+        public AdvertisementRepository(FirebaseClient fireBase)
         {
-            _realtyRepository = realtyRepository;
             _firebaseClient = fireBase;
         }
 
-        public async Task<bool> Add(Advertisement entity)
+        public async Task<bool> Add(Advertisement entity, bool active = true)
         {
+            var status = active ? "active" : "closed";
+
             try
             {
                 string type = "realty";
-                if(entity.Realty is Flat)
+                if (entity.Realty is Flat)
                 {
                     type = "flat";
                 }
-                else if(entity.Realty is PrivateHouse)
+                else if (entity.Realty is PrivateHouse)
                 {
                     type = "privateHouse";
                 }
 
                 await _firebaseClient
                     .Child(Controller)
+                    .Child(status)
                     .Child(type)
                     .PostAsync(entity);
 
@@ -56,11 +57,11 @@ namespace RealtyMarket.Repository
             return false;
         }
 
-        public async Task<List<Advertisement>> GetByEmail(string email)
+        public async Task<List<Advertisement>> GetByEmail(string email, bool active = true)
         {
             try
             {
-                var result = await GetAll();
+                var result = await GetAll(active);
 
                 return result
                     .Select(item => item)
@@ -72,32 +73,93 @@ namespace RealtyMarket.Repository
             return null;
         }
 
-        public async Task<List<Advertisement>> GetAll()
+        public async Task<List<Advertisement>> GetFavorites(RegisteredUser user)
+        {
+            var result = await GetAll();
+
+            return result
+                .Select(item => item)
+                .Where(ad => user.Favorites.Contains(ad.Id))
+                .ToList();
+        }
+
+        public async Task<List<Advertisement>> GetAll(bool active = true)
         {
             var advertisements = new List<Advertisement>();
+            var status = active ? "active" : "closed";
 
             var firebaseAds = await _firebaseClient
                 .Child(Controller)
+                .Child(status)
                 .OnceAsync<Dictionary<string, object>>();
 
-            foreach (var item in firebaseAds)
+            foreach (var items in firebaseAds)
             {
-                var jsonString = JsonConvert.SerializeObject(item.Object);
-                JObject rootObject = JObject.Parse(jsonString);
-
-                var firstProperty = rootObject.Properties().FirstOrDefault();
-
-                if (firstProperty != null)
+                foreach (var item in items.Object)
                 {
-                    JObject jsonObject = (JObject)firstProperty.Value;
+                    var jsonString = JsonConvert.SerializeObject(item.Value);
+                    JObject rootObject = JObject.Parse(jsonString);
 
-                    Advertisement ad = JsonConvert.DeserializeObject<Advertisement>(jsonObject.ToString(), new AdvertisementJsonConverter());
+                    Advertisement ad = JsonConvert.DeserializeObject<Advertisement>(rootObject.ToString(), new AdvertisementJsonConverter());
+                    ad.Id = item.Key;
 
                     advertisements.Add(ad);
                 }
             }
 
             return advertisements;
+        }
+
+        public async Task AdStatusChange(Advertisement ad, bool close = true)
+        {
+            var newStatus = close ? "closed" : "active";
+            var oldStatus = close ? "active" : "closed";
+            var category = ad.RealtyCategory;
+
+            if (category == "Квартира")
+            {
+                category = "flat";
+            }
+            else if (category == "Дом")
+            {
+                category = "privateHouse";
+            }
+
+            await _firebaseClient
+                .Child(Controller)
+                .Child(newStatus)
+                .Child(category)
+                .Child(ad.Id)
+                .PutAsync(ad);
+
+            await _firebaseClient
+                .Child(Controller)
+                .Child(oldStatus)
+                .Child(category)
+                .Child(ad.Id)
+                .DeleteAsync();
+        }
+
+        public async Task DeleteAd(Advertisement ad, bool active = true)
+        {
+            var status = !active ? "closed" : "active";
+            var category = ad.RealtyCategory;
+
+            if (category == "Квартира")
+            {
+                category = "flat";
+            }
+            else if (category == "Дом")
+            {
+                category = "privateHouse";
+            }
+
+            await _firebaseClient
+                 .Child(Controller)
+                 .Child(status)
+                 .Child(category)
+                 .Child(ad.Id)
+                 .DeleteAsync();
         }
     }
 }

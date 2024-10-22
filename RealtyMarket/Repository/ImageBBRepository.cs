@@ -22,28 +22,35 @@ namespace RealtyMarket.Repository
 
         public async Task<string> Add(ImageSource imageSource)
         {
-            if (imageSource is StreamImageSource streamImageSource)
+            try
             {
-                var stream = await streamImageSource.Stream(CancellationToken.None);
-
-                using (var memoryStream = new MemoryStream())
+                if (imageSource is StreamImageSource streamImageSource)
                 {
-                    await stream.CopyToAsync(memoryStream);
-                    memoryStream.Position = 0;
+                    var stream = await streamImageSource.Stream(CancellationToken.None);
 
-                    var content = new MultipartFormDataContent
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+
+                        var content = new MultipartFormDataContent
                     {
                         { new StreamContent(memoryStream), "image", "uploaded_image.png" }
                     };
 
-                    var response = await _httpClient.PostAsync($"{BaseUrl}={ApiKey}", content);
-                    response.EnsureSuccessStatusCode();
+                        var response = await _httpClient.PostAsync($"{BaseUrl}={ApiKey}", content);
+                        response.EnsureSuccessStatusCode();
 
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    dynamic jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
+                        var jsonResponse = await response.Content.ReadAsStringAsync();
+                        dynamic jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonResponse);
 
-                    return jsonData.data.url;  
+                        return jsonData.data.url;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             throw new InvalidOperationException("ImageSource должен быть StreamImageSource.");

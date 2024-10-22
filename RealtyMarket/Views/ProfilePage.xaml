@@ -6,13 +6,14 @@
              Shell.NavBarIsVisible="False"
              xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
              xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
              x:DataType="viewmodels:ProfileViewModel"
              Title="ProfilePage">
 
     <VerticalStackLayout>
         <Grid ColumnDefinitions="0.2*,*" HeightRequest="60">
             <Border Margin="5" StrokeThickness="2">
-                <Image Source="profileicon.png" Background="White"/>
+                <Image Source="{Binding AvatarPhoto, Converter={StaticResource ImageSourceConverter}}" Background="White"/>
             </Border>
            
             <control:GrButton Margin="0" 
@@ -42,8 +43,12 @@
                               EffectColor="LightGray"
                               VerticalOptions="FillAndExpand"
                               HorizontalOptions="FillAndExpand"
-                              FontSize="17"/>
-            
+                              FontSize="17"
+                              Command="{Binding ChangeUserSettingsCommand}"/>
+
+            <shimmer:SfShimmer Type="Profile" ZIndex="10" IsVisible="{Binding IsLoading}" 
+                               Grid.ColumnSpan="2" BackgroundColor="{StaticResource VeryLightViolet}"/>
+
         </Grid>
         <BoxView HeightRequest="2" Color="Gray" VerticalOptions="Start"
                  BackgroundColor="Gray"/>
@@ -61,7 +66,7 @@
                          ImageAlignment="End"
                          Background="White"
                          ShowIcon="True"
-                         Command="{Binding SignOutCommand}"/>
+                         Command="{Binding GetMyAdsCommand}"/>
 
         <button:SfButton Margin="0,3,0,0"
                          FontFamily="VeryBold"
@@ -77,7 +82,7 @@
                          ImageAlignment="End"
                          Background="White"
                          ShowIcon="True"
-                         Command="{Binding SignOutCommand}"/>
+                         Command="{Binding GetMyFavoritesCommand}"/>
 
         <button:SfButton Margin="0,3,0,0"
                          FontFamily="VeryBold"

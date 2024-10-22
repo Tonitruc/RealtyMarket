@@ -3,23 +3,34 @@
              xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
              xmlns:local="clr-namespace:RealtyMarket.Views"
              xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:chip="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:DataType="viewmodels:LoginRegisterViewModel"
              x:Class="RealtyMarket.Views.LoginRegisterPage"
              Title="LoginPage">
 
-    <Grid RowDefinitions="0.06*,Auto,0.90*" Margin="0">
-        <Grid ColumnDefinitions="*,*" HeightRequest="50">
-            <control:GrButton x:Name="LoginPageButton" Text="Вход" BackgroundColor="White" EffectColor="LightGray" TextColor="Black"
-                              Clicked="LoginPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}" CornerRadius="0" DisableTextColor="Black"
-                              DisableBackgroundColor="{StaticResource Gray100}" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0"/>
-            <control:GrButton x:Name="RegisterPageButton" Text="Регистрация" BackgroundColor="White" EffectColor="LightGray" TextColor="Black"
-                              Clicked="RegisterPageButtonClicked" Padding="0" IsEnabled="{Binding IsBusy}" CornerRadius="0" DisableTextColor="Black"
-                              DisableBackgroundColor="{StaticResource Gray100}" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="1"/>
+    <Grid RowDefinitions="53,Auto,0.90*" Margin="0">
+        <Grid RowDefinitions="50,3" ColumnDefinitions="*,*" Grid.Row="0">
+            <Grid ColumnDefinitions="*,*" HeightRequest="50" Grid.Row="0" Grid.ColumnSpan="2">
+                <chip:SfEffectsView x:Name="ActiveAdButton" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0">
+                    <Label x:Name="LoginButtonLabel" Text="Вход" HorizontalOptions="Center" VerticalOptions="Center"
+                            Margin="0,0,10,0"/>
+                    <chip:SfEffectsView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="LoginPageButtonClicked"/>
+                    </chip:SfEffectsView.GestureRecognizers>
+                </chip:SfEffectsView>
+                <chip:SfEffectsView x:Name="ClosedAdButton" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="1">
+                    <Label x:Name="RegisterButtonLabel" Text="Регистрация" HorizontalOptions="Center" VerticalOptions="Center"
+                           Margin="0,0,10,0"/>
+                    <chip:SfEffectsView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="RegisterPageButtonClicked"/>
+                    </chip:SfEffectsView.GestureRecognizers>
+                </chip:SfEffectsView>
+            </Grid>
+            <BoxView HeightRequest="3" Grid.Row="1" x:Name="SelectBoxView"
+              HorizontalOptions="Fill"
+              VerticalOptions="Fill"
+              Color="{StaticResource DarkViolet}"></BoxView>
         </Grid>
-        <BoxView HeightRequest="2" Grid.Row="1" x:Name="SelectBoxView"
-                 WidthRequest="{Binding Source={x:Reference LoginButton}, Path=WidthRequest}"
-                 HorizontalOptions="Start"
-                 Color="{StaticResource DarkViolet}"></BoxView>
 
         <ContentView x:Name="LoginPage" Grid.Row="2">
             <ScrollView>

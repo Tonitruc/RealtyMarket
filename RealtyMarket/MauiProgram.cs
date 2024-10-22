@@ -1,4 +1,4 @@
-﻿using Firebase.Auth;
+using Firebase.Auth;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using Firebase.Auth.Providers;
@@ -81,15 +81,22 @@ namespace RealtyMarket
             builder.Services.AddTransient<ProfilePage>();
 
             builder.Services.AddTransient<AddAdViewModel>();
-            builder.Services.AddTransient<AddAdPage>();
+            builder.Services.AddSingleton<AddAdPage>();
 
             builder.Services.AddTransient<CatalogViewModel>();
             builder.Services.AddTransient<CatalogPage>();
 
+            builder.Services.AddTransient<MyAdPageViewModel>();
+            builder.Services.AddTransient<MyAdPage>();
+
+            builder.Services.AddTransient<UserSettingsViewModel>();
+            builder.Services.AddTransient<UserSettingsPage>();
+
+            builder.Services.AddTransient<FavoriteViewModel>();
+            builder.Services.AddTransient<FavoritesPage>();
+
             builder.Services.AddScoped<RegisteredUserRepository>();
-            builder.Services.AddScoped<RealtyRepository>();
             builder.Services.AddScoped<AdvertisementRepository>();
-            builder.Services.AddScoped<RealtyLocationRepository>();
             builder.Services.AddTransient<ImageBBRepository>();
 
             builder.Services.AddHttpClient<ImageBBRepository>();

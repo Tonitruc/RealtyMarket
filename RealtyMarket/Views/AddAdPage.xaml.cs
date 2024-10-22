@@ -12,6 +12,7 @@ using Syncfusion.Maui.ListView;
 using System.Collections.ObjectModel;
 using System.Net;
 
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace RealtyMarket.Views
 {
     public partial class AddAdPage : ContentPage

@@ -24,6 +24,7 @@ namespace RealtyMarket
             NeedRegisterPages = [
                 "//FavoritesPage",
                 "//AddAdPage",
+                "//MyAdsPage",
                 "//MainTabs/AddAdPage",
                 "//MainTabs/FavoritesPage"
                 ];

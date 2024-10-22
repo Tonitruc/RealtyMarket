@@ -77,4 +77,10 @@
     <ShellContent Title = "Map" 
                   ContentTemplate="{DataTemplate views:MapPage}" 
                   Route="MapPage"/>
+    <ShellContent Title = "MyAds" 
+                  ContentTemplate="{DataTemplate views:MyAdPage}" 
+                  Route="MyAdPage"/>
+    <ShellContent Title = "UserSettingsPage" 
+                  ContentTemplate="{DataTemplate views:UserSettingsPage}" 
+                  Route="UserSettingsPage"/>
 </Shell>

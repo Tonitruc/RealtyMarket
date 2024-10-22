@@ -17,7 +17,11 @@ namespace RealtyMarket.Views
         {
             base.OnAppearing();
 
-            await _profileViewModel.InitializeUserStateAsync(); 
+            _profileViewModel.IsLoading = true;
+
+            await _profileViewModel.InitializeUserStateAsync();
+
+            _profileViewModel.IsLoading = false;
         }
     }
 }

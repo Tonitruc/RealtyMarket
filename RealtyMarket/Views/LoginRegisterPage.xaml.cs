@@ -22,12 +22,17 @@ namespace RealtyMarket.Views
             BindingContext = _loginRegisterViewModel;
         }
 
-        private async void RegisterPageButtonClicked(object sender, EventArgs e)
+        private async void RegisterPageButtonClicked(object sender, TappedEventArgs e)
         {
-            App.Current.Resources.TryGetValue("Primary", out var colorvalue);
+            if(RegisterPage.IsVisible)
+            {
+                return;
+            }
 
-            LoginPageButton.TextColor = Colors.Black;
-            RegisterPageButton.TextColor = (Color)colorvalue;
+            App.Current.Resources.TryGetValue("DarkViolet", out var colorvalue);
+
+            LoginButtonLabel.TextColor = Colors.Black;
+            RegisterButtonLabel.TextColor = (Color)colorvalue;
 
             RegisterPage.TranslationX = Width;
             RegisterPage.IsVisible = true;
@@ -41,12 +46,17 @@ namespace RealtyMarket.Views
             LoginPage.IsVisible = false;
         }
 
-        private async void LoginPageButtonClicked(object sender, EventArgs e)
+        private async void LoginPageButtonClicked(object sender, TappedEventArgs e)
         {
-            App.Current.Resources.TryGetValue("Primary", out var colorvalue);
+            if (LoginPage.IsVisible)
+            {
+                return;
+            }
 
-            RegisterPageButton.TextColor = Colors.Black;
-            LoginPageButton.TextColor = (Color)colorvalue;
+            App.Current.Resources.TryGetValue("DarkViolet", out var colorvalue);
+
+            RegisterButtonLabel.TextColor = Colors.Black;
+            LoginButtonLabel.TextColor = (Color)colorvalue;
 
             LoginPage.TranslationX = -Width;
             LoginPage.IsVisible = true;

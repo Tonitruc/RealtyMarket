@@ -329,8 +329,10 @@ namespace RealtyMarket.Controls
                 ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = EntryImage.HeightRequest + 5 });
                 ParentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
                 EntryImage.Source = ImageSource;
-                Grid.SetColumn(EntryLine, 1);
-                Grid.SetColumn(Underline, 1);
+                ParentGrid.SetColumn(EntryName, 1);
+                ParentGrid.SetColumn(EntryLine, 1);
+                ParentGrid.SetColumnSpan(MessagesGrid, 2);
+                ParentGrid.SetColumn(Underline, 1);
             }
             else
             {

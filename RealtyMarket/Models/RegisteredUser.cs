@@ -13,5 +13,7 @@
         public string Password { get; set; } = string.Empty;
 
         public string UserImageUrl { get; set; } = string.Empty;
+
+        public List<string> Favorites { get; set; } = [];
     }
 }

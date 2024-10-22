@@ -11,12 +11,17 @@ namespace RealtyMarket.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is List<string> imageUrls && imageUrls.Count > 0)
+            if (value != null && value is string url && !string.IsNullOrEmpty(url))
             {
-                return imageUrls[0]; 
+                return url;
             }
 
-            return "ad_logo.png"; 
+            if(parameter != null && parameter is string callBackUrl && !string.IsNullOrEmpty(callBackUrl))
+            {
+                return callBackUrl;
+            }
+
+            return "ad_logo.png";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
