@@ -1,3 +1,4 @@
+using RealtyMarket.Service;
 using RealtyMarket.ViewModels;
 
 namespace RealtyMarket.Views;
@@ -24,8 +25,22 @@ public partial class UserSettingsPage : ContentPage
         _viewModel.IsLoading = false;
     }
 
+    private bool IsValid()
+    {
+        var number = NumberEntry.Text;
+
+        return Validators.IsPhoneValid(number);
+    }
+
     private void SaveChangesButtonClicked(object sender, EventArgs e)
     {
-
+        if(IsValid())
+        {
+            return;
+        }
+        else
+        {
+            throw new Exception("InvalidNumber");
+        }
     }
 }

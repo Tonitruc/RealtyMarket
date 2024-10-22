@@ -196,6 +196,16 @@
 	     <Generator>MSBuild:Compile</Generator>
 	   </MauiXaml>
 	 </ItemGroup>
+
+	<ItemGroup>
+		<AndroidNativeLibrary Include="Platforms\Android\lib\x86\pmc.so">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
+		<AndroidNativeLibrary Include="Platforms\Android\lib\arm64-v8a\pmc.so">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</AndroidNativeLibrary>
+	</ItemGroup>
+
 	<!-- Build Properties must be defined within these property groups to ensure successful publishing
        to the Mac App Store. See: https://aka.ms/maui-publish-app-store#define-build-properties-in-your-project-file -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) and '$(Configuration)' == 'Debug'">

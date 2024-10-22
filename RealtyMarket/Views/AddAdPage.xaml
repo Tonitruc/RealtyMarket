@@ -102,7 +102,7 @@
                 </VerticalStackLayout>
 
 
-                <VerticalStackLayout Grid.Row="3">
+                <VerticalStackLayout Grid.Row="3" IsVisible="Collapse">
                     <VerticalStackLayout x:Name="MainLayout" Margin="0,20,0,0">
                         <control:GrEntry x:Name="AdvertismentNameEntry" 
                                          Title="Название"

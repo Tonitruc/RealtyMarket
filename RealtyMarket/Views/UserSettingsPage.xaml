@@ -66,13 +66,14 @@
                 <Grid ColumnDefinitions="35,*" HeightRequest="50">
                     <Image HeightRequest="25" Grid.Column="0" Source="number.png"/>
                     <maskedentry:SfMaskedEntry MaskType="Simple" Mask="#000(00)000-00-00"
-                                           Value="+375 29"
-                                           HorizontalOptions="Fill"
-                                           HeightRequest="40"
-                                           Margin="30,0,0,0"
-                                           Stroke="{StaticResource MediumViolet}"
-                                           Grid.Column="1"
-                                           ValueMaskFormat="IncludeLiterals"/>
+                                               x:Name="NumberEntry"
+                                               Value="+375 29"
+                                               HorizontalOptions="Fill"
+                                               HeightRequest="40"
+                                               Margin="30,0,0,0"
+                                               Stroke="{StaticResource MediumViolet}"
+                                               Grid.Column="1"
+                                               ValueMaskFormat="IncludeLiterals"/>
                 </Grid>
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="3" Margin="0,40,0,0" Spacing="20">
