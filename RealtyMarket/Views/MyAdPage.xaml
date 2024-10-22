@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:local="clr-namespace:RealtyMarket.Views"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:chip="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:effectsView="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+             xmlns:popup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:model="clr-namespace:RealtyMarket.Models"
+             Shell.NavBarIsVisible="False"
+             x:DataType="viewmodels:MyAdPageViewModel"
+             x:Class="RealtyMarket.Views.MyAdPage"
+             Title="MaAdPage">
+
+    <ContentPage.Content>
+        <Grid RowDefinitions="50,53,*">
+            <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+              HeightRequest="50" VerticalOptions="Start">
+                <ImageButton Source="prev_page_arrow.png"
+                         HeightRequest="25"
+                         Margin="10,0,0,0"
+                         Command="{Binding ReturnCommand}"/>
+                <Label Grid.Column="1" Text="Мои объявления"
+                   VerticalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   Margin="15,0,0,0"
+                   TextColor="White"/>
+            </Grid>
+            <Grid RowDefinitions="50,3" ColumnDefinitions="*,*" Grid.Row="1">
+                <Grid ColumnDefinitions="*,*" HeightRequest="50" Grid.Row="0" Grid.ColumnSpan="2">
+                    <chip:SfEffectsView x:Name="ActiveAdButton" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="0">
+                        <Grid>
+                            <Label x:Name="ActiveButtonLabel" Text="Активные" HorizontalOptions="Center" VerticalOptions="Center"
+                                   Margin="0,0,10,0"/>
+                            <Frame CornerRadius="15"
+                                   Margin="10,0,20,0"
+                                   HeightRequest="30"
+                                   WidthRequest="30"
+                                   Padding="0"
+                                   BackgroundColor="{StaticResource LightViolet}"
+                                   HorizontalOptions="End" 
+                                   VerticalOptions="Center">
+                                <Label Text="{Binding AmountActiveAds}" VerticalOptions="Center" HorizontalOptions="Center"/>
+                            </Frame>
+                        </Grid>
+                        <chip:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ActivePageButtonClicked"/>
+                        </chip:SfEffectsView.GestureRecognizers>
+                    </chip:SfEffectsView>
+                    <chip:SfEffectsView x:Name="ClosedAdButton" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Column="1">
+                        <Grid>
+                            <Label x:Name="ClosedButtonLabel" Text="Закрытые" HorizontalOptions="Center" VerticalOptions="Center"
+                               Margin="0,0,10,0"/>
+                            <Frame CornerRadius="15"
+                               Margin="10,0,20,0"
+                               HeightRequest="30"
+                               WidthRequest="30"
+                               Padding="0"
+                               BackgroundColor="#cc3b81"
+                               HorizontalOptions="End" 
+                               VerticalOptions="Center">
+                                <Label Text="{Binding AmountClosedAds}" VerticalOptions="Center" HorizontalOptions="Center"/>
+                            </Frame>
+                        </Grid>
+                        <chip:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ClosedPageButtonClicked"/>
+                        </chip:SfEffectsView.GestureRecognizers>
+                    </chip:SfEffectsView>
+                </Grid>
+                <BoxView HeightRequest="3" Grid.Row="1" x:Name="SelectBoxView"
+                     HorizontalOptions="Fill"
+                     VerticalOptions="Fill"
+                     Color="{StaticResource DarkViolet}"></BoxView>
+            </Grid>
+
+            <Grid Grid.Row="2" x:Name="ActiveAdPage">
+                <syncfusion:SfListView x:Name="ActiveAdsView" Orientation="Vertical"
+                                       Grid.Row="1"
+                                       Margin="10,0,10,0"
+                                       ItemsSource="{Binding ActiveAds}"
+                                       ItemSize="220"
+                                       ItemSpacing="0"
+                                       IsScrollingEnabled="True">
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Advertisement">
+                            <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                                <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
+                                    <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
+                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}" 
+                                               BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                    </Border>
+                                    <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
+                                        <Grid  ColumnDefinitions="0.9*,0.1*">
+                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
+                                                   TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
+                                            <ImageButton x:Name="PopupImageButton" Source="threedots.png" HeightRequest="25" Grid.Column="1" Clicked="ImageButtonClicked"/>
+                                            <popup:SfPopup x:Name="PopupMenu" 
+                                                           HeightRequest="84" 
+                                                           WidthRequest="124"
+                                                           ShowOverlayAlways="False"
+                                                           StaysOpen="False"
+                                                           ShowHeader="False"
+                                                           ShowFooter="False"
+                                                           AnimationMode="SlideOnRight"
+                                                           Closed="PopupMenuClosed">
+                                                <popup:SfPopup.PopupStyle>
+                                                    <popup:PopupStyle CornerRadius="0"/>
+                                                </popup:SfPopup.PopupStyle>
+                                                <popup:SfPopup.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <Border Stroke="{StaticResource VeryLightViolet}" StrokeThickness="2">
+                                                            <VerticalStackLayout Spacing="0" HeightRequest="80" WidthRequest="120">
+                                                                <control:GrButton Text="Закрыть" 
+                                                                                  CornerRadius="0" 
+                                                                                  Padding="0" 
+                                                                                  FontSize="14" 
+                                                                                  BackgroundColor="White"
+                                                                                  EffectColor="{StaticResource Gray100}"
+                                                                                  HeightRequest="40" 
+                                                                                  WidthRequest="120"
+                                                                                  Clicked="CloseAdClicked"
+                                                                                  CommandParameter="{Binding .}"/>
+                                                                <control:GrButton Text="Удалить" 
+                                                                                  CornerRadius="0" 
+                                                                                  Padding="0" 
+                                                                                  FontSize="14"
+                                                                                  BackgroundColor="White"
+                                                                                  EffectColor="{StaticResource Gray100}"
+                                                                                  HeightRequest="40" 
+                                                                                  WidthRequest="120"
+                                                                                  Clicked="DeleteAdClicked"
+                                                                                  CommandParameter="{Binding .}"/>
+                                                            </VerticalStackLayout>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </popup:SfPopup.ContentTemplate>
+                                            </popup:SfPopup>
+                                        </Grid>
+                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="TailTruncation"/>
+                                        <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
+                                        <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
+                                        <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
+                                            <Label.Text>
+                                                <MultiBinding Converter="{StaticResource PriceConverter}">
+                                                    <Binding Path="Cost"/>
+                                                    <Binding Path="Currency"/>
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </Grid>
+
+                                    <control:GrButton Text="Подробнее" 
+                                                      Grid.Row="1" 
+                                                      Grid.Column="1"
+                                                      Padding="0"
+                                                      Margin="5,10,5,2"
+                                                      BackgroundColor="{StaticResource DarkViolet}"
+                                                      TextColor="White"
+                                                      VerticalOptions="Fill"
+                                                      TextAlligment="Center"   
+                                                      HorizontalOptions="Fill"
+                                                      CornerRadius="5"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+                <Label Text="Еще не добавлено ни одного объявления!" HorizontalOptions="Center" VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       FontSize="28"
+                       IsVisible="{Binding IsZeroActiveAds}"/>
+            </Grid>
+            <Grid Grid.Row="2" x:Name="ClosedAdPage" IsVisible="False">
+                <syncfusion:SfListView x:Name="ClosedAdsView" Orientation="Vertical"
+                                       Grid.Row="1"
+                                       Margin="10,0,10,0"
+                                       ItemsSource="{Binding ClosedAds}"
+                                       ItemSize="220"
+                                       ItemSpacing="0"
+                                       IsScrollingEnabled="True">
+                    <syncfusion:SfListView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Advertisement">
+                            <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                                <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
+                                    <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
+                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}" 
+                                               BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                    </Border>
+                                    <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
+                                        <Grid  ColumnDefinitions="0.9*,0.1*">
+                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
+                                                   TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
+                                            <ImageButton x:Name="PopupImageButton" Source="threedots.png" HeightRequest="25" Grid.Column="1" Clicked="ImageButtonClicked"/>
+                                            <popup:SfPopup x:Name="PopupMenu" 
+                                                           HeightRequest="84" 
+                                                           WidthRequest="124"
+                                                           ShowOverlayAlways="False"
+                                                           StaysOpen="False"
+                                                           ShowHeader="False"
+                                                           ShowFooter="False"
+                                                           AnimationMode="SlideOnRight"
+                                                           Closed="PopupMenuClosed">
+                                                <popup:SfPopup.PopupStyle>
+                                                    <popup:PopupStyle CornerRadius="0"/>
+                                                </popup:SfPopup.PopupStyle>
+                                                <popup:SfPopup.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <Border Stroke="{StaticResource VeryLightViolet}" StrokeThickness="2">
+                                                            <VerticalStackLayout Spacing="0" HeightRequest="80" WidthRequest="120">
+                                                                <control:GrButton Text="Открыть" 
+                                                                                  CornerRadius="0" 
+                                                                                  Padding="0" 
+                                                                                  FontSize="14" 
+                                                                                  BackgroundColor="White"
+                                                                                  EffectColor="{StaticResource Gray100}"
+                                                                                  HeightRequest="40" 
+                                                                                  WidthRequest="120"
+                                                                                  Clicked="OpenAdClicked"
+                                                                                  CommandParameter="{Binding .}"/>
+                                                                <control:GrButton Text="Удалить" 
+                                                                                  CornerRadius="0" 
+                                                                                  Padding="0" 
+                                                                                  FontSize="14"
+                                                                                  BackgroundColor="White"
+                                                                                  EffectColor="{StaticResource Gray100}"
+                                                                                  HeightRequest="40" 
+                                                                                  WidthRequest="120"
+                                                                                  Clicked="DeleteAdClicked"
+                                                                                  CommandParameter="{Binding .}"/>
+                                                            </VerticalStackLayout>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </popup:SfPopup.ContentTemplate>
+                                            </popup:SfPopup>
+                                        </Grid>
+                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="TailTruncation"/>
+                                        <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
+                                        <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
+                                        <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
+                                            <Label.Text>
+                                                <MultiBinding Converter="{StaticResource PriceConverter}">
+                                                    <Binding Path="Cost"/>
+                                                    <Binding Path="Currency"/>
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </Grid>
+
+                                    <control:GrButton Text="Подробнее" 
+                                                      Grid.Row="1" 
+                                                      Grid.Column="1"
+                                                      Padding="0"
+                                                      Margin="5,10,5,2"
+                                                      BackgroundColor="{StaticResource DarkViolet}"
+                                                      TextColor="White"
+                                                      VerticalOptions="Fill"
+                                                      TextAlligment="Center"   
+                                                      HorizontalOptions="Fill"
+                                                      CornerRadius="5"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </syncfusion:SfListView.ItemTemplate>
+                </syncfusion:SfListView>
+                <Label Text="Еще не закрыто ни одно объявление!" HorizontalOptions="Center" VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       FontSize="28"
+                       IsVisible="{Binding IsZeroClosedAds}"/>
+            </Grid>
+            <VerticalStackLayout x:Name="LoadingShimmer" IsVisible="{Binding IsLoading}" Grid.Row="3">
+                <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
+                <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
+                <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
+            </VerticalStackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

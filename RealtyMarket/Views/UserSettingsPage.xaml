@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:local="clr-namespace:RealtyMarket.Views"
+             xmlns:button="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+             xmlns:maskedentry="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             x:Class="RealtyMarket.Views.UserSettingsPage"
+             Title="UserSettingsPage"
+             Shell.NavBarIsVisible="False"
+             x:DataType="viewmodels:UserSettingsViewModel">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,Auto,*">
+            <Grid x:Name="PageTitle" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+              HeightRequest="50" VerticalOptions="Start">
+                <Label Grid.Column="1" Text="Настройка аккаунта"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="White"/>
+            </Grid>
+            <Grid ColumnDefinitions="0.4*,*" RowDefinitions="0.9*,0.1*" Grid.Row="1" Margin="10">
+                <Grid HeightRequest="120" WidthRequest="120" 
+                  ColumnDefinitions="0.9*,0.1*" RowDefinitions="0.9*,0.1*">
+                    <Border Stroke="{StaticResource MediumViolet}"
+                        Padding="0"
+                        StrokeThickness="2"
+                        HeightRequest="110"
+                        WidthRequest="110">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
+                        <Image Source="{Binding AvatarPhoto, Converter={StaticResource ImageSourceConverter}}"
+                           VerticalOptions="Fill"
+                           HorizontalOptions="Fill"/>
+                    </Border>
+                    <ImageButton Source="redact_icon.png" Grid.Column="1" Grid.Row="1"
+                             Margin="0,0,0,0"
+                             HorizontalOptions="Center"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="White"
+                             Command="{Binding PickAvatarPhotoCommand}"/>
+                </Grid>
+                <control:GrEntry Grid.Column="1"
+                             Margin="10,10,0,0"
+                             Text="{Binding User.Name, Mode=TwoWay}"
+                             Title="Имя"
+                             FocusedColor="{StaticResource MediumViolet}"/>
+            </Grid>
+            <VerticalStackLayout Grid.Row="2" Margin="10,20,10,0" Spacing="20">
+
+                <control:GrEntry x:Name="EmailEntry"
+                             ImageSource="email.png"
+                             Text="{Binding User.Email}"      
+                             Message="*Нельзя изменить"
+                             IsEnabled="False"
+                             Color="{StaticResource Gray200}"
+                             Title="Email"
+                             FocusedColor="{StaticResource MediumViolet}"/>
+
+                <Grid ColumnDefinitions="35,*" HeightRequest="50">
+                    <Image HeightRequest="25" Grid.Column="0" Source="number.png"/>
+                    <maskedentry:SfMaskedEntry MaskType="Simple" Mask="#000(00)000-00-00"
+                                           Value="+375 29"
+                                           HorizontalOptions="Fill"
+                                           HeightRequest="40"
+                                           Margin="30,0,0,0"
+                                           Stroke="{StaticResource MediumViolet}"
+                                           Grid.Column="1"
+                                           ValueMaskFormat="IncludeLiterals"/>
+                </Grid>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="3" Margin="0,40,0,0" Spacing="20">
+                <control:GrButton HeightRequest="35" 
+                              HorizontalOptions="Fill" 
+                              TextColor="White"
+                              Text="Сохранить"
+                              Padding="0"
+                              FontSize="22"
+                              BackgroundColor="{StaticResource DarkViolet}"
+                              Margin="70,0,70,0"
+                              Clicked="SaveChangesButtonClicked"
+                              Command="{Binding SaveChangesCommand}"/>
+                <control:GrButton HeightRequest="35" 
+                              HorizontalOptions="Fill"
+                              TextColor="White"
+                              Text="Отменить"
+                              Padding="0"
+                              FontSize="22"
+                              BackgroundColor="{StaticResource DarkViolet}"
+                              Margin="70,0,70,0"
+                              Command="{Binding CancelChangesCommand}"/>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>
