@@ -83,4 +83,10 @@
     <ShellContent Title = "UserSettingsPage" 
                   ContentTemplate="{DataTemplate views:UserSettingsPage}" 
                   Route="UserSettingsPage"/>
+    <ShellContent Title = "FilterPage" 
+                  ContentTemplate="{DataTemplate views:FilterPage}" 
+                  Route="FilterPage"/>
+    <ShellContent Title = "AdvertisementPage" 
+                  ContentTemplate="{DataTemplate views:AdvertisementPage}" 
+                  Route="AdvertisementPage"/>
 </Shell>

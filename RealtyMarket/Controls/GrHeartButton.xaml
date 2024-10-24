@@ -3,9 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RealtyMarket.Controls.GrHeartButton">
 
-    <Grid>
-        <ImageButton Source="heart_icon.png" HeightRequest="25" Grid.Column="1" Clicked="ImageButton_Clicked"/>
-        <ImageButton x:Name="HeartButton" Source="fillheart_icon.png" HeightRequest="25" Grid.Column="1" IsVisible="False" Clicked="ImageButton_Clicked"/>
+    <Grid RowDefinitions="*">
+        <ImageButton Source="heart_icon.png" 
+                     HeightRequest="{OnPlatform Default=25, Android=25, WinUI=10}"
+                     Aspect="AspectFit"
+                     Clicked="ImageButton_Clicked"/>
+        <ImageButton x:Name="HeartButton" 
+                     Source="fillheart_icon.png" 
+                     Aspect="AspectFit"                  
+                     HeightRequest="{OnPlatform Default=25, Android=25, WinUI=10}"
+                     IsVisible="False"         
+                     Clicked="ImageButton_Clicked"/>
     </Grid>
     
 </ContentView>

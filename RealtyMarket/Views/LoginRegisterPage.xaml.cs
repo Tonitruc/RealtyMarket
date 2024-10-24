@@ -22,9 +22,70 @@ namespace RealtyMarket.Views
             BindingContext = _loginRegisterViewModel;
         }
 
+        private double _panOffset;
+        private void OnPanUpdated1(object sender, PanUpdatedEventArgs e)
+        {
+            var test = _panOffset;
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    _panOffset = 0;
+                    break;
+                case GestureStatus.Running:
+                    _panOffset += e.TotalX; 
+                    break;
+                default:
+                    if (Math.Abs(_panOffset) > 50) 
+                    {
+                        if (_panOffset < 0)
+                        {
+                            LeftSwiped(sender, null);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        private void OnPanUpdated2(object sender, PanUpdatedEventArgs e)
+        {
+            var test = _panOffset;
+            switch (e.StatusType)
+            {
+                case GestureStatus.Started:
+                    _panOffset = 0;
+                    break;
+                case GestureStatus.Running:
+                    _panOffset += e.TotalX;
+                    break;
+                case GestureStatus.Completed:
+                    if (Math.Abs(_panOffset) > 50)
+                    {
+                        if (_panOffset > 0)
+                        {
+                            RightSwipe(sender, null);
+                        }
+                    }
+                    break;
+                case GestureStatus.Canceled:
+                    Console.WriteLine("FUCK");
+                    break;
+            }
+        }
+
+
+        private async void LeftSwiped(object sender, SwipedEventArgs e)
+        {
+            await RegisterPageAnimation();
+        }
+
         private async void RegisterPageButtonClicked(object sender, TappedEventArgs e)
         {
-            if(RegisterPage.IsVisible)
+            await RegisterPageAnimation();
+        }
+
+        private async Task RegisterPageAnimation()
+        {
+            if (RegisterPage.IsVisible)
             {
                 return;
             }
@@ -46,7 +107,17 @@ namespace RealtyMarket.Views
             LoginPage.IsVisible = false;
         }
 
+        private async void RightSwipe(object sender, SwipedEventArgs e)
+        {
+            await LoginPageAnimation();
+        }
+
         private async void LoginPageButtonClicked(object sender, TappedEventArgs e)
+        {
+            await LoginPageAnimation();
+        }
+
+        private async Task LoginPageAnimation()
         {
             if (LoginPage.IsVisible)
             {

@@ -86,6 +86,10 @@
                                        ItemSize="220"
                                        ItemSpacing="0"
                                        IsScrollingEnabled="True">
+                    <syncfusion:SfListView.GestureRecognizers>
+                        <SwipeGestureRecognizer Direction="Right" Swiped="RightSwipe"/>
+                        <SwipeGestureRecognizer Direction="Left" Swiped="LeftSwipe"/>
+                    </syncfusion:SfListView.GestureRecognizers>
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="model:Advertisement">
                             <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
@@ -175,6 +179,7 @@
                        FontSize="28"
                        IsVisible="{Binding IsZeroActiveAds}"/>
             </Grid>
+
             <Grid Grid.Row="2" x:Name="ClosedAdPage" IsVisible="False">
                 <syncfusion:SfListView x:Name="ClosedAdsView" Orientation="Vertical"
                                        Grid.Row="1"
@@ -273,6 +278,7 @@
                        IsVisible="{Binding IsZeroClosedAds}"/>
             </Grid>
             <VerticalStackLayout x:Name="LoadingShimmer" IsVisible="{Binding IsLoading}" Grid.Row="3">
+                <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
                 <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
                 <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
                 <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>

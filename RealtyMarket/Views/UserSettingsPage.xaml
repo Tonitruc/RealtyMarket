@@ -85,7 +85,6 @@
                               FontSize="22"
                               BackgroundColor="{StaticResource DarkViolet}"
                               Margin="70,0,70,0"
-                              Clicked="SaveChangesButtonClicked"
                               Command="{Binding SaveChangesCommand}"/>
                 <control:GrButton HeightRequest="35" 
                               HorizontalOptions="Fill"

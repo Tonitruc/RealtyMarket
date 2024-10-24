@@ -52,7 +52,7 @@ namespace RealtyMarket
                     fonts.AddFont("Nexa-Trial-HeavyItalic.ttf", "NexaTrialHeavyItalic");
                 });
 
-            string key = "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1NpR2BGfV5ycEVFalhZTnZcUj0eQnxTdEFjUH1WcH1WQ2BYUEV1WA==";
+            string key = "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1JpR2FGfV5ycEVDalhYTnZZUj0eQnxTdEFiWX1dcXNQRmBaUk12Xg==";
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(key);
             builder.Services.AddTransient<SecureStorageUserRepository>();
 
@@ -94,6 +94,9 @@ namespace RealtyMarket
 
             builder.Services.AddTransient<FavoriteViewModel>();
             builder.Services.AddTransient<FavoritesPage>();
+
+            builder.Services.AddTransient<AdvertisementViewModel>();
+            builder.Services.AddTransient<AdvertisementPage>();
 
             builder.Services.AddScoped<RegisteredUserRepository>();
             builder.Services.AddScoped<AdvertisementRepository>();

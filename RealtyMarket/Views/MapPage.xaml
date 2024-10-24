@@ -16,14 +16,15 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="10"/>
             </Border.StrokeShape>
-            <HorizontalStackLayout>
+            <Grid ColumnDefinitions="*,50">
                 <Entry x:Name="SearchEntry" 
                        TextColor="Black" 
-                       WidthRequest="300" 
+                       HorizontalOptions="Fill"
                        HeightRequest="40" 
                        Placeholder="Введите адрес"
                        PlaceholderColor="DarkGray"/>
                 <ImageButton Source="search_icon.png"
+                             Grid.Column="1"
                              Background="{StaticResource DarkViolet}"
                              CornerRadius="5"
                              Padding="3"
@@ -31,7 +32,7 @@
                              Margin="10,0,0,0" 
                              Clicked="OnSearchAddressClicked">
                 </ImageButton>
-            </HorizontalStackLayout>
+            </Grid>
         </Border>
         <WebView x:Name="MapWebView" Grid.Row="0" />
         <Button HeightRequest="40"

@@ -27,6 +27,7 @@
                                Margin="10,0,10,0"
                                ItemsSource="{Binding Advertisements}"
                                ItemSize="220"
+                               CachingStrategy="RecycleTemplate"
                                ItemSpacing="0"
                                IsScrollingEnabled="True">
             <syncfusion:SfListView.ItemTemplate>
@@ -74,6 +75,7 @@
         </syncfusion:SfListView>
 
         <VerticalStackLayout x:Name="LoadingShimmer" IsVisible="{Binding IsLoading}" Grid.Row="1">
+            <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
             <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
             <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>
             <shimmer:SfShimmer HeightRequest="220" Type="Article" Fill="{StaticResource VeryLightVioletBtush}"/>

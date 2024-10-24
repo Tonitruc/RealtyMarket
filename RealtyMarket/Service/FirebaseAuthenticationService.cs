@@ -23,7 +23,7 @@ namespace RealtyMarket.Service
             {
                 var userCredential = await _firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(email, password);
                 User user = GetCurrentUser();
-                _storageUserRepository.SaveUser(user);
+                await _storageUserRepository.SaveUser(user);
             }
             catch (FirebaseAuthException ex)
             {
@@ -47,7 +47,7 @@ namespace RealtyMarket.Service
             {
                 var userCredential = await _firebaseAuthClient.SignInWithEmailAndPasswordAsync(email, password);
                 User user = GetCurrentUser();
-                _storageUserRepository.SaveUser(user);
+                await _storageUserRepository.SaveUser(user);
             }
             catch (FirebaseAuthException ex)
             {
@@ -70,7 +70,7 @@ namespace RealtyMarket.Service
             {
                 var userCredential = _firebaseAuthClient.SignInAnonymouslyAsync().Result;
                 User user = GetCurrentUser();
-                _storageUserRepository.SaveUser(user);
+                await _storageUserRepository.SaveUser(user);
                 if (userCredential.User != null)
                 {
                     return SignInResultEnum.Ok;

@@ -7,7 +7,7 @@ public partial class GrHeartButton : ContentView
 {
 
     public static readonly BindableProperty IsActiveProperty = BindableProperty.Create(
-        nameof(IsActive), typeof(bool), typeof(GrHeartButton), false, BindingMode.TwoWay, propertyChanging: IsActiveChange);
+        nameof(IsActive), typeof(bool), typeof(GrHeartButton), false, BindingMode.OneWay, propertyChanging: IsActiveChange);
 
     public bool IsActive
     {
@@ -61,8 +61,6 @@ public partial class GrHeartButton : ContentView
 
     private void ImageButton_Clicked(object sender, EventArgs e)
     {
-        _isActive = !_isActive;
-
         IsActive = !IsActive;
 
         Clicked?.Invoke(this, EventArgs.Empty);

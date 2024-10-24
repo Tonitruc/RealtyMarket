@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:rotator="clr-namespace:Syncfusion.Maui.Rotator;assembly=Syncfusion.Maui.Rotator"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:local="clr-namespace:RealtyMarket.Views"
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
+             xmlns:effectsView="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             
+             Shell.NavBarIsVisible="False"
+             
+             x:Class="RealtyMarket.Views.AdvertisementPage"
+             x:DataType="viewmodels:AdvertisementViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+              HeightRequest="50" VerticalOptions="Start">
+                <ImageButton Source="prev_page_arrow.png"
+                         HeightRequest="25"
+                         Margin="10,0,0,0"/>
+                <Label Grid.Column="1" Text="Просмотр объявления"
+                   VerticalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   Margin="15,0,0,0"
+                   TextColor="White"/>
+            </Grid>
+
+            <Grid Margin="10">
+                <rotator:SfRotator ItemsSource="{Binding Advertisement.ImageUrls}" 
+                           HeightRequest="220"
+                           HorizontalOptions="Fill"
+                           BackgroundColor="{StaticResource VeryLightViolet}"/>
+
+                <shimmer:SfShimmer HeightRequest="220"
+                               WaveColor="{StaticResource VeryLightViolet}">
+                    <shimmer:SfShimmer.CustomView>
+                        <Grid>
+                            <shimmer:ShimmerView HeightRequest="220"
+                                         ShapeType="Rectangle"
+                                         HorizontalOptions="Fill"/>
+                        </Grid>
+                    </shimmer:SfShimmer.CustomView>
+                </shimmer:SfShimmer>
+            </Grid>
+
+            <Label x:Name="AdName" Text="{Binding Advertisement.Name}" 
+                   FontSize="24" TextColor="{StaticResource MediumViolet}"
+                   FontAttributes="Italic"
+                   LineBreakMode="WordWrap"
+                   Margin="10,10,0,10"/>
+            
+            <Label x:Name="Cost" VerticalOptions="End" FontFamily="NexaBold" FontAttributes="Italic" Margin="10,0,0,10" FontSize="18">
+                <Label.Text>
+                    <MultiBinding Converter="{StaticResource PriceConverter}">
+                        <Binding Path="Advertisement.Cost"/>
+                        <Binding Path="Advertisement.Currency"/>
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+
+            <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
+
+            <Label Text="Адрес:" Margin="10,10,10,0" FontSize="22" FontAttributes="Italic"/>
+            <Label Text="{Binding Advertisement.Realty.Location.Address}" Margin="10,15,0,0" FontSize="18"/>
+            <effectsView:SfEffectsView Margin="10,20,10,0">
+                <Border Stroke="{StaticResource ExtraViolet}" StrokeThickness="4" InputTransparent="True">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <WebView x:Name="AdAddress"
+                         HeightRequest="120" 
+                         HorizontalOptions="Fill"/>
+                </Border>
+            </effectsView:SfEffectsView>
+
+            <Label Text="Информация" Margin="10,20,10,10" FontSize="20" TextColor="{StaticResource MediumDarkViolet}"/>
+            <BoxView HeightRequest="2"/>
+            <Label x:Name="Area" Text="{Binding Advertisement.Realty.Area, StringFormat='Общая площадль кв.м: {0}'}"
+                   FontSize="18"
+                   Margin="10,20,10,20"/>
+            <BoxView HeightRequest="10" BackgroundColor="{StaticResource Gray100}"/>
+
+            <Label Text="Описание" Margin="10,20,10,10" FontSize="20" TextColor="{StaticResource MediumDarkViolet}"/>
+            <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
+
+            <Label Text="{Binding Advertisement.Description}" Margin="10,10,10,10" FontSize="18"/>
+            <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
+
+            <Border Margin="10" Stroke="{StaticResource ExtraViolet}" StrokeThickness="2">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10"/>
+                </Border.StrokeShape>
+                <VerticalStackLayout>
+                    <Label Text="Информация о продавце" FontSize="24" Margin="10,10,10,10" HorizontalOptions="Center"/>
+                    <Label Text="{Binding Advertisement.SellerName, StringFormat='Имя: {0}', FallbackValue='Не указано'}" FontSize="20" Margin="10,10,10,0" FontFamily="NexaBold" FontAttributes="Bold"/>
+                    <Label Text="{Binding Advertisement.UserEmail, StringFormat='Email: {0}'}" FontSize="20" Margin="10,10,10,0" FontFamily="NexaBold" FontAttributes="Bold"/>
+                    <Label Text="{Binding Advertisement.SellerNumber, StringFormat='Номер: {0}'}" FontSize="20" Margin="10,10,10,10" FontFamily="NexaBold" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

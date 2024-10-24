@@ -45,14 +45,14 @@ namespace RealtyMarket.Controls
             nameof(HorizontalOptions), typeof(LayoutOptions), typeof(GrButton), LayoutOptions.Start, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 var control = (GrButton)bindable;
-                control.ButtonFrame.HorizontalOptions = (LayoutOptions)newValue;
+                control.MainLayout.HorizontalOptions = (LayoutOptions)newValue;
             });
 
         public static readonly BindableProperty VerticalOptionsProperty = BindableProperty.Create(
             nameof(VerticalOptions), typeof(LayoutOptions), typeof(GrButton), LayoutOptions.Start, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
             {
                 var control = (GrButton)bindable;
-                control.ButtonFrame.VerticalOptions = (LayoutOptions)newValue;
+                control.MainLayout.VerticalOptions = (LayoutOptions)newValue;
             });
 
         public static readonly BindableProperty CornerRadiusProperty = BindableProperty.Create(
@@ -130,6 +130,19 @@ namespace RealtyMarket.Controls
                 var control = (GrButton)bindable;
                 control.ButtonFrame.Padding = (Thickness)newValue;
             });
+
+        public static readonly BindableProperty MarginProperty = BindableProperty.Create(
+            nameof(Margin), typeof(Thickness), typeof(GrButton), new Thickness(0), BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrButton)bindable;
+                control.MainLayout.Margin = (Thickness)newValue;
+            });
+
+        public Thickness Margin
+        {
+            get => (Thickness)GetValue(MarginProperty);
+            set => SetValue(MarginProperty, value);
+        }
 
         public static readonly BindableProperty TextAlligmentProperty = BindableProperty.Create(
             nameof(TextAlligment), typeof(TextAlignment), typeof(GrButton), TextAlignment.Center, BindingMode.OneWay, propertyChanged: (bindable, oldValue, newValue) =>

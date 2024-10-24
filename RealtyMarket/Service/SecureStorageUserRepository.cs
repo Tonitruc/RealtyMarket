@@ -28,7 +28,7 @@ namespace RealtyMarket.Service
             }
         }
 
-        public async void SaveUser(User user)
+        public async Task SaveUser(User user)
         {
             try
             {

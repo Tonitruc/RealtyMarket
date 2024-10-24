@@ -15,7 +15,6 @@ public partial class MyAdPage : ContentPage
 		InitializeComponent();
 
         BindingContext = _viewModel = viewModel;
-
     }
 
     protected override async void OnAppearing()
@@ -30,9 +29,19 @@ public partial class MyAdPage : ContentPage
         _viewModel.IsLoading = false;
     }
 
+    private async void LeftSwipe(object sender, SwipedEventArgs e)
+    {
+        await CloseButtonAnimation();
+    }
+
     private async void ClosedPageButtonClicked(object sender, TappedEventArgs e)
     {
-        if(ClosedAdPage.IsVisible)
+        await CloseButtonAnimation();
+    }
+
+    private async Task CloseButtonAnimation()
+    {
+        if (ClosedAdPage.IsVisible)
         {
             return;
         }
@@ -54,7 +63,17 @@ public partial class MyAdPage : ContentPage
         ActiveAdPage.IsVisible = false;
     }
 
+    private async void RightSwipe(object sender, SwipedEventArgs e)
+    {
+        await ActiveButtonAnimation();
+    }
+
     private async void ActivePageButtonClicked(object sender, TappedEventArgs e)
+    {
+        await ActiveButtonAnimation();
+    }
+
+    private async Task ActiveButtonAnimation()
     {
         if (ActiveAdPage.IsVisible)
         {
@@ -76,16 +95,6 @@ public partial class MyAdPage : ContentPage
         await Task.WhenAll(translateBoxViewTask, translateLoginPageTask, translateRegisterPageTask);
 
         ClosedAdPage.IsVisible = false;
-    }
-
-    private void AddToFavorites(object sender, EventArgs e)
-    {
-        // Логика добавления в избранное
-    }
-
-    private void DeleteAd(object sender, EventArgs e)
-    {
-        // Логика удаления объявления
     }
 
     private async void ImageButtonClicked(object sender, EventArgs e)

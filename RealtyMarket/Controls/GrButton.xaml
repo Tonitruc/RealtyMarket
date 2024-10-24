@@ -4,7 +4,7 @@
              xmlns:mr="clr-namespace:MR.Gestures;assembly=MR.Gestures"
              xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
              x:Class="RealtyMarket.Controls.GrButton">
-    <Grid RowDefinitions="*">
+    <Grid RowDefinitions="*" x:Name="MainLayout">
         <BoxView x:Name="WaveEffect"
                  Opacity="0"
                  WidthRequest="0"
@@ -48,7 +48,7 @@
                            FontFamily="{Binding Source={x:Reference ButtonLabel}, Path=FontFamily}"
                            VerticalOptions="Center"/>
                     <Label x:Name="ButtonLabel" 
-                           Margin="5,0,0,0"
+                           Margin="0,0,0,0"
                            Grid.ColumnSpan="2"
                            HorizontalTextAlignment="Center"
                            HorizontalOptions="Fill" 

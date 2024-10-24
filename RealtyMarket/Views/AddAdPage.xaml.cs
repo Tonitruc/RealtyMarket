@@ -19,7 +19,7 @@ namespace RealtyMarket.Views
     {
         private readonly AddAdViewModel _viewModel;
 
-        private readonly MapPage _mapPage;
+        private MapPage _mapPage;
 
         private RealtyLocation _lastLocation;
 
@@ -39,14 +39,18 @@ namespace RealtyMarket.Views
             Shell.SetTabBarIsVisible(this, false);
 
             CategoryComboBox.SelectedIndex = 0;
-            CurrencyComboBox.SelectedIndex = 0;
-
-            _mapPage = new MapPage();
+            CurrencyComboBox.SelectedIndex = 0;         
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            if(_viewModel.NeedClear)
+            {
+                ClearFields();
+                _viewModel.NeedClear = false;
+            }
 
             await _viewModel.GetUserInfo();
             
@@ -62,13 +66,15 @@ namespace RealtyMarket.Views
             {
                 NumberEntry.Text = _viewModel.User.Number;
             }
+
+            _mapPage = new MapPage();
         }
 
         private void ScrollViewScrolled(object sender, ScrolledEventArgs e)
         {
             double newScrollY = e.ScrollY;
 
-            if (newScrollY > _previousScrollY)
+            if (newScrollY > _previousScrollY && newScrollY > 50)
             {
                 PageTitle.TranslateTo(0, -PageTitle.Height, 250, Easing.CubicIn);
             }
@@ -302,6 +308,25 @@ namespace RealtyMarket.Views
         private void AddPhotoClicked(object sender, EventArgs e)
         {
             _viewModel.AddPhotoCommand.Execute(null);
+        }
+
+        public void ClearFields()
+        {
+            CategoryComboBox.SelectedIndex = 0;
+            DescriptionEditor.Text = string.Empty;
+            CostEntry.Text = string.Empty;
+            AdvertismentNameEntry.Text = string.Empty;
+            CommonAreaEntry.Text = string.Empty;
+            AddressEntry.Text = string.Empty;
+
+            ConstructedYearEntry.Text = string.Empty;
+            LivingAreaEntry.Text = string.Empty;
+
+            FlatFloorEntry.Text = string.Empty;
+            FloorNumberEntry.Text = string.Empty;
+
+            IsEntranceRoomSwitch.IsOn = false;
+            KitchenAreaEntry.Text = string.Empty;
         }
     }
 }

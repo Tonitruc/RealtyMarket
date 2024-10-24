@@ -8,21 +8,20 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace RealtyMarket.ViewModels
 {
-    public class AdvertisementItem : ObservableObject
+    public partial class AdvertisementItem : ObservableObject
     {
-        public Advertisement Advertisement { get; set; }
+        [ObservableProperty]
+        private Advertisement _advertisement;
 
+        [ObservableProperty]
         private bool _isFavorite = false;
 
-        public bool IsFavorite
-        {
-            get => _isFavorite;
-            set => SetProperty(ref _isFavorite, value);
-        }
+        [ObservableProperty]
+        private bool _isRegistered = false;
     }
 
 
-    public class CatalogViewModel : ObservableObject
+    public partial class CatalogViewModel : ObservableObject
     {
         private readonly AdvertisementRepository _advertisementRepository;
 
@@ -30,7 +29,8 @@ namespace RealtyMarket.ViewModels
 
         private readonly SecureStorageUserRepository _secureStorageUserRepository;
 
-        public ObservableCollection<AdvertisementItem> Advertisements { get; }
+        [ObservableProperty]
+        public ObservableCollection<AdvertisementItem> _advertisements;
 
         private bool _isLoading = false;
 
@@ -58,7 +58,8 @@ namespace RealtyMarket.ViewModels
             Advertisements.Clear();
             foreach(var ad in  advertisementsList)
             {
-                Advertisements.Add(new AdvertisementItem() { Advertisement = ad, IsFavorite = IsFavorite(ad) });
+                Advertisements.Add(new AdvertisementItem() { Advertisement = ad, IsFavorite = IsFavorite(ad), 
+                    IsRegistered = User != null});
             }
         }
 
@@ -77,18 +78,25 @@ namespace RealtyMarket.ViewModels
             User = await _registeredUserRepository.GetByEmail(email);
         }
 
-        public async Task AddFavorite(Advertisement ad)
+        public async Task AddFavorite(AdvertisementItem ad)
         {
-            await _registeredUserRepository.AddFavorite(User.Email, ad.Id);
+            await _registeredUserRepository.AddFavorite(User.Email, ad.Advertisement.Id);
+            ad.IsFavorite = true;
         }
 
-        public async Task DeleteFavorite(Advertisement ad)
+        public async Task DeleteFavorite(AdvertisementItem ad)
         {
-            await _registeredUserRepository.DeleteFavorite(User.Email, ad.Id);
+            await _registeredUserRepository.DeleteFavorite(User.Email, ad.Advertisement.Id);
+            ad.IsFavorite = false;
         }
 
         public bool IsFavorite(Advertisement ad)
         {
+            if(User == null)
+            {
+                return false;
+            }
+
             return User.Favorites.Contains(ad.Id);
         }
     }

@@ -11,11 +11,22 @@ using Microsoft.Maui.Controls;
 
 namespace RealtyMarket.ViewModels
 {
-    public class PhotoItem
+    public partial class PhotoItem : ObservableObject
     {
-        public bool IsButton { get; set; } = false;
+        [ObservableProperty]
+        public bool _isButton;
 
-        public ImageSource ImageSource { get; set; } = null;
+        private ImageSource _imageSource;
+
+        public ImageSource ImageSource
+        {
+            get => _imageSource;
+            set
+            {
+                SetProperty(ref _imageSource, value);
+                OnPropertyChanged(nameof(IsEmpty));
+            }
+        }
 
         public bool IsEmpty => ImageSource != null;
     }
@@ -36,6 +47,8 @@ namespace RealtyMarket.ViewModels
             get => _isLoading;
             set => SetProperty(ref _isLoading, value);
         }
+
+        public bool NeedClear = false;
 
         private readonly SecureStorageUserRepository _secureStorageUserRepository;
 
@@ -245,6 +258,7 @@ namespace RealtyMarket.ViewModels
 
         public async Task PublishAdvertisement()
         {
+            IsLoading = true;
             for( int i = 0; i < 10; i++)
             {
                 if(Photos[i].ImageSource != null)
@@ -256,6 +270,17 @@ namespace RealtyMarket.ViewModels
 
             await _advertisementRepository.Add(Advertisement);
             await Shell.Current.GoToAsync("//ProfilePage");
+
+            Photos[0].IsButton = true;
+            foreach(var item in Photos)
+            {
+                item.ImageSource = null;
+            }
+            AmountPhotos = 0;
+
+            IsLoading = false;
+
+            NeedClear = true;
         }
     }
 }

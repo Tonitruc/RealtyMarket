@@ -35,7 +35,15 @@ namespace RealtyMarket.Controls
                 control.EntryLine.TextChanged -= control.OnEntryTextChanged;
                 control.EntryLine.Text = newValue as string;
                 control.EntryLine.TextChanged += control.OnEntryTextChanged;
-                control.OnEntryFocused(control.EntryLine, null);
+                if((string)newValue == string.Empty)
+                {
+                    control.OnEntryUnfocused(control.EntryLine, null);
+                    control._entryLength = 0;
+                }
+                else
+                {
+                    control.OnEntryFocused(control.EntryLine, null);
+                }
                 control.IsFocused = false;
             });
 

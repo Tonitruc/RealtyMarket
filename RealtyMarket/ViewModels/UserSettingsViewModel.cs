@@ -22,14 +22,6 @@ namespace RealtyMarket.ViewModels
 
         public ICommand PickAvatarPhotoCommand { get; }
 
-        public string _test = "Fuck";
-
-        public string Test
-        {
-            get => _test;
-            set => SetProperty(ref _test, value);
-        }
-
         private RegisteredUser _user;
 
         public RegisteredUser User

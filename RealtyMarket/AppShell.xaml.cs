@@ -19,7 +19,6 @@ namespace RealtyMarket
             _connectivityService = connectivityService;
 
             Navigating += CheckConnetionNavigating;
-            Navigating += CheckUserAuthenticationAsync;
 
             NeedRegisterPages = [
                 "//FavoritesPage",
@@ -54,6 +53,10 @@ namespace RealtyMarket
                     e.Cancel();
                     await GoToAsync($"//NoInternetPage?ReturnPage={e.Target.Location.OriginalString}");
                 }
+            }
+            else
+            {
+                CheckUserAuthenticationAsync(sender, e);
             }
         }
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:RealtyMarket.ViewModels" 
+             xmlns:control="clr-namespace:RealtyMarket.Controls"
+             xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:buttons="clr-namespace:Syncfusion.Maui.Buttons;assembly=Syncfusion.Maui.Buttons"
+             
+             x:Class="RealtyMarket.Views.FilterPage"
+             x:DataType="viewmodels:FilterViewModel"
+             Shell.NavBarIsVisible="False">
+    
+    <VerticalStackLayout>
+
+        <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+              HeightRequest="50" VerticalOptions="Start">
+            <ImageButton Source="prev_page_arrow.png"
+                         HeightRequest="25"
+                         Margin="10,0,0,0"
+                         Clicked="ReturnClicked"/>
+            <Label Grid.Column="1" Text="Фильтр"
+                   VerticalOptions="Center"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   Margin="15,0,0,0"
+                   TextColor="White"/>
+            <control:GrButton Text="Очистить" 
+                              Padding="0" 
+                              Grid.Column="1"
+                              Margin="0,0,10,0"
+                              HorizontalOptions="End" 
+                              HeightRequest="30" 
+                              CornerRadius="5"
+                              WidthRequest="80" 
+                              TextAlligment="Center"
+                              EffectColor="LightGray"
+                              BackgroundColor="White"/>
+        </Grid>
+
+        <editors:SfComboBox x:Name="CategoryComboBox"
+                            Margin="10,15,10,0"
+                            ItemsSource="{Binding RealtyCategories}"/>
+
+        <control:GrComboLayout x:Name="AdvertisementTypesCombo"
+                               Title="Тип объявления"
+                               FontFamily="NexaBold"
+                               Margin="0,15,10,0"                            
+                               SelectColor="{StaticResource ExtraViolet}"
+                               Items="{Binding AdvertisementTypes}"/>
+
+        <control:GrComboBox x:Name="FlatConveniencesComboBox" 
+                            Margin="10,25,10,0"
+                            Items="{Binding Regions}"
+                            Title="Область" 
+                            HeightRequest="50" 
+                            IsMultiple="False"
+                            SelectedColor="{StaticResource ExtraViolet}"/>
+
+        <Grid RowDefinitions="Auto,2,*" Margin="0,25,0,0">
+            <Label Text="Сортировка" Margin="10,0,10,5" FontSize="20"/>
+            <BoxView HeightRequest="2" BackgroundColor="{StaticResource MediumViolet}" Grid.Row="1"/>
+            <buttons:SfRadioGroup Margin="0,15,0,0"  Grid.Row="2">
+                <buttons:SfRadioButton Text="По новизне" IsChecked="True"/>
+                <buttons:SfRadioButton Text="Сначала дешевые"/>
+                <buttons:SfRadioButton Text="Сначала дорогие"/>
+            </buttons:SfRadioGroup>
+        </Grid>
+
+        <control:GrButton HeightRequest="40" 
+                          WidthRequest="250" 
+                          Text="Применить" 
+                          Padding="0"
+                          Margin="0,40,0,0"
+                          FontSize="22"
+                          TextColor="White"
+                          BackgroundColor="{StaticResource DarkViolet}"/>
+
+    </VerticalStackLayout>
+</ContentPage>
