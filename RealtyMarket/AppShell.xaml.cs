@@ -18,7 +18,7 @@ namespace RealtyMarket
             _secureStorageUserRepository = secureStorageUserRepository;
             _connectivityService = connectivityService;
 
-            Navigating += CheckConnetionNavigating;
+            Navigating += CheckUserAuthenticationAsync;
 
             NeedRegisterPages = [
                 "//FavoritesPage",
@@ -44,7 +44,7 @@ namespace RealtyMarket
             }
         }
 
-        private async void CheckConnetionNavigating(object sender, ShellNavigatingEventArgs e)
+/*        private async void CheckConnetionNavigating(object sender, ShellNavigatingEventArgs e)
         {
             if (!_connectivityService.IsConnectedToInternet())
             {
@@ -58,17 +58,17 @@ namespace RealtyMarket
             {
                 CheckUserAuthenticationAsync(sender, e);
             }
-        }
+        }*/
 
         private async void CheckUserAuthenticationAsync(object sender, ShellNavigatingEventArgs e)
         {
-            var newPage = e.Target.Location.OriginalString;
+            var newPage = e.Target.Location.OriginalString; /*
             if (!_connectivityService.IsConnectedToInternet())
             {
                 await GoToAsync($"//NoInternetPage?ReturnPage={newPage}");
             }
-            else
-            {
+            else*/
+
                 var user = await _secureStorageUserRepository.ReadUser();
                 var userStatus = await _secureStorageUserRepository.GetUserState();
 
@@ -77,7 +77,7 @@ namespace RealtyMarket
                     e.Cancel();
                     await GoToAsync("//LoginPage");
                 }
-            }
+
         }
     }
 }

@@ -83,7 +83,16 @@ namespace RealtyMarket.Views
                 { "Advertisement", ad }
             };
 
+            try
+            {
             await Shell.Current.GoToAsync("//AdvertisementPage", true, navigationParameter);
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
     }
 }

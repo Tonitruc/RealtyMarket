@@ -14,6 +14,6 @@ namespace RealtyMarket.Models.RealtyEntity
 
         public string GasSystem { get; set; }
 
-        public List<string> TerritoryConveniences { get; set; }
+        public List<string> TerritoryConveniences { get; set; } = [];
     }
 }

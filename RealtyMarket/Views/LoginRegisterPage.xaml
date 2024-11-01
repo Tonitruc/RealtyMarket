@@ -35,9 +35,6 @@
         <ContentView x:Name="LoginPage" Grid.Row="2">
             <ScrollView>
                 <VerticalStackLayout>
-                    <VerticalStackLayout.GestureRecognizers>
-                        <PanGestureRecognizer PanUpdated="OnPanUpdated1"/>
-                    </VerticalStackLayout.GestureRecognizers>
                     <control:RegistrationAdvantagesLabel x:Name="LoginAdvanatages" 
                                                          Title="Войди чтобы получить:"
                                                          InputTransparent="True"/>
@@ -107,9 +104,6 @@
         <ContentView x:Name="RegisterPage" Grid.Row="2" IsVisible="False">
             <ScrollView>
                 <VerticalStackLayout>
-                    <VerticalStackLayout.GestureRecognizers>
-                        <PanGestureRecognizer PanUpdated="OnPanUpdated2"/>
-                    </VerticalStackLayout.GestureRecognizers>
 
                     <control:RegistrationAdvantagesLabel x:Name="RegisterAdvantages" 
                                                          InputTransparent="True"
