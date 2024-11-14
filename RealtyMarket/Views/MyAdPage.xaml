@@ -81,96 +81,84 @@
             <Grid Grid.Row="2" x:Name="ActiveAdPage">
                 <syncfusion:SfListView x:Name="ActiveAdsView" Orientation="Vertical"
                                        Grid.Row="1"
-                                       Margin="10,0,10,0"
                                        ItemsSource="{Binding ActiveAds}"
                                        ItemSize="220"
-                                       ItemSpacing="0"
-                                       IsScrollingEnabled="True">
-                    <syncfusion:SfListView.GestureRecognizers>
-                        <SwipeGestureRecognizer Direction="Right" Swiped="RightSwipe"/>
-                        <SwipeGestureRecognizer Direction="Left" Swiped="LeftSwipe"/>
-                    </syncfusion:SfListView.GestureRecognizers>
+                                       ItemSpacing="10"
+                                       IsScrollingEnabled="True"
+                                       AllowSwiping="True">
+                    <syncfusion:SfListView.EndSwipeTemplate>
+                        <DataTemplate x:Name="OpenSwipeTemplateClose" x:DataType="model:Advertisement">
+                            <Grid BackgroundColor="White" HorizontalOptions="Fill" VerticalOptions="Fill">
+                                <ImageButton Grid.Column="0"
+                                             Grid.Row="0"
+                                             Source="open.png"
+                                             BackgroundColor="#cc3b81"
+                                             HeightRequest="80"
+                                             WidthRequest="80"
+                                             VerticalOptions="Fill"
+                                             HorizontalOptions="Fill"
+                                             CornerRadius="10"
+                                             Clicked="CloseAdClicked"
+                                             CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.EndSwipeTemplate>
+
+                    <syncfusion:SfListView.StartSwipeTemplate>
+                        <DataTemplate x:Name="StartSwipeTemplateOpen" x:DataType="model:Advertisement">
+                            <Grid BackgroundColor="White" HorizontalOptions="Fill" VerticalOptions="Fill">
+                                <ImageButton Grid.Column="0"
+                                             Grid.Row="0"
+                                             Source="garbage.png"
+                                             BackgroundColor="Red"
+                                             HeightRequest="80"
+                                             WidthRequest="80"
+                                             VerticalOptions="Fill"
+                                             HorizontalOptions="Fill"
+                                             CornerRadius="10"
+                                             Clicked="DeleteAdClicked"
+                                             CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.StartSwipeTemplate>
+
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="model:Advertisement">
-                            <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                            <Border HeightRequest="{OnPlatform Default=220, WinUI=250}" StrokeThickness="2">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
                                 <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
                                     <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
-                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}" 
-                                               BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}"                                       
+                                                BackgroundColor="{StaticResource VeryLightViolet}" Aspect="AspectFit"/>
                                     </Border>
                                     <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
-                                        <Grid  ColumnDefinitions="0.9*,0.1*">
-                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
-                                                   TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
-                                            <ImageButton x:Name="PopupImageButton" Source="threedots.png" HeightRequest="25" Grid.Column="1" Clicked="ImageButtonClicked"/>
-                                            <popup:SfPopup x:Name="PopupMenu" 
-                                                           HeightRequest="84" 
-                                                           WidthRequest="124"
-                                                           ShowOverlayAlways="False"
-                                                           StaysOpen="False"
-                                                           ShowHeader="False"
-                                                           ShowFooter="False"
-                                                           AnimationMode="SlideOnRight"
-                                                           Closed="PopupMenuClosed">
-                                                <popup:SfPopup.PopupStyle>
-                                                    <popup:PopupStyle CornerRadius="0"/>
-                                                </popup:SfPopup.PopupStyle>
-                                                <popup:SfPopup.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <Border Stroke="{StaticResource VeryLightViolet}" StrokeThickness="2">
-                                                            <VerticalStackLayout Spacing="0" HeightRequest="80" WidthRequest="120">
-                                                                <control:GrButton Text="Закрыть" 
-                                                                                  CornerRadius="0" 
-                                                                                  Padding="0" 
-                                                                                  FontSize="14" 
-                                                                                  BackgroundColor="White"
-                                                                                  EffectColor="{StaticResource Gray100}"
-                                                                                  HeightRequest="40" 
-                                                                                  WidthRequest="120"
-                                                                                  Clicked="CloseAdClicked"
-                                                                                  CommandParameter="{Binding .}"/>
-                                                                <control:GrButton Text="Удалить" 
-                                                                                  CornerRadius="0" 
-                                                                                  Padding="0" 
-                                                                                  FontSize="14"
-                                                                                  BackgroundColor="White"
-                                                                                  EffectColor="{StaticResource Gray100}"
-                                                                                  HeightRequest="40" 
-                                                                                  WidthRequest="120"
-                                                                                  Clicked="DeleteAdClicked"
-                                                                                  CommandParameter="{Binding .}"/>
-                                                            </VerticalStackLayout>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </popup:SfPopup.ContentTemplate>
-                                            </popup:SfPopup>
+                                        <Grid Grid.Row="0">
+                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" TextColor="{StaticResource MediumViolet}" 
+                                                   FontSize="20" FontAttributes="Italic" LineBreakMode="TailTruncation"/>
                                         </Grid>
-                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="TailTruncation"/>
+                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1"/>
                                         <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
                                         <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
-                                        <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
-                                            <Label.Text>
-                                                <MultiBinding Converter="{StaticResource PriceConverter}">
-                                                    <Binding Path="Cost"/>
-                                                    <Binding Path="Currency"/>
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
+                                        <Label x:Name="Cost" Text="{Binding ., Converter={StaticResource PriceConverter}}" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic"/>
                                     </Grid>
 
                                     <control:GrButton Text="Подробнее" 
                                                       Grid.Row="1" 
                                                       Grid.Column="1"
                                                       Padding="0"
-                                                      Margin="5,10,5,2"
+                                                      Margin="5,10,5,5"
                                                       BackgroundColor="{StaticResource DarkViolet}"
                                                       TextColor="White"
                                                       VerticalOptions="Fill"
-                                                      TextAlligment="Center"   
+                                                      TextAlligment="Center"
+                                                      Clicked="MoreInfoClicked" 
+                                                      CommandParameter="{Binding .}"
                                                       HorizontalOptions="Fill"
                                                       CornerRadius="5"/>
                                 </Grid>
-                            </Frame>
+                            </Border>
                         </DataTemplate>
                     </syncfusion:SfListView.ItemTemplate>
                 </syncfusion:SfListView>
@@ -183,92 +171,84 @@
             <Grid Grid.Row="2" x:Name="ClosedAdPage" IsVisible="False">
                 <syncfusion:SfListView x:Name="ClosedAdsView" Orientation="Vertical"
                                        Grid.Row="1"
-                                       Margin="10,0,10,0"
                                        ItemsSource="{Binding ClosedAds}"
                                        ItemSize="220"
-                                       ItemSpacing="0"
-                                       IsScrollingEnabled="True">
+                                       ItemSpacing="10"
+                                       IsScrollingEnabled="True"
+                                       AllowSwiping="True">
+                    <syncfusion:SfListView.StartSwipeTemplate>
+                        <DataTemplate x:Name="StartSwipeTemplateClose" x:DataType="model:Advertisement">
+                            <Grid BackgroundColor="White" HorizontalOptions="Fill" VerticalOptions="Fill">
+                                <ImageButton Grid.Column="0"
+                                             Grid.Row="0"
+                                             Source="open.png"
+                                             BackgroundColor="{StaticResource LightViolet}"
+                                             HeightRequest="80"
+                                             WidthRequest="80"
+                                             VerticalOptions="Fill"
+                                             HorizontalOptions="Fill"
+                                             CornerRadius="10"
+                                             Clicked="OpenAdClicked"
+                                             CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.StartSwipeTemplate>
+
+                    <syncfusion:SfListView.EndSwipeTemplate>
+                        <DataTemplate x:Name="EndSwipeTemplateClose" x:DataType="model:Advertisement">
+                            <Grid BackgroundColor="White" HorizontalOptions="Fill" VerticalOptions="Fill">
+                                <ImageButton Grid.Column="0"
+                                             Grid.Row="0"
+                                             Source="garbage.png"
+                                             BackgroundColor="Red"
+                                             HeightRequest="80"
+                                             WidthRequest="80"
+                                             VerticalOptions="Fill"
+                                             HorizontalOptions="Fill"
+                                             CornerRadius="10"
+                                             Clicked="DeleteAdClicked"
+                                             CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </syncfusion:SfListView.EndSwipeTemplate>
+
                     <syncfusion:SfListView.ItemTemplate>
                         <DataTemplate x:DataType="model:Advertisement">
-                            <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                            <Border HeightRequest="{OnPlatform Default=220, WinUI=250}" StrokeThickness="2">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="5"/>
+                                </Border.StrokeShape>
                                 <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
                                     <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
-                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}" 
-                                               BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                        <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}"                                       
+                                               BackgroundColor="{StaticResource VeryLightViolet}" Aspect="AspectFit"/>
                                     </Border>
                                     <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
-                                        <Grid  ColumnDefinitions="0.9*,0.1*">
-                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
-                                                   TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
-                                            <ImageButton x:Name="PopupImageButton" Source="threedots.png" HeightRequest="25" Grid.Column="1" Clicked="ImageButtonClicked"/>
-                                            <popup:SfPopup x:Name="PopupMenu" 
-                                                           HeightRequest="84" 
-                                                           WidthRequest="124"
-                                                           ShowOverlayAlways="False"
-                                                           StaysOpen="False"
-                                                           ShowHeader="False"
-                                                           ShowFooter="False"
-                                                           AnimationMode="SlideOnRight"
-                                                           Closed="PopupMenuClosed">
-                                                <popup:SfPopup.PopupStyle>
-                                                    <popup:PopupStyle CornerRadius="0"/>
-                                                </popup:SfPopup.PopupStyle>
-                                                <popup:SfPopup.ContentTemplate>
-                                                    <DataTemplate>
-                                                        <Border Stroke="{StaticResource VeryLightViolet}" StrokeThickness="2">
-                                                            <VerticalStackLayout Spacing="0" HeightRequest="80" WidthRequest="120">
-                                                                <control:GrButton Text="Открыть" 
-                                                                                  CornerRadius="0" 
-                                                                                  Padding="0" 
-                                                                                  FontSize="14" 
-                                                                                  BackgroundColor="White"
-                                                                                  EffectColor="{StaticResource Gray100}"
-                                                                                  HeightRequest="40" 
-                                                                                  WidthRequest="120"
-                                                                                  Clicked="OpenAdClicked"
-                                                                                  CommandParameter="{Binding .}"/>
-                                                                <control:GrButton Text="Удалить" 
-                                                                                  CornerRadius="0" 
-                                                                                  Padding="0" 
-                                                                                  FontSize="14"
-                                                                                  BackgroundColor="White"
-                                                                                  EffectColor="{StaticResource Gray100}"
-                                                                                  HeightRequest="40" 
-                                                                                  WidthRequest="120"
-                                                                                  Clicked="DeleteAdClicked"
-                                                                                  CommandParameter="{Binding .}"/>
-                                                            </VerticalStackLayout>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </popup:SfPopup.ContentTemplate>
-                                            </popup:SfPopup>
+                                        <Grid Grid.Row="0">
+                                            <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" TextColor="{StaticResource MediumViolet}" 
+                                                   FontSize="20" FontAttributes="Italic" LineBreakMode="TailTruncation"/>
                                         </Grid>
-                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="TailTruncation"/>
+                                        <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1"/>
                                         <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
                                         <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
-                                        <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
-                                            <Label.Text>
-                                                <MultiBinding Converter="{StaticResource PriceConverter}">
-                                                    <Binding Path="Cost"/>
-                                                    <Binding Path="Currency"/>
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
+                                        <Label x:Name="Cost" Text="{Binding ., Converter={StaticResource PriceConverter}}" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic"/>
                                     </Grid>
 
                                     <control:GrButton Text="Подробнее" 
                                                       Grid.Row="1" 
                                                       Grid.Column="1"
                                                       Padding="0"
-                                                      Margin="5,10,5,2"
+                                                      Margin="5,10,5,5"
                                                       BackgroundColor="{StaticResource DarkViolet}"
                                                       TextColor="White"
                                                       VerticalOptions="Fill"
-                                                      TextAlligment="Center"   
+                                                      TextAlligment="Center"
+                                                      Clicked="MoreInfoClicked" 
+                                                      CommandParameter="{Binding .}"
                                                       HorizontalOptions="Fill"
                                                       CornerRadius="5"/>
                                 </Grid>
-                            </Frame>
+                            </Border>
                         </DataTemplate>
                     </syncfusion:SfListView.ItemTemplate>
                 </syncfusion:SfListView>

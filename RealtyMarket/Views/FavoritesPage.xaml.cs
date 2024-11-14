@@ -15,20 +15,29 @@ namespace RealtyMarket.Views
             BindingContext = _viewModel = viewModel;
         }
 
+        private bool NeedUpdateAds { get; set; } = true;
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             _viewModel.IsLoading = true;
 
-            await _viewModel.GetUser();
-
-            if(_viewModel.User == null)
+            if(NeedUpdateAds)
             {
-                return;
-            }
+                await _viewModel.GetUser();
 
-            await _viewModel.GetAdvertisements();
+                if (_viewModel.User == null)
+                {
+                    return;
+                }
+
+                await _viewModel.GetAdvertisements();
+            }
+            else
+            {
+                NeedUpdateAds = true;
+            }
 
             _viewModel.IsLoading = false;
         }
@@ -54,6 +63,23 @@ namespace RealtyMarket.Views
 
                 _viewModel.IsLoading = false;
             }
+        }
+
+        private async void MoreInfoClicked(object sender, EventArgs e)
+        {
+            var button = (GrButton)sender;
+
+            try
+            {
+                NeedUpdateAds = false;
+                var ad = (Advertisement)button.CommandParameter;
+                await Navigation.PushAsync(new AdvertisementPage(ad, _viewModel.User));
+            }
+            catch (Exception)
+            {
+                await DisplayAlert("ќшибка", "ќбъ€вление не существует", "ќк");
+            }
+
         }
     }
 }

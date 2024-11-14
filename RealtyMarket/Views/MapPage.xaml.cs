@@ -9,9 +9,7 @@ public partial class MapPage : ContentPage
 {
     private TaskCompletionSource<RealtyLocation> _taskCompletionSource;
 
-    private RealtyLocation _lastLocation;
-
-    public MapPage()
+    public MapPage(RealtyLocation startLocation = null)
     {
         InitializeComponent();
 
@@ -19,17 +17,13 @@ public partial class MapPage : ContentPage
 
         MapWebView.Navigating += OnWebViewNavigating;
 
-        LoadHtmlToWebView();
+        LoadHtmlToWebView(startLocation);
+
     }
 
-    protected async override void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        if (_lastLocation != null)
-        {
-            await MapWebView.EvaluateJavaScriptAsync($"waitForMapReadyAndSetCoordinates({_lastLocation.Latinude}, {_lastLocation.Longitude});");
-        }
 
         _taskCompletionSource = new TaskCompletionSource<RealtyLocation>();
     }
@@ -39,7 +33,7 @@ public partial class MapPage : ContentPage
         return _taskCompletionSource.Task;
     }
 
-    private async void LoadHtmlToWebView()
+    private async void LoadHtmlToWebView(RealtyLocation realtyLocation)
     {
 
         using var stream = await FileSystem.OpenAppPackageFileAsync("map.html");
@@ -51,6 +45,13 @@ public partial class MapPage : ContentPage
         {
             Html = contents
         };
+
+        if(realtyLocation != null)
+        {
+            string lat = realtyLocation.Latinude.ToString().Replace(",", ".");
+            string lon = realtyLocation.Longitude.ToString().Replace(",", ".");
+            await MapWebView.EvaluateJavaScriptAsync($"setInitialCoordinates({lat}, {lon});");
+        }
     }
 
     private async void OnGetCoordinatesClicked(object sender, EventArgs e)
@@ -69,7 +70,6 @@ public partial class MapPage : ContentPage
                     Longitude = Convert.ToDouble(doc.RootElement.GetProperty("lng").GetString().Replace(".", ",")),
                     Address = doc.RootElement.GetProperty("address").GetString()
                 };
-                _lastLocation = location;
                 _taskCompletionSource.SetResult(location);
                 await Navigation.PopAsync();
             }

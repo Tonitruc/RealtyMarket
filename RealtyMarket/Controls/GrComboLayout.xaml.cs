@@ -94,6 +94,24 @@ namespace RealtyMarket.Controls
         public string SelectedText
         {
             get => _selectedText;
+            set
+            {
+                int i = 0;
+                foreach(var child in _flexLayout.Children)
+                {
+                    if(child is Border border)
+                    {
+                        if(border.Content is Label label)
+                        {
+                            if(label.Text == value)
+                            {
+                                OnFrameTapped(border, i);
+                            }
+                        }
+                        i++;
+                    }
+                }
+            }
         }
 
         public int _selectedIndex = -1;
@@ -176,6 +194,22 @@ namespace RealtyMarket.Controls
                 _selectedText = string.Empty;
                 _selectedIndex = -1;
             }
+        }
+
+        public void Reset()
+        {
+            if (_selectedFrame != null)
+            {
+                _selectedFrame.BackgroundColor = Colors.White;
+                if (_selectedFrame.Content is Label labelOld)
+                {
+                    labelOld.TextColor = Colors.Black;
+                }
+            }
+
+            _selectedFrame = null;
+            _selectedText = string.Empty;
+            _selectedIndex = -1;
         }
     }
 }

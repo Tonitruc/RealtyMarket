@@ -15,8 +15,12 @@
 
     <Grid RowDefinitions="Auto,*">
         <Grid ColumnDefinitions="0.8*,0.2*">
-            <SearchBar Placeholder="Поиск..." 
-                       HorizontalOptions="Fill"/>
+            <SearchBar x:Name="AddressSearchBar"
+                       Placeholder="Поиск..." 
+                       Text="{Binding SearchAddress}"
+                       HorizontalOptions="Fill"
+                       TextChanged="AddressSearchBar_TextChanged"
+                       SearchButtonPressed="AddressSearchBar_SearchButtonPressed"/>
             <ImageButton Source="filter.png" 
                          HeightRequest="30" 
                          Clicked="FilterButtonClicked"
@@ -35,7 +39,7 @@
             <pulltoRefresh:SfPullToRefresh.PullableContent>
                 <syncfusion:SfListView x:Name="CatalogView" Orientation="Vertical"
                                        Grid.Row="1"
-                                       ItemsSource="{Binding Advertisements}"
+                                       ItemsSource="{Binding FilteredAdvertisement}"
                                        ItemSize="{OnPlatform Default=220, WinUI=250}"
                                        CachingStrategy="CreateNewTemplate"
                                        ItemSpacing="{OnPlatform Default=10, WinUI=10}"
@@ -61,14 +65,7 @@
                                         <Label x:Name="AdType" Text="{Binding Advertisement.Type, StringFormat='Сделка: {0}'}" Grid.Row="1"/>
                                         <Label x:Name="RealtyType" Text="{Binding Advertisement.RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
                                         <Label x:Name="Address" Text="{Binding Advertisement.Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
-                                        <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
-                                            <Label.Text>
-                                                <MultiBinding Converter="{StaticResource PriceConverter}">
-                                                    <Binding Path="Advertisement.Cost"/>
-                                                    <Binding Path="Advertisement.Currency"/>
-                                                </MultiBinding>
-                                            </Label.Text>
-                                        </Label>
+                                        <Label x:Name="Cost" Text="{Binding Advertisement, Converter={StaticResource PriceConverter}}" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic"/>
                                     </Grid>
 
                                     <control:GrButton Text="Подробнее" 
@@ -81,7 +78,7 @@
                                                       VerticalOptions="Fill"
                                                       TextAlligment="Center"
                                                       Clicked="MoreInfoClicked" 
-                                                      CommandParameter="{Binding Advertisement}"
+                                                      CommandParameter="{Binding .}"
                                                       HorizontalOptions="Fill"
                                                       CornerRadius="5"/>
                                 </Grid>

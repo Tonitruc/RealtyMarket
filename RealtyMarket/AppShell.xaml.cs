@@ -44,8 +44,10 @@ namespace RealtyMarket
             }
         }
 
-/*        private async void CheckConnetionNavigating(object sender, ShellNavigatingEventArgs e)
+        private async void CheckUserAuthenticationAsync(object sender, ShellNavigatingEventArgs e)
         {
+            var newPage = e.Target.Location.OriginalString;
+
             if (!_connectivityService.IsConnectedToInternet())
             {
                 if (!e.Target.Location.OriginalString.StartsWith("//NoInternetPage"))
@@ -54,29 +56,15 @@ namespace RealtyMarket
                     await GoToAsync($"//NoInternetPage?ReturnPage={e.Target.Location.OriginalString}");
                 }
             }
-            else
+
+            var user = await _secureStorageUserRepository.ReadUser();
+            var userStatus = await _secureStorageUserRepository.GetUserState();
+            
+            if (userStatus == "Guest" && NeedRegisterPages.Contains(newPage))
             {
-                CheckUserAuthenticationAsync(sender, e);
+                e.Cancel();
+                await GoToAsync("//LoginPage");
             }
-        }*/
-
-        private async void CheckUserAuthenticationAsync(object sender, ShellNavigatingEventArgs e)
-        {
-            var newPage = e.Target.Location.OriginalString; /*
-            if (!_connectivityService.IsConnectedToInternet())
-            {
-                await GoToAsync($"//NoInternetPage?ReturnPage={newPage}");
-            }
-            else*/
-
-                var user = await _secureStorageUserRepository.ReadUser();
-                var userStatus = await _secureStorageUserRepository.GetUserState();
-
-                if (userStatus == "Guest" && NeedRegisterPages.Contains(newPage))
-                {
-                    e.Cancel();
-                    await GoToAsync("//LoginPage");
-                }
 
         }
     }

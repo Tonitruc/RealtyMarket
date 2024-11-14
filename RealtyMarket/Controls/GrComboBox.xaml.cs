@@ -139,7 +139,27 @@ public partial class GrComboBox : ContentView
 
     public ObservableCollection<string> SelectedItems => _popupMenu.SelectedItems;
 
-    public string SelectedItem => _popupMenu.SelectedItem;
+    public string SelectedItem
+    {
+        get => _popupMenu.SelectedItem;
+        set
+        {
+            if(!IsMultiple)
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    _popupMenu.SelectedItem = value;
+                    ButtonGridTitle.Text = $"{Title}: не выбрано";
+                }
+                else
+                {
+                    _popupMenu.SelectedItem = value;
+                    ButtonGridTitle.Text = $"{Title}: {SelectedItem}";
+                }
+            }
+        }
+    }
+       
 
     public GrComboBox()
     {
@@ -148,9 +168,14 @@ public partial class GrComboBox : ContentView
         _popupMenu = new GrPopupComboBox();
     }
 
+    private bool _isPopupOpen = false;
+
     private async void ButtonGridBorderTapped(object sender, TappedEventArgs e)
     {
-        await MopupService.Instance.PushAsync(_popupMenu);
+        if (!MopupService.Instance.PopupStack.Contains(_popupMenu))
+        {
+            await MopupService.Instance.PushAsync(_popupMenu);
+        }
 
         _popupMenu.Disappearing += (s, e) =>
         {
@@ -160,8 +185,25 @@ public partial class GrComboBox : ContentView
             }
             else
             {
-                ButtonGridTitle.Text = $"{Title}: {SelectedItem}";
+                if(!string.IsNullOrEmpty(SelectedItem))
+                {
+                    ButtonGridTitle.Text = $"{Title}: {SelectedItem}";
+                }
+                else
+                {
+                    ButtonGridTitle.Text = $"{Title}: не выбрано";
+                }
             }
         };
+    }
+
+    public void Reset()
+    {
+        if(IsMultiple)
+        {
+            _popupMenu.Reset();
+
+            ButtonGridTitle.Text = $"{Title}: {SelectedItems.Count} выбрано";
+        }
     }
 }

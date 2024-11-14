@@ -40,7 +40,7 @@ namespace RealtyMarket.Controls
             ItemsSource = [
                 new() { Text = "Возможность публикации объявлений."},
                 new() { Text = "Личный кабинет."},
-                new() { Text = "Избранное и история."}
+                new() { Text = "Избранное."}
             ];
 
             BindingContext = this;

@@ -1,4 +1,7 @@
+using Microsoft.Maui.Platform;
+using RealtyMarket.Controls;
 using RealtyMarket.Models;
+using RealtyMarket.Models.OtherEntity;
 using RealtyMarket.Models.RealtyEntity;
 using RealtyMarket.ViewModels;
 
@@ -9,49 +12,51 @@ namespace RealtyMarket.Views
     {
         private readonly AdvertisementViewModel _viewModel;
 
-        private Advertisement _advertisement;
-        public Advertisement Advertisement
-        {
-            get => _advertisement;
-            set
-            {
-                _viewModel.IsLoading = true;
-
-                _advertisement = value;
-                _viewModel.Advertisement = value;
-                LoadAdData();
-
-                OnPropertyChanged();
-            }
-        }
+        private Advertisement Advertisement { get; set; }
 
 
-        public AdvertisementPage(AdvertisementViewModel viewModel)
+        public AdvertisementPage(Advertisement advertisement, RegisteredUser user)
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = viewModel;
+            _viewModel = new AdvertisementViewModel();
+            BindingContext = _viewModel;
+
+            _viewModel.IsLoading = true;
+            Advertisement = advertisement;
+            _viewModel.User = user;
+            _viewModel.Advertisement = advertisement;
+            LoadAdData();
+            _viewModel.LoadPhoto();
+            _viewModel.IsLoading = false;
+
+            RealtyLocation location = Advertisement.Realty.Location;
+
+            LoadYandexMap(location.Latinude, location.Longitude);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            _viewModel.IsLoading = false;
-            _viewModel.LoadPhoto();
-            _viewModel.IsLoading = false;
-
-            LoadYandexMap(Advertisement.Realty.Location.Latinude, Advertisement.Realty.Location.Longitude);
+            _viewModel.IsFavoriteCheck();
         }
 
         public void LoadAdData()
         {
+            AmountFloors.IsVisible = AmountRooms.IsVisible = CeilingHeight.IsVisible =
+            ConstructionYear.IsVisible = Conveniences.IsVisible = LivingArea.IsVisible = Newness.IsVisible = false;
+
             switch (Advertisement.Realty)
             {
                 case Flat:
+                    GasSystem.IsVisible = Electricity.IsVisible = HouseType.IsVisible = SeweragerSystem.IsVisible =
+                    TerritoryConveniences.IsVisible = Water.IsVisible = false;
                     LoadFlatData();
                     break;
                 case PrivateHouse:
+                    BalconyType.IsVisible = FloorNum.IsVisible = FloorNumber.IsVisible = EntranceRoom.IsVisible =
+                    KitchenArea.IsVisible = RepairType.IsVisible = false;
                     LoadHouseData();
                     break;
             }
@@ -59,7 +64,10 @@ namespace RealtyMarket.Views
 
         private void LoadYandexMap(double latitude, double longitude)
         {
-                string contentHtml = _htmlMapContent = $@"
+            string lat = latitude.ToString().Replace(",", ".");
+            string lon = longitude.ToString().Replace(",", ".");
+
+            string contentHtml = _htmlMapContent = $@"
             <!DOCTYPE html>
             <html lang=""en"">
             <head>
@@ -84,7 +92,7 @@ namespace RealtyMarket.Views
                     ymaps.ready(init);
                     function init() {{
                         var myMap = new ymaps.Map('map', {{
-                            center: [{latitude}, {longitude}], // Центр карты на заданных координатах
+                            center: [{lat}, {lon}], // Центр карты на заданных координатах
                             zoom: 13,
                             controls: []
                         }}, {{
@@ -94,26 +102,28 @@ namespace RealtyMarket.Views
                         }});
                         
                         // Установка маркера на координаты
-                        var placemark = new ymaps.Placemark([{latitude}, {longitude}], {{
-                            balloonContent: 'Место: [{latitude}, {longitude}]'
+                        var placemark = new ymaps.Placemark([{lat}, {lon}], {{
+                            balloonContent: 'Место: [{lat}, {lon}]'
                         }});
                         myMap.geoObjects.add(placemark);
                     }}
                 </script>
             </body>
-            </html>";
+            </html>
+            ";
 
-            AdAddress.Source = new HtmlWebViewSource() { Html = contentHtml };
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AdAddress.Source = null;
+                AdAddress.Source = new HtmlWebViewSource() { Html = contentHtml };
+            });
         }
 
         public void LoadResidentalData()
         {
-            AmountFloors.IsVisible = AmountRooms.IsVisible = CeilingHeight.IsVisible =
-            ConstructionYear.IsVisible = Conveniences.IsVisible = LivingArea.IsVisible = Newness.IsVisible = false;
-
             var rR = Advertisement.Realty as ResidentialRealty;
 
-            if(rR.AmountFloors != -1)
+            if (rR.AmountFloors != -1)
             {
                 AmountFloors.Text = "Количество этажей: " + rR.AmountFloors.ToString();
                 AmountFloors.IsVisible = true;
@@ -137,10 +147,10 @@ namespace RealtyMarket.Views
                 ConstructionYear.IsVisible = true;
             }
 
-            if(rR.Conveniences.Count != 0)
+            if (rR.Conveniences.Count != 0)
             {
                 Conveniences.Text = "Удобства: ";
-                foreach(var con in rR.Conveniences)
+                foreach (var con in rR.Conveniences)
                 {
                     Conveniences.Text += con + ", ";
                 }
@@ -164,10 +174,6 @@ namespace RealtyMarket.Views
         {
             LoadResidentalData();
 
-            BalconyType.IsVisible = FloorNum.IsVisible = FloorNumber.IsVisible = EntranceRoom.IsVisible =
-            KitchenArea.IsVisible = RepairType.IsVisible = false;
-
-
             var flat = Advertisement.Realty as Flat;
 
             if (!string.IsNullOrEmpty(flat.BalconyType))
@@ -188,7 +194,7 @@ namespace RealtyMarket.Views
                 FloorNumber.IsVisible = true;
             }
 
-            if(flat.IsEntranceRoom)
+            if (flat.IsEntranceRoom)
             {
                 EntranceRoom.Text = "Проходная комната: Есть";
                 EntranceRoom.IsVisible = true;
@@ -211,15 +217,11 @@ namespace RealtyMarket.Views
         {
             LoadResidentalData();
 
-            GasSystem.IsVisible = Electricity.IsVisible = HouseType.IsVisible = SeweragerSystem.IsVisible =
-            TerritoryConveniences.IsVisible = Water.IsVisible;
-
-
             var house = Advertisement.Realty as PrivateHouse;
 
             if (!string.IsNullOrEmpty(house.GasSystem))
             {
-                GasSystem.Text = "Газ:" + house.GasSystem;
+                GasSystem.Text = "Газ: " + house.GasSystem;
                 GasSystem.IsVisible = true;
             }
 
@@ -227,7 +229,7 @@ namespace RealtyMarket.Views
             Electricity.Text = "Электричество: ";
             Electricity.Text += house.HasElectricity ? "Есть" : "Нету";
 
-            if(!string.IsNullOrEmpty(house.HouseType))
+            if (!string.IsNullOrEmpty(house.HouseType))
             {
                 HouseType.Text = "Тип дома: " + house.HouseType;
                 HouseType.IsVisible = true;
@@ -261,6 +263,27 @@ namespace RealtyMarket.Views
         private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
             await Navigation.PushModalAsync(new FullScreenMapPage(_htmlMapContent));
+        }
+
+        private async void ImageButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PopAsync();
+        }
+
+        private async void AddDeleteAdFavoriteClicked(object sender, EventArgs e)
+        {
+            var button = sender as GrHeartButton;
+
+            Advertisement ad = Advertisement;
+
+            if (button.IsActive)
+            {
+                await _viewModel.AddFavorite(ad);
+            }
+            else
+            {
+                await _viewModel.DeleteFavorite(ad);
+            }
         }
     }
 }

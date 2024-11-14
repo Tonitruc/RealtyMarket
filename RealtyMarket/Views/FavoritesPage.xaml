@@ -47,14 +47,7 @@
                                 <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="WordWrap"/>
                                 <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
                                 <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="TailTruncation"/>
-                                <Label x:Name="Cost" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic">
-                                    <Label.Text>
-                                        <MultiBinding Converter="{StaticResource PriceConverter}">
-                                            <Binding Path="Cost"/>
-                                            <Binding Path="Currency"/>
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
+                                <Label x:Name="Cost" Text="{Binding ., Converter={StaticResource PriceConverter}}" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic"/>
                             </Grid>
 
                             <control:GrButton Text="Подробнее" 
@@ -67,7 +60,8 @@
                                               VerticalOptions="Fill"
                                               TextAlligment="Center"   
                                               HorizontalOptions="Fill"
-                                              CornerRadius="5"/>
+                                              CornerRadius="5"
+                                              Clicked="MoreInfoClicked"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>

@@ -7,6 +7,7 @@
              xmlns:control="clr-namespace:RealtyMarket.Controls"
              xmlns:shimmer="clr-namespace:Syncfusion.Maui.Shimmer;assembly=Syncfusion.Maui.Core"
              xmlns:effectsView="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:corusel="clr-namespace:Syncfusion.Maui.Carousel;assembly=Syncfusion.Maui.Carousel"
              
              Shell.NavBarIsVisible="False"
              
@@ -15,39 +16,40 @@
 
     <ScrollView>
         <VerticalStackLayout>
-            <Grid x:Name="PageTitle" ColumnDefinitions="50,*" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
+            <Grid x:Name="PageTitle" ColumnDefinitions="50,*,50" BackgroundColor="{StaticResource DarkViolet}" ZIndex="100"
               HeightRequest="50" VerticalOptions="Start">
                 <ImageButton Source="prev_page_arrow.png"
                              HeightRequest="25"
                              Margin="10,0,0,0"
-                             Command="{Binding ReturnCommand}"/>
+                             Clicked="ImageButtonClicked"/>
                 <Label Grid.Column="1" Text="Просмотр объявления"
                        VerticalOptions="Center"
                        FontSize="20"
                        FontAttributes="Bold"
                        Margin="15,0,0,0"
                        TextColor="White"/>
+                <control:GrHeartButton IsActive="{Binding IsFavorite}"
+                                       IsVisible="False"
+                                       x:Name="FavoriteButton"
+                                       HorizontalOptions="End"
+                                       Clicked="AddDeleteAdFavoriteClicked"
+                                       Grid.Column="2"/>
             </Grid>
 
             <Grid Margin="10">
-                <StackLayout>
+                <VerticalStackLayout>
                     <CarouselView ItemsSource="{Binding Photos}" 
-                                  HeightRequest="300" 
-                                  IndicatorView="{x:Reference Indicator}"
-                                  BackgroundColor="{StaticResource Gray100}">
+                                  HeightRequest="220" 
+                                  BackgroundColor="{StaticResource Gray100}"
+                                  IsVisible="True">
                         <CarouselView.ItemTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding .}" 
+                            <DataTemplate x:DataType="viewmodels:AdvertisementImageItem">
+                                <Image Source="{Binding ImageSource}" 
                                        Aspect="AspectFit" />
                             </DataTemplate>
                         </CarouselView.ItemTemplate>
                     </CarouselView>
-                    
-                    <IndicatorView x:Name="Indicator" 
-                                   Margin="0,5,0,0"
-                                   HorizontalOptions="Center" 
-                                   VerticalOptions="End" />
-                </StackLayout>
+                </VerticalStackLayout>
 
                 <shimmer:SfShimmer HeightRequest="220"
                                    WaveColor="{StaticResource VeryLightViolet}"
@@ -60,22 +62,21 @@
                         </Grid>
                     </shimmer:SfShimmer.CustomView>
                 </shimmer:SfShimmer>
-            </Grid>
+            </Grid> 
 
             <Label x:Name="AdName" Text="{Binding Advertisement.Name}" 
                    FontSize="24" TextColor="{StaticResource MediumViolet}"
                    FontAttributes="Italic"
                    LineBreakMode="WordWrap"
-                   Margin="10,10,0,10"/>
-            
-            <Label x:Name="Cost" VerticalOptions="End" FontFamily="NexaBold" FontAttributes="Italic" Margin="10,0,0,10" FontSize="18">
-                <Label.Text>
-                    <MultiBinding Converter="{StaticResource PriceConverter}">
-                        <Binding Path="Advertisement.Cost"/>
-                        <Binding Path="Advertisement.Currency"/>
-                    </MultiBinding>
-                </Label.Text>
-            </Label>
+                   Margin="10,10,0,0"/>
+
+            <Label x:Name="PublishDate" Text="{Binding Advertisement.PublishDate, StringFormat='Дата публикации: {0}'}" 
+                   FontSize="18" TextColor="{StaticResource Black}"
+                   FontAttributes="Italic"
+                   LineBreakMode="WordWrap"
+                   Margin="10,0,0,10"/>
+
+            <Label x:Name="Cost" Text="{Binding Advertisement, Converter={StaticResource PriceConverter}}" VerticalOptions="End" FontFamily="NexaBold" FontAttributes="Italic" Margin="10,0,0,10" FontSize="18"/>
 
             <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
 
@@ -101,7 +102,6 @@
                    FontSize="18"
                    Margin="10,20,10,0"/>
             
-            <!-- Residental realty -->
 
             <Label x:Name="HouseType" FontSize="18" Margin="10,10,10,0" IsVisible="False"/>
             <Label x:Name="LivingArea" FontSize="18" Margin="10,10,10,0" IsVisible="False"/>
@@ -127,7 +127,7 @@
             <Label Text="Описание" Margin="10,20,10,10" FontSize="20" TextColor="{StaticResource MediumDarkViolet}"/>
             <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
 
-            <Label Text="{Binding Advertisement.Description}" Margin="10,10,10,10" FontSize="18"/>
+          
             <BoxView HeightRequest="2" BackgroundColor="{StaticResource Gray400}"/>
 
             <Border Margin="10" Stroke="{StaticResource ExtraViolet}" StrokeThickness="2">

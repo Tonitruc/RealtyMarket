@@ -23,6 +23,7 @@
                           LoadingText="Загрузка..."
                           Margin="0,20,0,0" 
                           Grid.Row="3"
+                          HeightRequest="50"
                           WidthRequest="220"
                           Padding="0"
                           Text="Обновить"

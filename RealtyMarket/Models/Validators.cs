@@ -6,9 +6,15 @@ namespace RealtyMarket.Service
 {
     public static class Validators
     {
-        [DllImport("libmylibrary.so", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int IsValidEmail(int param);
+        public const string EmailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
+        public static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            return Regex.IsMatch(email, EmailPattern);
+        }
 
         private const string NumberPattern = @"^\+375 \(\d{2}\) \d{3}-\d{2}-\d{2}$";
 

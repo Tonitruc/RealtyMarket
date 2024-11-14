@@ -73,7 +73,7 @@ namespace RealtyMarket.ViewModels
                 ];
 
         public ObservableCollection<string> Currencys { get; } = [
-            "$", "€", "BYN", "Z$"
+            "$", "BYN"
             ];
 
         #endregion

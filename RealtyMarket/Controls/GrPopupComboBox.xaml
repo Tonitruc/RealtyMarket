@@ -34,7 +34,6 @@
                                                 EffectColor="LightGray" 
                                                 HorizontalOptions="Start"
                                                 HeightRequest="40"
-                                                Margin="0,0,100,0"
                                                 WidthRequest="80"
                                                 Clicked="ClearButtonClicked"/>
                                 <local:GrButton x:Name="AllowButton" 
@@ -44,7 +43,6 @@
                                                 BackgroundColor="DarkViolet"
                                                 Text="Применить" 
                                                 EffectColor="LightGray" 
-                                                HorizontalOptions="End"
                                                 HeightRequest="40"
                                                 WidthRequest="140"
                                                 Clicked="AllowButtonClicked"/>

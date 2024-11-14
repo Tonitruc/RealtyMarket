@@ -87,7 +87,42 @@ public partial class GrPopupComboBox : PopupPage
 
     public ObservableCollection<string> SelectedItems { get; }
 
-    public string SelectedItem { get; private set; }
+    private string _selectedItem = string.Empty;
+
+    public string SelectedItem
+    {
+        get => _selectedItem;
+        set
+        {
+            if(string.IsNullOrEmpty(value))
+            {
+                _selectedItem = value;
+                if(_prevSelected != null)
+                    _prevSelected.IsCheck = false;
+            }
+            else
+            {
+                foreach (var child in ContentLayout.Children)
+                {
+                    if (child is Grid grid)
+                    {
+                        Label label = grid.Children.OfType<Label>().First();
+                        if(label.Text == value)
+                        {
+                            GrCheckBox tip = grid.Children.OfType<GrCheckBox>().First();
+                            if (_prevSelected != null)
+                            {
+                                _prevSelected.IsCheck = false;
+                            }
+                            _prevSelected = tip;
+                            tip.IsCheck = true;
+                            _selectedItem = label.Text;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public GrPopupComboBox()
 	{
@@ -157,13 +192,13 @@ public partial class GrPopupComboBox : PopupPage
 
             grid.GestureRecognizers.Add(new TapGestureRecognizer
             {
-                Command = new Command(() => OnGridTapped(grid, i))
+                Command = new Command(() => OnGridTapped(grid))
             });
 
             checkBox.IsEnabled = false;
             checkBox.GestureRecognizers.Add(new TapGestureRecognizer
             {
-                Command = new Command(() => OnGridTapped(grid, i))
+                Command = new Command(() => OnGridTapped(grid))
             });
 
             grid.Children.Add(label);
@@ -187,7 +222,7 @@ public partial class GrPopupComboBox : PopupPage
 
     private GrCheckBox _prevSelected;
 
-    private async void OnGridTapped(Grid grid, int index)
+    private async void OnGridTapped(Grid grid)
     {
         GrCheckBox tip = grid.Children.OfType<GrCheckBox>().First();
         Label label = grid.Children.OfType<Label>().First();
@@ -212,7 +247,7 @@ public partial class GrPopupComboBox : PopupPage
             }
             _prevSelected = tip;
             tip.IsCheck = true;
-            SelectedItem = label.Text;
+            _selectedItem = label.Text;
             await MopupService.Instance.RemovePageAsync(this);
         }
     }
@@ -225,5 +260,29 @@ public partial class GrPopupComboBox : PopupPage
     private async void CloseButtonClicked(object sender, EventArgs e)
     {
         await MopupService.Instance.RemovePageAsync(this);
+    }
+
+    public void Reset()
+    {
+        if(IsMultiple)
+        {
+            foreach(var item in SelectedItems)
+            {
+                foreach (var child in ContentLayout.Children)
+                {
+                    if (child is Grid grid)
+                    {
+                        Label label = grid.Children.OfType<Label>().First();
+                        if (label.Text == item)
+                        {
+                            GrCheckBox tip = grid.Children.OfType<GrCheckBox>().First();
+                            tip.IsCheck = false;
+                        }
+                    }
+                }
+            }
+
+            SelectedItems.Clear();
+        }
     }
 }

@@ -1,4 +1,5 @@
 using RealtyMarket.Controls;
+using RealtyMarket.Converters;
 using RealtyMarket.Models;
 using RealtyMarket.Models.OtherEntity;
 using RealtyMarket.Models.RealtyEntity;
@@ -11,6 +12,7 @@ using Syncfusion.Maui.Inputs;
 using Syncfusion.Maui.ListView;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Text.RegularExpressions;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace RealtyMarket.Views
@@ -18,8 +20,6 @@ namespace RealtyMarket.Views
     public partial class AddAdPage : ContentPage
     {
         private readonly AddAdViewModel _viewModel;
-
-        private MapPage _mapPage;
 
         private RealtyLocation _lastLocation;
 
@@ -67,7 +67,7 @@ namespace RealtyMarket.Views
                 NumberEntry.Text = _viewModel.User.Number;
             }
 
-            _mapPage = new MapPage();
+            _viewModel.Advertisement = new();
         }
 
         private void ScrollViewScrolled(object sender, ScrolledEventArgs e)
@@ -103,18 +103,18 @@ namespace RealtyMarket.Views
             if(CategoryComboBox.SelectedIndex == 1)
             {
                 _viewModel.Advertisement.Realty = new Flat();
-                SaveFlatData();
+                await SaveFlatData();
                 await _viewModel.PublishAdvertisement();
             }
             else if (CategoryComboBox.SelectedIndex == 2)
             {
                 _viewModel.Advertisement.Realty = new PrivateHouse();
-                SavePrivateHouseData();
+                await SavePrivateHouseData();
                 await _viewModel.PublishAdvertisement();
             }
         }
 
-        private void SaveShareData()
+        private async Task SaveShareData()
         {
             _viewModel.Advertisement.PublishDate = DateTime.Now;
             _viewModel.Advertisement.UserEmail = EmailEntry.Text;
@@ -123,8 +123,19 @@ namespace RealtyMarket.Views
             _viewModel.Advertisement.RealtyCategory = "Квартира";
             _viewModel.Advertisement.Type = AdvertisementTypesCombo.SelectedText;
             _viewModel.Advertisement.Description = DescriptionEditor.Text;
-            _viewModel.Advertisement.Currency = CurrencyComboBox.SelectedItem.ToString();
-            _viewModel.Advertisement.Cost = Convert.ToDouble(CostEntry.Text);
+
+            if(CurrencyComboBox.SelectedItem.ToString() == "$")
+            {
+                _viewModel.Advertisement.Cost.Add("USD", Convert.ToDouble(CostEntry.Text));
+                double byn = await CurrencyConverter.USDToBYN(_viewModel.Advertisement.Cost["USD"]);
+                _viewModel.Advertisement.Cost.Add("BYN", byn);
+            }
+            else
+            {
+                _viewModel.Advertisement.Cost.Add("BYN", Convert.ToDouble(CostEntry.Text));
+                double usd = await CurrencyConverter.BYNToUSD(_viewModel.Advertisement.Cost["BYN"]);
+                _viewModel.Advertisement.Cost.Add("USD", usd);
+            }
 
             _viewModel.Advertisement.Name = AdvertismentNameEntry.Text;
             _viewModel.Advertisement.RealtyCategory = CategoryComboBox.SelectedItem.ToString();
@@ -170,9 +181,9 @@ namespace RealtyMarket.Views
             rR.Newness = NewnessCombo.SelectedText;
         }
 
-        private void SaveFlatData()
+        private async Task SaveFlatData()
         {
-            SaveShareData();
+            await SaveShareData();
             SaveResidentalRealtyData();
             Flat flat = _viewModel.Advertisement.Realty as Flat;
 
@@ -215,9 +226,9 @@ namespace RealtyMarket.Views
             }
         }
 
-        private void SavePrivateHouseData()
+        private async Task SavePrivateHouseData()
         {
-            SaveShareData();
+            await SaveShareData();
             SaveResidentalRealtyData();
             PrivateHouse ph = _viewModel.Advertisement.Realty as PrivateHouse;
 
@@ -289,9 +300,11 @@ namespace RealtyMarket.Views
 
         private async void SfEffectsView_AnimationCompleted(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(_mapPage);
+            MapPage map = new(_lastLocation);
 
-            RealtyLocation result = await _mapPage.GetMapResultAsync();
+            await Navigation.PushAsync(map);
+
+            RealtyLocation result = await map.GetMapResultAsync();
 
             _lastLocation = result;
             AddressEntry.Text = result.Address;
@@ -317,7 +330,7 @@ namespace RealtyMarket.Views
             CostEntry.Text = string.Empty;
             AdvertismentNameEntry.Text = string.Empty;
             CommonAreaEntry.Text = string.Empty;
-            AddressEntry.Text = string.Empty;
+            AddressEntry.Text = "Не выбрано";
 
             ConstructedYearEntry.Text = string.Empty;
             LivingAreaEntry.Text = string.Empty;
@@ -327,6 +340,66 @@ namespace RealtyMarket.Views
 
             IsEntranceRoomSwitch.IsOn = false;
             KitchenAreaEntry.Text = string.Empty;
+
+            AdvertisementTypesCombo.Reset();
+            HouseTypesCombo.Reset();
+            AmountFloorsCombo.Reset();
+            AmountRoomsCombo.Reset();
+            FlatToiletCombo.Reset();
+            SewerageSystemCombo.Reset();
+            HouseGasSystem.Reset();
+            CeilingHeight.Reset();
+            BalconyTypeCombo.Reset();
+            RepariTypeCombo.Reset();
+            HouseWaterTypes.Reset();
+            NewnessCombo.Reset();
+        }
+
+        private void PhoneNumberChanged(object sender, TextChangedEventArgs e)
+        {
+            GrEntry entry = NumberEntry;
+
+            if (e.NewTextValue.Length >= 6 && e.NewTextValue.Length < e.OldTextValue.Length)
+            {
+                return;
+            }
+
+            if (e.NewTextValue.Length < 6
+                || e.NewTextValue.Length >= 20)
+            {
+                entry.Text = e.OldTextValue;
+                return;
+            }
+
+            var numericText = Regex.Replace(e.NewTextValue, "[^0-9]", "");
+
+            string formatedText = "+375 (";
+
+            for (int i = 0; i < numericText.Length; i++)
+            {
+                if (i == 3 || i == 5 || i == 6 || i == 8 || i == 10 || i == 11)
+                {
+                    formatedText += numericText[i];
+                }
+                if (i == 4)
+                {
+                    formatedText += numericText[i] + ") ";
+                }
+                if (i == 7)
+                {
+                    formatedText += numericText[i] + "-";
+                }
+                if (i == 9)
+                {
+                    formatedText += numericText[i] + "-";
+                }
+            }
+
+            if (entry.Text != formatedText)
+            {
+                entry.Text = formatedText;
+                entry.CursorPosition = formatedText.Length;
+            }
         }
     }
 }

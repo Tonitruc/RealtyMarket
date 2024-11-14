@@ -75,6 +75,8 @@ namespace RealtyMarket.ViewModels
             await Shell.Current.GoToAsync("//ProfilePage");
         }
 
+        public bool photoChanges = false;
+
         public async Task PickAvatarPhoto()
         {
             try
@@ -96,6 +98,7 @@ namespace RealtyMarket.ViewModels
                         var imageSource = ImageSource.FromStream(() => new MemoryStream(imageData));
 
                         AvatarPhoto = imageSource;
+                        photoChanges = true;
                     }
                 }
             }
@@ -105,7 +108,7 @@ namespace RealtyMarket.ViewModels
         public async Task SaveChanges()
         {
             string imageUrl = string.Empty;
-            if(string.IsNullOrEmpty(User.UserImageUrl) && AvatarPhoto != null)
+            if(photoChanges)
             {
                 imageUrl = await _imageBBRepository.Add(AvatarPhoto);
             }

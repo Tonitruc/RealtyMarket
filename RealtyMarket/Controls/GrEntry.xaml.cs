@@ -15,6 +15,22 @@ namespace RealtyMarket.Controls
             set => SetValue(TitleProperty, value);
         }
 
+        private int _cursorPosition = 0;
+
+        public static readonly BindableProperty CursorPositionProperty = BindableProperty.Create(
+            nameof(CursorPosition), typeof(int), typeof(GrEntry), propertyChanged: (bindable, oldValue, newValue) =>
+            {
+                var control = (GrEntry)bindable;
+                control._cursorPosition = (int)newValue;
+                control.EntryLine.CursorPosition = (int)newValue;
+            });
+
+        public int CursorPosition
+        {
+            get => (int)GetValue(CursorPositionProperty);
+            set => SetValue(CursorPositionProperty, value);
+        }
+
         public static readonly BindableProperty MessageProperty = BindableProperty.Create(
             nameof(Message), typeof(string), typeof(GrEntry), "", propertyChanged: (bindable, oldValue, newValue) =>
             {
@@ -29,22 +45,27 @@ namespace RealtyMarket.Controls
         }
 
         public static readonly BindableProperty TextProperty = BindableProperty.Create(
-            nameof(Text), typeof(string), typeof(GrEntry), "", BindingMode.TwoWay, propertyChanged: (bindable, oldValue, newValue) =>
+            nameof(Text), typeof(string), typeof(GrEntry), "", BindingMode.TwoWay, propertyChanged: async (bindable, oldValue, newValue) =>
             {
                 var control = (GrEntry)bindable;
+                string newString = newValue as string;
                 control.EntryLine.TextChanged -= control.OnEntryTextChanged;
-                control.EntryLine.Text = newValue as string;
+                control.EntryLine.Text = newString;
                 control.EntryLine.TextChanged += control.OnEntryTextChanged;
-                if((string)newValue == string.Empty)
+                if(string.IsNullOrEmpty(newString))
                 {
                     control.OnEntryUnfocused(control.EntryLine, null);
-                    control._entryLength = 0;
+                    control._entryLength = 0;               
                 }
                 else
                 {
-                    control.OnEntryFocused(control.EntryLine, null);
+                    var translateTask = control.EntryName.TranslateTo(0, -15, 100, Easing.Linear);
+                    var fontAnimation = AnimateFontSize(control.EntryName, control.EntryName.FontSize, 12);
+
+                    await Task.WhenAll(translateTask, fontAnimation);
+                    control._entryLength = newString.Length;
                 }
-                control.IsFocused = false;
+                control.MaxLengthLabel.Text = $"{control._entryLength}/{control.MaxLength}";
             });
 
         public static readonly BindableProperty TextColorProperty = BindableProperty.Create(
@@ -244,7 +265,7 @@ namespace RealtyMarket.Controls
             EntryLine.Unfocused += OnEntryUnfocused;
             EntryLine.TextChanged += OnEntryTextChanged;
 
-            EntryLine.SetBinding(Entry.TextColorProperty, new Binding(nameof(TextProperty), BindingMode.TwoWay, source: this));
+            EntryLine.SetBinding(Entry.TextProperty, new Binding(nameof(TextProperty), BindingMode.TwoWay, source: this));
             //EntryImage.SetBinding(Image.HeightProperty, new Binding(nameof(EntryLine.HeightProperty), BindingMode.TwoWay, source: EntryLine));
             EntryName.SetBinding(Label.TextColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
             Underline.SetBinding(BoxView.ColorProperty, new Binding(nameof(CurrentColor), BindingMode.OneWay, source: this));
@@ -296,8 +317,9 @@ namespace RealtyMarket.Controls
         {
             var oldText = Text;
             Text = e.NewTextValue;
-            _entryLength = Text.Length;
+            _entryLength = Text?.Length ?? 0;
             MaxLengthLabel.Text = $"{_entryLength}/{MaxLength}";
+            EntryLine.CursorPosition = e.NewTextValue.Length;
             TextChanged?.Invoke(this, new(oldText, EntryLine.Text));
         }
 

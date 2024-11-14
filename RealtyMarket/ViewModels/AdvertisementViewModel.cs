@@ -10,74 +10,89 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
+using Prism.Navigation.Xaml;
+using Firebase.Database;
 
 namespace RealtyMarket.ViewModels
 {
+    public partial class AdvertisementImageItem : ObservableObject
+    {
+        [ObservableProperty]
+        private ImageSource _imageSource;
+    }
+
     public partial class AdvertisementViewModel : ObservableObject
     {
         [ObservableProperty]
         private Advertisement _advertisement;
 
-        private readonly RegisteredUserRepository _registeredUserRepository;
-
-        private readonly SecureStorageUserRepository _secureStorageUserRepository;
-
         private readonly ImageBBRepository _imageBBRepositroy;
+        private readonly RegisteredUserRepository _registeredUserRepository;
 
         public RegisteredUser User { get; set; }
 
-        public ICommand ReturnCommand { get; }
-
-        public ObservableCollection<ImageSource> Photos { get; }
+        public ObservableCollection<AdvertisementImageItem> Photos { get; }
 
         [ObservableProperty]
         public bool _isLoading = true;
 
-        public AdvertisementViewModel(RegisteredUserRepository registeredUserRepository,
-            SecureStorageUserRepository secureStorageUserRepository, ImageBBRepository imageBBRepository)
+        [ObservableProperty]
+        public bool _isFavorite = false;
+
+        [ObservableProperty]
+        public bool _isSelfAd = false;
+
+
+        public AdvertisementViewModel()
         {
-            _registeredUserRepository = registeredUserRepository;
-            _secureStorageUserRepository = secureStorageUserRepository;
-            _imageBBRepositroy = imageBBRepository;
+            using HttpClient httpClient = new();
+            _imageBBRepositroy = new ImageBBRepository(httpClient);
 
-            ReturnCommand = new AsyncCommand(Return);
+            Photos = new ObservableCollection<AdvertisementImageItem>();
 
-            Photos = [];
-        }
-
-        public async Task Return()
-        {
-            await Shell.Current.GoToAsync("//CatalogPage");
-        }
-
-        public async Task GetUser()
-        {
-            var userInfo = await _secureStorageUserRepository.ReadUser();
-
-            if (userInfo.userInfo.IsAnonymous)
-            {
-                User = null;
-                return;
-            }
-
-            var email = userInfo.userInfo.Email;
-
-            User = await _registeredUserRepository.GetByEmail(email);
+            FirebaseClient firebaseClient = new FirebaseClient("https://realtymarket-e4db0-default-rtdb.firebaseio.com/");
+            _registeredUserRepository = new RegisteredUserRepository(firebaseClient);
         }
 
         public void LoadPhoto()
         {
             Photos.Clear();
 
-            if(Advertisement.ImageUrls.Count == 0)
+            if (Advertisement.ImageUrls == null || Advertisement.ImageUrls.Count == 0)
             {
-                Photos.Add(ImageSource.FromFile("ad_logo.png"));
+                Photos.Add(new() { ImageSource = ImageSource.FromFile("ad_logo.png") });
             }
+            else
+            {
+                foreach (var photoUrl in Advertisement.ImageUrls)
+                {
+                    var image = _imageBBRepositroy.Get(photoUrl);
+                    if (image != null)
+                    {
+                        Photos.Add(new() { ImageSource = image });
+                    }
+                }
+            }
+        }
 
-            foreach(var photoUrl in Advertisement.ImageUrls)
-            {
-                Photos.Add(_imageBBRepositroy.Get(photoUrl));
-            }
+        public void IsFavoriteCheck()
+        {
+            IsFavorite = User.Favorites.Contains(Advertisement.Id);
+            IsSelfAd = true; //Advertisement.UserEmail != User.Email;
+        }
+
+        public async Task AddFavorite(Advertisement ad)
+        {
+            await _registeredUserRepository.AddFavorite(User.Email, ad.Id);
+            User.Favorites.Add(ad.Id);
+            IsFavorite = true;
+        }
+
+        public async Task DeleteFavorite(Advertisement ad)
+        {
+            await _registeredUserRepository.DeleteFavorite(User.Email, ad.Id);
+            User.Favorites.Remove(ad.Id);
+            IsFavorite = false;
         }
     }
 }

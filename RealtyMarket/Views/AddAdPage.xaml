@@ -369,8 +369,10 @@
                                  Title="Имя" 
                                  FocusedColor="{StaticResource MediumDarkViolet}"
                                  Message="*Обязательное поле"
+                                 ImageSource="profileicon.png"
                                  Margin="10,15,10,0"/>
                 <control:GrEntry x:Name="EmailEntry" 
+                                 ImageSource="email.png"
                                  IsEnabled="False"
                                  Title="Email" 
                                  Keyboard="Email"
@@ -379,10 +381,14 @@
                                  Message="*Обязательное поле"
                                  Margin="10,15,10,0"/>
                 <control:GrEntry x:Name="NumberEntry" 
+                                 ImageSource="number.png"
                                  Title="Номер телефона" 
                                  Keyboard="Telephone"
+                                 Text="+375 ("
+                                 TextChanged="PhoneNumberChanged"
                                  FocusedColor="{StaticResource MediumDarkViolet}"
-                                 Margin="10,15,10,0"/>
+                                 Margin="10,15,10,0"
+                                 Message="*Обязательное поле"/>
 
                 <control:GrButton Margin="0,20,0,20"
                                   IsBusy="{Binding IsLoading}"

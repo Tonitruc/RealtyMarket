@@ -10,6 +10,7 @@ public partial class MyAdPage : ContentPage
 {
 	private readonly MyAdPageViewModel _viewModel;
 
+
     public MyAdPage(MyAdPageViewModel viewModel)
 	{
 		InitializeComponent();
@@ -17,14 +18,29 @@ public partial class MyAdPage : ContentPage
         BindingContext = _viewModel = viewModel;
     }
 
+    public bool NeedUpdateAds { get; set; } = true;
+
     protected override async void OnAppearing()
     {
         base.OnAppearing();
 
         _viewModel.IsLoading = true;
 
-        await _viewModel.GetUserEmail();
-        await _viewModel.GetMyAds();
+        if(NeedUpdateAds)
+        {
+            await _viewModel.GetUser();
+
+            if(_viewModel.User == null)
+            {
+                return;
+            }
+
+            await _viewModel.GetMyAds();
+        }
+        else
+        {
+            NeedUpdateAds = true;
+        }
 
         _viewModel.IsLoading = false;
     }
@@ -97,31 +113,9 @@ public partial class MyAdPage : ContentPage
         ClosedAdPage.IsVisible = false;
     }
 
-    private async void ImageButtonClicked(object sender, EventArgs e)
-    {
-        var button = (ImageButton)sender;
-
-        await button.RotateTo(90, 100, Easing.Linear);
-
-        var frame = (Grid)button.Parent;
-        var popup = frame.FindByName<SfPopup>("PopupMenu");  
-
-        popup.ShowRelativeToView(button, PopupRelativePosition.AlignBottom);
-    }
-
-    private async void PopupMenuClosed(object sender, EventArgs e)
-    {
-        var popup = (SfPopup)sender;
-
-        var frame = (Grid)popup.Parent;
-        var button = frame.FindByName<ImageButton>("PopupImageButton");
-
-        await button.RotateTo(0, 100, Easing.Linear);
-    }
-
     private async void CloseAdClicked(object sender, EventArgs e)
     {
-        var button = (GrButton)sender;
+        var button = (ImageButton)sender;
 
         var commandParameter = (Advertisement)button.CommandParameter;
 
@@ -130,7 +124,7 @@ public partial class MyAdPage : ContentPage
 
     private async void OpenAdClicked(object sender, EventArgs e)
     {
-        var button = (GrButton)sender;
+        var button = (ImageButton)sender;
 
         var commandParameter = (Advertisement)button.CommandParameter;
 
@@ -139,10 +133,27 @@ public partial class MyAdPage : ContentPage
 
     private async void DeleteAdClicked(object sender, EventArgs e)
     {
-        var button = (GrButton)sender;
+        var button = (ImageButton)sender;
 
         var commandParameter = (Advertisement)button.CommandParameter;
 
         await _viewModel.DeleteAdCommand(commandParameter);
+    }
+
+    private async void MoreInfoClicked(object sender, EventArgs e)
+    {
+        var button = (GrButton)sender;
+
+        try
+        {
+            NeedUpdateAds = false;
+            var ad = (Advertisement)button.CommandParameter;
+            await Navigation.PushAsync(new AdvertisementPage(ad, _viewModel.User));
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("ќшибка", "ќбъ€вление не существует", "ќк");
+        }
+
     }
 }

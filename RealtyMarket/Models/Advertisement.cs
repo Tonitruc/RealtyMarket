@@ -20,7 +20,7 @@ namespace RealtyMarket.Models
         {
             get
             {
-                if(_type == AdvertisementType.Purchase)
+                if (_type == AdvertisementType.Purchase)
                 {
                     return "Продажа";
                 }
@@ -56,7 +56,7 @@ namespace RealtyMarket.Models
         {
             get
             {
-                if(_realtyCategory == RealtyEntity.Enums.RealtyCategory.Flat)
+                if (_realtyCategory == RealtyEntity.Enums.RealtyCategory.Flat)
                 {
                     return "Квартира";
                 }
@@ -71,7 +71,7 @@ namespace RealtyMarket.Models
                 {
                     _realtyCategory = RealtyEntity.Enums.RealtyCategory.Flat;
                 }
-                else if(value == "Дом" || value == "PrivateHouse")
+                else if (value == "Дом" || value == "PrivateHouse")
                 {
                     _realtyCategory = RealtyEntity.Enums.RealtyCategory.PrivateHouse;
                 }
@@ -86,8 +86,6 @@ namespace RealtyMarket.Models
 
         public string Description { get; set; }
 
-        public double Cost { get; set; }
-
-        public string Currency { get; set; }
+        public Dictionary<string, double> Cost {get; set;} = []; 
     }
 }

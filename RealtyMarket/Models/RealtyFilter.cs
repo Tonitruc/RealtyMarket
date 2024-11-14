@@ -9,6 +9,7 @@ namespace RealtyMarket.Models
 {
     public class RealtyFilter
     {
+        public string RealtyCategory { get; set; } = "Не выбрано";
         public string AdType { get; set; }
         public string Region { get; set; }
         public double StartCost { get; set; }

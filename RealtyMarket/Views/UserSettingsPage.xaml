@@ -47,10 +47,11 @@
                              Command="{Binding PickAvatarPhotoCommand}"/>
                 </Grid>
                 <control:GrEntry Grid.Column="1"
-                             Margin="10,10,0,0"
-                             Text="{Binding User.Name, Mode=TwoWay}"
-                             Title="Имя"
-                             FocusedColor="{StaticResource MediumViolet}"/>
+                                 Margin="10,10,0,0"
+                                 Text="{Binding User.Name, Mode=TwoWay}"
+                                 Title="Имя"
+                                 MaxLength="20"
+                                 FocusedColor="{StaticResource MediumViolet}"/>
             </Grid>
             <VerticalStackLayout Grid.Row="2" Margin="10,20,10,0" Spacing="20">
 
@@ -63,29 +64,27 @@
                              Title="Email"
                              FocusedColor="{StaticResource MediumViolet}"/>
 
-                <Grid ColumnDefinitions="35,*" HeightRequest="50">
-                    <Image HeightRequest="25" Grid.Column="0" Source="number.png"/>
-                    <maskedentry:SfMaskedEntry MaskType="Simple" Mask="#000(00)000-00-00"
-                                               x:Name="NumberEntry"
-                                               Value="+375 29"
-                                               HorizontalOptions="Fill"
-                                               HeightRequest="40"
-                                               Margin="30,0,0,0"
-                                               Stroke="{StaticResource MediumViolet}"
-                                               Grid.Column="1"
-                                               ValueMaskFormat="IncludeLiterals"/>
-                </Grid>
+                <control:GrEntry x:Name="NumberEntry"   
+                                 Text="+375 ("
+                                 ImageSource="number.png"
+                                 Title="Номер телефона"
+                                 BackgroundColor="{StaticResource White}" 
+                                 TextColor="Black"
+                                 Keyboard="Telephone"
+                                 TextChanged="PhoneNumberChanged"
+                                 FocusedColor="{StaticResource MediumViolet}"/>
+
             </VerticalStackLayout>
             <VerticalStackLayout Grid.Row="3" Margin="0,40,0,0" Spacing="20">
                 <control:GrButton HeightRequest="35" 
-                              HorizontalOptions="Fill" 
-                              TextColor="White"
-                              Text="Сохранить"
-                              Padding="0"
-                              FontSize="22"
-                              BackgroundColor="{StaticResource DarkViolet}"
-                              Margin="70,0,70,0"
-                              Command="{Binding SaveChangesCommand}"/>
+                                  HorizontalOptions="Fill" 
+                                  TextColor="White"
+                                  Text="Сохранить"
+                                  Padding="0"
+                                  FontSize="22"
+                                  BackgroundColor="{StaticResource DarkViolet}"
+                                  Margin="70,0,70,0"
+                                  Clicked="SaveChanges"/>
                 <control:GrButton HeightRequest="35" 
                               HorizontalOptions="Fill"
                               TextColor="White"

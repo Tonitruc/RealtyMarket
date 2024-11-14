@@ -8,8 +8,8 @@ namespace RealtyMarket.Models.RealtyEntity.Enums
 {
     public enum RealtySort
     {
+        New,
         CostAscending,
         CostDescending,
-        New
     }
 }

@@ -7,9 +7,8 @@
     <script type='text/javascript'>
         ymaps.ready(init);
         var myMap;
-        var lastCoords = [0, 0];
+        var lastCoords = [53.9, 27.5667];
         var lastAddress = '';
-        var isMapReady = false;
 
         var belarusBounds = [
             [51.2568, 23.1783],
@@ -18,7 +17,7 @@
 
         function init() { 
             myMap = new ymaps.Map('map', {
-                center: [53.9, 27.5667], 
+                center: lastCoords, 
                 zoom: 10,
                 controls: []
             }, {
@@ -26,8 +25,6 @@
                 yandexMapDisablePoiInteractivity: true,
                 restrictMapArea: belarusBounds
             });
-
-            isMapReady = true;
 
             myMap.events.add('click', function (e) {
                 lastCoords = e.get('coords');
@@ -53,15 +50,6 @@
             var coords = [lat, lng];
             lastCoords = coords;
             placeMarker(coords);
-        }
-
-        function waitForMapReadyAndSetCoordinates(lat, lng) {
-            var checkReady = setInterval(function () {
-                if (isMapReady) {
-                    setInitialCoordinates(lat, lng);
-                    clearInterval(checkReady); 
-                }
-            }, 100); 
         }
 
         function placeMarker(coords) {

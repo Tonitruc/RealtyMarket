@@ -13,12 +13,13 @@ namespace RealtyMarket.ViewModels
     {
         public ICommand ReturnCommand { get; set; }
 
-
         private readonly AdvertisementRepository _advertisementRepository;
 
         private readonly SecureStorageUserRepository _secureStorageUserRepository;
 
-        private string UserEmail;
+        private readonly RegisteredUserRepository _registeredUserRepository;
+
+        public RegisteredUser User { get; set; }
 
         public ObservableCollection<Advertisement> ActiveAds { get; }
 
@@ -57,29 +58,38 @@ namespace RealtyMarket.ViewModels
             set => SetProperty(ref _isLoading, value);
         }
 
+
         public MyAdPageViewModel(AdvertisementRepository advertisementRepository,
-            SecureStorageUserRepository secureStorageUserRepository)
+            SecureStorageUserRepository secureStorageUserRepository, RegisteredUserRepository registeredUserRepository)
         {
             ReturnCommand = new AsyncCommand(ReturnToProfilePage);
             ActiveAds = []; ClosedAds = [];
 
             _advertisementRepository = advertisementRepository;
             _secureStorageUserRepository = secureStorageUserRepository;
+            _registeredUserRepository = registeredUserRepository;
         }
 
-        public async Task GetUserEmail()
+        public async Task GetUser()
         {
             var userInfo = await _secureStorageUserRepository.ReadUser();
-            string email = userInfo.userInfo.Email;
 
-            UserEmail = email;
+            if (userInfo.userInfo.IsAnonymous)
+            {
+                User = null;
+                return;
+            }
+
+            var email = userInfo.userInfo.Email;
+
+            User = await _registeredUserRepository.GetByEmail(email);
         }
 
         public async Task GetMyAds()
         {
             ActiveAds.Clear();
             AmountActiveAds = 0;
-            var activeAdvertisements = await _advertisementRepository.GetByEmail(UserEmail);
+            var activeAdvertisements = await _advertisementRepository.GetByEmail(User.Email);
             foreach(var ad in activeAdvertisements)
             {
                 ActiveAds.Add(ad);
@@ -90,7 +100,7 @@ namespace RealtyMarket.ViewModels
 
             ClosedAds.Clear();
             AmountClosedAds = 0;
-            var closedAdvertisements = await _advertisementRepository.GetByEmail(UserEmail, false);
+            var closedAdvertisements = await _advertisementRepository.GetByEmail(User.Email, false);
             foreach(var ad in closedAdvertisements)
             {
                 ClosedAds.Add(ad);
@@ -120,6 +130,7 @@ namespace RealtyMarket.ViewModels
         public async Task DeleteAdCommand(Advertisement ad)
         {
             await _advertisementRepository.DeleteAd(ad);
+            await _advertisementRepository.DeleteAd(ad, false);
             await GetMyAds();
         }
     }

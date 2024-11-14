@@ -16,6 +16,8 @@ namespace RealtyMarket.Views
 
         private FilterPage _filter;
 
+        private RealtyFilter _realtyFilter;
+
         public CatalogPage(CatalogViewModel viewModel)
         {
             InitializeComponent();
@@ -25,19 +27,26 @@ namespace RealtyMarket.Views
             Shell.SetTitleView(this, null);
         }
 
+        private bool NeedUpdateAds { get; set; } = true;
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             _viewModel.IsLoading = true;
 
-            await _viewModel.GetUser();
+            if(NeedUpdateAds)
+            {
+                await _viewModel.GetUser();
 
-            await _viewModel.GetAdvertisements();
+                await _viewModel.GetAdvertisements(_realtyFilter);
+            }
+            else
+            {
+                NeedUpdateAds = true;
+            }
 
             _viewModel.IsLoading = false;
-
-            _filter = new FilterPage(); 
         }
 
         private async void AddDeleteAdFavoriteClicked(object sender, EventArgs e)
@@ -58,7 +67,11 @@ namespace RealtyMarket.Views
 
         private async void FilterButtonClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(_filter);
+            FilterPage filterPage = new FilterPage(_realtyFilter);
+
+            await Navigation.PushModalAsync(filterPage);
+
+            _realtyFilter = await filterPage.GetFilterResultAsync();
         }
 
         private async void RefreshingCatalog(object sender, EventArgs e)
@@ -76,23 +89,33 @@ namespace RealtyMarket.Views
         private async void MoreInfoClicked(object sender, EventArgs e)
         {
             var button = (GrButton)sender;
-            var ad = (Advertisement)button.CommandParameter;
-
-            var navigationParameter = new ShellNavigationQueryParameters
-            {
-                { "Advertisement", ad }
-            };
 
             try
             {
-            await Shell.Current.GoToAsync("//AdvertisementPage", true, navigationParameter);
-
+                NeedUpdateAds = false;
+                var ad = (AdvertisementItem)button.CommandParameter;
+                await Navigation.PushAsync(new AdvertisementPage(ad.Advertisement, _viewModel.User));
+                await _viewModel.GetUser();
+                ad.IsFavorite = _viewModel.IsFavorite(ad.Advertisement);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                Console.WriteLine(ex.Message);
+                await DisplayAlert("ќшибка", "ќбъ€влени€ не существует", "ќк");
             }
 
+        }
+
+        private async void AddressSearchBar_SearchButtonPressed(object sender, EventArgs e)
+        {
+            await _viewModel.SearchAddressCommand(_realtyFilter);
+        }
+
+        private async void AddressSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(AddressSearchBar.Text.Length == 0)
+            {
+                await _viewModel.SearchAddressCommand(_realtyFilter);
+            }
         }
     }
 }
