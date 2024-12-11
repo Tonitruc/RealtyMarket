@@ -3,7 +3,7 @@ using RealtyMarket.Models;
 using RealtyMarket.Models.RealtyEntity;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using MvvmHelpers.Commands;
+using AsyncAwaitBestPractices.MVVM;
 using RealtyMarket.Service;
 using RealtyMarket.Repository;
 using Microsoft.Maui.Controls;
@@ -165,7 +165,7 @@ namespace RealtyMarket.ViewModels
             }
 
             AddPhotoCommand = new AsyncCommand(PickImageAsync);
-            RemovePhotoCommand = new MvvmHelpers.Commands.Command<PhotoItem>(RemovePhotoAsync);
+            RemovePhotoCommand = new Command<PhotoItem>(RemovePhotoAsync);
 
             Advertisement = new Advertisement() { Realty = new ResidentialRealty()};
 

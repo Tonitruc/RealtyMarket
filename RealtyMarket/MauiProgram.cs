@@ -52,7 +52,7 @@ namespace RealtyMarket
                     fonts.AddFont("Nexa-Trial-HeavyItalic.ttf", "NexaTrialHeavyItalic");
                 });
 
-            string key = "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1JpR2FGfV5ycEVDalhYTnZZUj0eQnxTdEFiWX1dcXNQRmBaUk12Xg==";
+            string key = "Ngo9BigBOggjHTQxAR8/V1NDaF1cX2hIYVJ2WmFZfVtgfV9CZ1ZTRWYuP1ZhSXxXd0diWH9XdHNRRWlfWUw=";
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(key);
             builder.Services.AddTransient<SecureStorageUserRepository>();
 

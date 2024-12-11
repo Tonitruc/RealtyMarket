@@ -1,10 +1,10 @@
 ﻿using RealtyMarket.ViewModels;
 using System.Windows.Input;
-using MvvmHelpers.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using AsyncAwaitBestPractices.MVVM;
 using RealtyMarket.Service;
 using RealtyMarket.Repository;
 using RealtyMarket.Models;
-using MvvmHelpers;
 
 namespace RealtyMarket.ViewModels
 {

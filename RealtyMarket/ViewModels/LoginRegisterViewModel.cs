@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using RealtyMarket.Models;
-using MvvmHelpers;
-using MvvmHelpers.Commands;
+using CommunityToolkit.Mvvm.ComponentModel;
+using AsyncAwaitBestPractices.MVVM;
 using RealtyMarket.Service;
 using RealtyMarket.Repository;
 

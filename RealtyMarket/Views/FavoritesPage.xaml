@@ -23,47 +23,51 @@
         </Grid>
 
         <syncfusion:SfListView x:Name="CatalogView" Orientation="Vertical"
-                               Grid.Row="1"
-                               Margin="10,0,10,0"
-                               ItemsSource="{Binding Advertisements}"
-                               ItemSize="220"
-                               CachingStrategy="RecycleTemplate"
-                               ItemSpacing="0"
-                               IsScrollingEnabled="True">
+                        Grid.Row="1"
+                        ItemsSource="{Binding Advertisements}"
+                        ItemSize="{OnPlatform Default=220, WinUI=250}"
+                        CachingStrategy="CreateNewTemplate"
+                        ItemSpacing="{OnPlatform Default=10, WinUI=10}"
+                        IsScrollingEnabled="True">
             <syncfusion:SfListView.ItemTemplate>
                 <DataTemplate x:DataType="model:Advertisement">
-                    <Frame HeightRequest="200" HasShadow="True" Padding="5" Margin="0,20,0,0">
+                    <Border HeightRequest="{OnPlatform Default=220, WinUI=250}" StrokeThickness="2">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5"/>
+                        </Border.StrokeShape>
                         <Grid ColumnDefinitions="0.4*,0.6*" RowDefinitions="*,0.3*">
                             <Border Grid.RowSpan="2" Stroke="{StaticResource MediumDarkViolet}">
-                                <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}" 
-                                           BackgroundColor="{StaticResource VeryLightViolet}"/>
+                                <Image Source="{Binding ImageUrls, Converter={StaticResource ListImageUrlConverter}}"                                       
+                            BackgroundColor="{StaticResource VeryLightViolet}" Aspect="AspectFit"/>
                             </Border>
                             <Grid Margin="10,0,0,0" Grid.Column="1" RowDefinitions="0.2*,0.1*,0.1*,0.3*,0.2*">
-                                <Grid  ColumnDefinitions="0.8*,0.2*">
+                                <Grid  ColumnDefinitions="{OnPlatform Default='0.8*,0.2*', WinUI='0.9*,0.1*'}">
                                     <Label x:Name="Name" Text="{Binding Name}" HorizontalOptions="Center" Grid.Row="0" 
-                                           TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic"/>
-                                    <control:GrHeartButton Grid.Column="1" Clicked="DeleteFavoriteClicked" Parameter="{Binding .}" IsActive="True"/>
+                                    TextColor="{StaticResource MediumViolet}" FontSize="20" FontAttributes="Italic" LineBreakMode="TailTruncation"/>
+                                    <control:GrHeartButton IsActive="True" IsVisible="True"
+                                            Grid.Column="1" Clicked="DeleteFavoriteClicked" Parameter="{Binding .}"/>
                                 </Grid>
-                                <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1" LineBreakMode="WordWrap"/>
+                                <Label x:Name="AdType" Text="{Binding Type, StringFormat='Сделка: {0}'}" Grid.Row="1"/>
                                 <Label x:Name="RealtyType" Text="{Binding RealtyCategory, StringFormat='Категория: {0}'}" Grid.Row="2"/>
-                                <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="TailTruncation"/>
+                                <Label x:Name="Address" Text="{Binding Realty.Location.Address, StringFormat='Адрес: {0}'}" Grid.Row="3" LineBreakMode="WordWrap"/>
                                 <Label x:Name="Cost" Text="{Binding ., Converter={StaticResource PriceConverter}}" VerticalOptions="End" Grid.Row="4" FontFamily="NexaBold" FontAttributes="Italic"/>
                             </Grid>
 
                             <control:GrButton Text="Подробнее" 
-                                              Grid.Row="1" 
-                                              Grid.Column="1"
-                                              Padding="0"
-                                              Margin="5,10,5,2"
-                                              BackgroundColor="{StaticResource DarkViolet}"
-                                              TextColor="White"
-                                              VerticalOptions="Fill"
-                                              TextAlligment="Center"   
-                                              HorizontalOptions="Fill"
-                                              CornerRadius="5"
-                                              Clicked="MoreInfoClicked"/>
+                                       Grid.Row="1" 
+                                       Grid.Column="1"
+                                       Padding="0"
+                                       Margin="5,10,5,5"
+                                       BackgroundColor="{StaticResource DarkViolet}"
+                                       TextColor="White"
+                                       VerticalOptions="Fill"
+                                       TextAlligment="Center"
+                                       Clicked="MoreInfoClicked" 
+                                       CommandParameter="{Binding .}"
+                                       HorizontalOptions="Fill"
+                                       CornerRadius="5"/>
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </syncfusion:SfListView.ItemTemplate>
         </syncfusion:SfListView>

@@ -1,4 +1,4 @@
-﻿using MvvmHelpers;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace RealtyMarket.Models
 {
